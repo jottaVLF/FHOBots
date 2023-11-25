@@ -1,0 +1,90 @@
+{
+    "camera" : 2,
+    "communication" : "/dev/ttyUSB0",
+    "simulator-port": 19999,
+    "simulator-address" : "127.0.0.1",
+    "simulator-path" : "/home/fhobots/Downloads/CoppeliaSim_Edu_V4_3_0_rev12_Ubuntu20_04/coppeliaSim.sh",
+    "simulator-scene-path": "/home/fhobots/Downloads/fhobots_team.ttt",
+    "team-color": "blue",
+    "r0" : {
+        "role" : "attacker",
+        "color": "green",
+        "pwm": {
+            "max": 255,
+            "min": 0,
+            "base": 100
+        },
+        "control": {
+            "front-left": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "front-right": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "back-left": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "back-right": {
+                "kp" : 1,
+                "kd" : 0.5
+            }
+        }
+    },
+    "r1" : {
+        "role" : "deffender",
+        "color": "purple",
+        "pwm": {
+            "max": 255,
+            "min": 0,
+            "base": 100
+        },
+        "control": {
+            "front-left": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "front-right": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "back-left": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "back-right": {
+                "kp" : 1,
+                "kd" : 0.5
+            }
+        }
+    },
+    "r2" : {
+        "role" : "goalkeeper",
+        "color": "red",
+        "pwm": {
+            "max": 255,
+            "min": 0,
+            "base": 100
+        },
+        "control": { 
+            "front-left": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "front-right": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "back-left": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "back-right": {
+                "kp" : 1, 
+                "kd" : 0.5
+            }
+        }
+    }
+}

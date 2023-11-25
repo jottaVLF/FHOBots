@@ -1,0 +1,117 @@
+#include "Control.hpp"
+#include <cmath>
+#include <iostream>
+
+Control::Control(const double kp, const double kd, const double basePwmValue) : _kp(kp), _kd(kd),
+_basePwmValue(basePwmValue), _lastError(0), _pwmLeftWheel(0), _pwmRightWheel(0), _maxPwmValue(160)
+{}
+
+Control::~Control()
+{}
+
+void Control::setPD(const double kp, const double kd)
+{
+    _kp = kp;
+    _kd = kd;
+}
+
+void Control::setBasePwmValue(const double pwm)
+{
+    _basePwmValue = pwm;
+}
+
+double Control::getBasePwmValue()
+{
+    return _basePwmValue;
+}
+
+void Control::calculatePwm(Vector2D& robotToDestiny, Vector2D orientationRobot)
+{
+    double pd = calculatePD(robotToDestiny, orientationRobot);
+
+    _pwmLeftWheel = static_cast<int>(_basePwmValue + pd);
+    if(_pwmLeftWheel > _maxPwmValue)
+        _pwmLeftWheel = _maxPwmValue;
+    else if(_pwmLeftWheel < 35)
+        _pwmLeftWheel = 35;
+
+    _pwmRightWheel = static_cast<int>(_basePwmValue - pd);
+    if(_pwmRightWheel > _maxPwmValue)
+        _pwmRightWheel = _maxPwmValue;
+    else if(_pwmRightWheel < 35)
+        _pwmRightWheel = 35;
+    
+    std::cout << this->_pwmLeftWheel << " " << this->_pwmRightWheel << std::endl;
+}
+
+void Control::calculatePwm(Vector2D& robotToDestiny, const double& angleRobot)
+{
+    double pd = calculatePD(robotToDestiny, angleRobot);
+
+    _pwmLeftWheel = static_cast<int>(_basePwmValue + pd);
+    if(_pwmLeftWheel > _maxPwmValue)
+        _pwmLeftWheel = _maxPwmValue;
+    else if(_pwmLeftWheel < 35)
+        _pwmLeftWheel = 35;
+
+    _pwmRightWheel = static_cast<int>(_basePwmValue - pd);
+    if(_pwmRightWheel > _maxPwmValue)
+        _pwmRightWheel = _maxPwmValue;
+    else if(_pwmRightWheel < 35)
+        _pwmRightWheel = 35;
+    
+    //std::cout << this->_pwmLeftWheel << " " << this->_pwmRightWheel << std::endl;
+}
+
+void Control::setMaxPwm(const int maxPwm)
+{
+    _maxPwmValue =  maxPwm;
+}
+
+void Control::setPwmLeftWheel(const int pwm)
+{
+    _pwmLeftWheel = pwm;
+}
+
+void Control::setPwmRightWheel(const int pwm)
+{
+    _pwmRightWheel = pwm;
+}
+
+int Control::getPwmLeftWheel()
+{
+    return _pwmLeftWheel;
+}
+
+int Control::getPwmRightWheel()
+{
+    return _pwmRightWheel;
+}
+
+double Control::calculatePD(Vector2D& robotToDestiny, Vector2D& orientarionRobot)
+{
+    double angleError = orientarionRobot||robotToDestiny;
+    std::cout << angleError *180 / M_PI << std::endl;
+    double p = angleError;
+    double d = angleError - _lastError;
+    _lastError = angleError;
+
+    return (_kp * p) + (_kd * d);
+}
+
+double Control::calculatePD(Vector2D& robotToDestiny, const double& angleRobot)
+{
+    Vector2D orientarionRobot(cos(angleRobot), sin(angleRobot));
+    double angleError = orientarionRobot||robotToDestiny;
+
+    double p = angleError;
+    double d = angleError - _lastError;
+    _lastError = angleError;
+
+    return (_kp * p) + (_kd * d);
+}
+
+void Control::setLastError(const double lerror)
+{
+    _lastError = lerror;
+}
