@@ -1,6 +1,6 @@
 CC = g++
-CFLAGS = -I/usr/include/libserial -I/usr/local/include/opencv4 -I/usr/include/x86_64-linux-gnu -std=c++11 
-LIBS = -L/usr/lib/x86_64-linux-gnu -L/usr/local/lib -lopencv_core -lallegro -lopencv_videoio -lopencv_highgui -lopencv_imgproc -lopencv_shape -lopencv_imgcodecs -lserial -pthread -L./sim/remoteAPI
+CFLAGS = -I/usr/include/libserial -I/usr/include/opencv4 -I/usr/include/x86_64-linux-gnu -std=c++11 
+LIBS = -L/usr/lib/x86_64-linux-gnu -L/usr/local/lib -L/usr/share/opencv4 -lopencv_core -lallegro -lopencv_videoio -lopencv_highgui -lopencv_imgproc -lopencv_shape -lopencv_imgcodecs -lserial -pthread -L./sim/remoteAPI
 SIMLIBS = -DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -DDO_NOT_USE_SHARED_MEMORY
 DEPS = sim/extApi.c\
 	   input/JoystickHandle.cpp\

@@ -1,7 +1,7 @@
 #ifndef FHOBOTS_CUSTOMTRACKBAR_HPP
 #define FHOBOTS_CUSTOMTRACKBAR_HPP
 #include <string>
-#include "opencv.hpp"
+#include "opencv2/opencv.hpp"
 
 class CustomTrackbar {
 
