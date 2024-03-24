@@ -1,6 +1,6 @@
 {
-    "camera" : 2,
-    "communication" : "/dev/ttyUSB0",
+    "camera" : 0,
+    "communication" : "/dev/ttyUSB2",
     "simulator-port": 19999,
     "simulator-address" : "127.0.0.1",
     "simulator-path" : "/home/fhobots/Downloads/CoppeliaSim_Edu_V4_3_0_rev12_Ubuntu20_04/coppeliaSim.sh",

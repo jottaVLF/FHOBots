@@ -19,8 +19,8 @@ Vision::Vision(int deviceNumber, Config * config)
     if(!ocl::useOpenCL())
        ocl::setUseOpenCL(true);
 
-    _videoCapture.set(3, 640);
-    _videoCapture.set(4, 480);
+    /*_videoCapture.set(3, 640);
+    _videoCapture.set(4, 480);*/
     this->logger = new Logger("files/logs/Vision.log");
     this->config = config;
 }
@@ -42,6 +42,7 @@ void Vision::adjustFieldPosition()
     f[2].setRect(Global::areaToAttack);
     f[3].setRect(Global::areaGoalDeffend);
     f[4].setRect(Global::areaGoalAttack);
+    cv::namedWindow("Game original");
 
     for(int i = 0; i < 5; i++)
     {
@@ -58,7 +59,7 @@ void Vision::adjustFieldPosition()
             show(false);
             Global::bufferKeyboard = waitKey(16);
         }
-
+        std::cout << i << std::endl;
         switch (i)
         {
             case 0:
@@ -94,8 +95,9 @@ void Vision::adjustFieldPosition()
                 Global::areaGoalAttack = f[i].getRect();
                 break;
         }
-        if(i == 0)
-            cv::destroyWindow("Game original");
+        if(i == 0){
+           // cv::destroyWindow("Game original");
+        }
     }
 
     writeRectFields();
@@ -109,8 +111,8 @@ void Vision::adjustFieldPosition()
     std::cout << "Finished calibration..." << std::endl;
     cv::setMouseCallback("Game resized", NULL, NULL);
     cv::setMouseCallback("Game original", NULL, NULL); 
-    cv::destroyWindow("Game resized");
-    cv::destroyWindow("Game");
+   // cv::destroyWindow("Game resized");
+   // cv::destroyWindow("Game original");
 }
 
 void Vision::calibrateColor(ColorDetection * color){

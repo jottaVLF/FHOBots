@@ -46,6 +46,7 @@ void Field::draw(cv::Mat frame)
 
 void Field::setWindow()
 {
+    std::cout << "Set Window ... " << std::endl;
     _mouse.setWindow("Game original");
 }
 
