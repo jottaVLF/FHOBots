@@ -1,18 +1,22 @@
 {
     "camera" : 0,
-    "communication" : "/dev/ttyUSB2",
-    "simulator-port": 19999,
-    "simulator-address" : "127.0.0.1",
-    "simulator-path" : "/home/fhobots/Downloads/CoppeliaSim_Edu_V4_3_0_rev12_Ubuntu20_04/coppeliaSim.sh",
-    "simulator-scene-path": "/home/fhobots/Downloads/fhobots_team.ttt",
+    "communication" : "/dev/ttyUSB0",
     "team-color": "blue",
     "r0" : {
         "role" : "attacker",
         "color": "green",
+        "active": "true",
         "pwm": {
             "max": 255,
             "min": 0,
             "base": 100
+        },
+        "hardware": {
+            "id": 0,
+            "pinMotorEsqA": 9,
+            "pinMotorEsqB": 10,
+            "pinMotorDirA": 5,
+            "pinMotorDirB": 6 
         },
         "control": {
             "front-left": {
@@ -36,10 +40,18 @@
     "r1" : {
         "role" : "deffender",
         "color": "purple",
+        "active": "false",
         "pwm": {
             "max": 255,
             "min": 0,
             "base": 100
+        },
+        "hardware": {
+            "id": 1,
+            "pinMotorEsqA": 9,
+            "pinMotorEsqB": 10,
+            "pinMotorDirA": 5,
+            "pinMotorDirB": 6 
         },
         "control": {
             "front-left": {
@@ -63,10 +75,18 @@
     "r2" : {
         "role" : "goalkeeper",
         "color": "red",
+        "active": "false",
         "pwm": {
             "max": 255,
             "min": 0,
             "base": 100
+        },
+        "hardware": {
+            "id": 2,
+            "pinMotorEsqA": 9,
+            "pinMotorEsqB": 10,
+            "pinMotorDirA": 5,
+            "pinMotorDirB": 6 
         },
         "control": { 
             "front-left": {

@@ -51,8 +51,8 @@ void Vision::adjustFieldPosition()
         {
             
             readFrame(i != 0);
-            if(i != 0)
-                f[i].setWindowName("Game resized");
+            /*if(i != 0)
+                f[i].setWindowName("Game resized");*/
             f[i].draw(_gpuFrame);
             putText(_gpuFrame, f[i].getName(), Point(30, 50), 0, 1.5, Scalar(0, 0, 255), 5);
             f[i].setWindow();
@@ -109,7 +109,7 @@ void Vision::adjustFieldPosition()
     Global::centerAreaToAttack.x = (Global::areaToAttack.x + Global::areaToAttack.x + Global::areaToAttack.width) / 2;
     Global::centerAreaToAttack.y = (Global::areaToAttack.y + Global::areaToAttack.y + Global::areaToAttack.height) / 2;
     std::cout << "Finished calibration..." << std::endl;
-    cv::setMouseCallback("Game resized", NULL, NULL);
+  //  cv::setMouseCallback("Game resized", NULL, NULL);
     cv::setMouseCallback("Game original", NULL, NULL); 
    // cv::destroyWindow("Game resized");
    // cv::destroyWindow("Game original");

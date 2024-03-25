@@ -27,20 +27,8 @@ Config ConfigParser::createConfiguration(){
             }else if(field == "communication"){
                 config.communication = this->lookAhead->lexeme;
                 match(PROPERTY);
-            }else if(field == "simulator-port"){
-                config.simulatorPort = stoi(this->lookAhead->lexeme);
-                match(VALUE);
             }else if(field == "team-color"){
                 config.teamColor = this->lookAhead->lexeme;
-                match(PROPERTY);
-            }else if(field == "simulator-address"){
-                config.simulatorAddress = this->lookAhead->lexeme;
-                match(PROPERTY);
-            }else if(field == "simulator-path"){
-                config.simulatorPath = this->lookAhead->lexeme;
-                match(PROPERTY);
-            }else if(field == "simulator-scene-path"){
-                config.simulatorScene = this->lookAhead->lexeme;
                 match(PROPERTY);
             }else if(field == "r0"){
                 match(BEGIN);
@@ -73,6 +61,9 @@ RobotConfig ConfigParser::getRobotConfig(){
             if(field == "role"){
                 config.role = this->lookAhead->lexeme;
                 match(PROPERTY);
+            }else if(field == "active"){
+                config.active = this->lookAhead->lexeme == "true";
+                match(PROPERTY);
             }else if(field == "color"){
                 config.color = this->lookAhead->lexeme;
                 match(PROPERTY);
@@ -102,6 +93,38 @@ RobotConfig ConfigParser::getRobotConfig(){
                             match(SEPARATOR);
                             config.control.backRight = getControlConstants();
                         }
+                    }else if(this->lookAhead->type == PROPERTY_SEPARATOR)
+                        match(PROPERTY_SEPARATOR);
+                }
+                match(END);
+            }else if(field == "hardware"){
+                match(BEGIN);
+                while(this->lookAhead->type !=END){
+                    if(this->lookAhead->lexeme == "id"){
+                            match(PROPERTY);
+                            match(SEPARATOR);
+                            config.hardware.id = stoi(this->lookAhead->lexeme);
+                            match(VALUE);
+                    }else if(this->lookAhead->lexeme == "pinMotorEsqA"){
+                            match(PROPERTY);
+                            match(SEPARATOR);
+                            config.hardware.pinMotorEsqA = stoi(this->lookAhead->lexeme);
+                            match(VALUE);
+                    }else if(this->lookAhead->lexeme == "pinMotorEsqB"){
+                            match(PROPERTY);
+                            match(SEPARATOR);
+                            config.hardware.pinMotorEsqB = stoi(this->lookAhead->lexeme);
+                            match(VALUE);
+                    }else if(this->lookAhead->lexeme == "pinMotorDirA"){
+                            match(PROPERTY);
+                            match(SEPARATOR);
+                            config.hardware.pinMotorDirA = stoi(this->lookAhead->lexeme);
+                            match(VALUE);
+                    }else if(this->lookAhead->lexeme == "pinMotorDirB"){
+                            match(PROPERTY);
+                            match(SEPARATOR);
+                            config.hardware.pinMotorDirB = stoi(this->lookAhead->lexeme);
+                            match(VALUE);
                     }else if(this->lookAhead->type == PROPERTY_SEPARATOR)
                         match(PROPERTY_SEPARATOR);
                 }
