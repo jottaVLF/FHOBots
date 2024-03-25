@@ -4,16 +4,14 @@
 #include <cstring>
 #include <iostream>
 
-Communication::Communication(const std::string port) : _message{0x5b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01}
+Communication::Communication(const std::string port) : _message{0x5b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01}
 {
-   // return;
-    //_serial.Open(port);
     _serial.Open(port);
-    _serial.SetBaudRate   ( LibSerial::BaudRate::BAUD_9600         );
-    _serial.SetCharacterSize   ( LibSerial::CharacterSize::CHAR_SIZE_8       );
-    _serial.SetParity     ( LibSerial::Parity::PARITY_NONE       );
+    _serial.SetBaudRate(LibSerial::BaudRate::BAUD_9600);
+    _serial.SetCharacterSize(LibSerial::CharacterSize::CHAR_SIZE_8);
+    _serial.SetParity( LibSerial::Parity::PARITY_NONE);
     _serial.SetFlowControl( LibSerial::FlowControl::FLOW_CONTROL_NONE );
-    _serial.SetStopBits   ( LibSerial::StopBits::STOP_BITS_1 );
+    _serial.SetStopBits( LibSerial::StopBits::STOP_BITS_1);
 }
 
 Communication::~Communication()
@@ -50,7 +48,7 @@ void Communication::stopAll(){
         this->writeMessage(i, 0, 0);
 }
 
-void Communication::configureRobots(){
+void Communication::configureRobots(HardwareConfig hardwareConfig){
 
     
 

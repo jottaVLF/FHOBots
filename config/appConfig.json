@@ -4,7 +4,7 @@
     "team-color": "blue",
     "r0" : {
         "role" : "attacker",
-        "color": "green",
+        "color": "purple",
         "active": "true",
         "pwm": {
             "max": 255,
@@ -13,6 +13,7 @@
         },
         "hardware": {
             "id": 0,
+            "xbee": "4149E249",
             "pinMotorEsqA": 9,
             "pinMotorEsqB": 10,
             "pinMotorDirA": 5,
@@ -39,7 +40,7 @@
     },
     "r1" : {
         "role" : "deffender",
-        "color": "purple",
+        "color": "green",
         "active": "false",
         "pwm": {
             "max": 255,
@@ -48,6 +49,7 @@
         },
         "hardware": {
             "id": 1,
+            "xbee": "4149E250",
             "pinMotorEsqA": 9,
             "pinMotorEsqB": 10,
             "pinMotorDirA": 5,
@@ -83,6 +85,7 @@
         },
         "hardware": {
             "id": 2,
+            "xbee": "4149E251",
             "pinMotorEsqA": 9,
             "pinMotorEsqB": 10,
             "pinMotorDirA": 5,

@@ -25,6 +25,7 @@ public:
 class HardwareConfig{
 public:
     int id;
+    std::string xbee;
     int pinMotorEsqA;
     int pinMotorEsqB;
     int pinMotorDirA;

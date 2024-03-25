@@ -5,6 +5,7 @@
 #include <SerialStream.h>
 #include <string>
 #include "ICommunication.hpp"
+#include "../config/Config.hpp"
 
 class Communication : public ICommunication
 {
@@ -15,12 +16,12 @@ class Communication : public ICommunication
         void writeMessage(const int index, const unsigned char pwmLeft, const unsigned char pwmRight);
         void sendMessage();
         void stopAll();
-        void configureRobots();
+        void configureRobots(HardwareConfig hardwareConfig);
         std::string getMessage();
 
     private:
         LibSerial::SerialStream _serial;
-        char _message[8];
+        char _message[10];
 };
 
 
