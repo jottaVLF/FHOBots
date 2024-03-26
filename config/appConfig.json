@@ -14,6 +14,7 @@
         "hardware": {
             "id": 0,
             "xbee": "4149E249",
+            "chassis": "R3",
             "pinMotorEsqA": 9,
             "pinMotorEsqB": 10,
             "pinMotorDirA": 5,
@@ -50,6 +51,7 @@
         "hardware": {
             "id": 1,
             "xbee": "4149E250",
+            "chassis": "R2",
             "pinMotorEsqA": 9,
             "pinMotorEsqB": 10,
             "pinMotorDirA": 5,
@@ -86,6 +88,7 @@
         "hardware": {
             "id": 2,
             "xbee": "4149E251",
+            "chassis": "R5",
             "pinMotorEsqA": 9,
             "pinMotorEsqB": 10,
             "pinMotorDirA": 5,

@@ -110,6 +110,11 @@ RobotConfig ConfigParser::getRobotConfig(){
                             match(SEPARATOR);
                             config.hardware.xbee = this->lookAhead->lexeme;
                             match(PROPERTY);
+                    }else if(this->lookAhead->lexeme == "chassis"){
+                            match(PROPERTY);
+                            match(SEPARATOR);
+                            config.hardware.chassis = this->lookAhead->lexeme;
+                            match(PROPERTY);
                     }else if(this->lookAhead->lexeme == "pinMotorEsqA"){
                             match(PROPERTY);
                             match(SEPARATOR);
