@@ -12,7 +12,6 @@ enum TOKEN_TYPE{
     END
 };
 
-
 class Token{
 public:
     std::string lexeme;

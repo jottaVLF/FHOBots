@@ -31,7 +31,6 @@ void Mouse::setRect(const cv::Rect rect)
 
 void Mouse::setWindow(const std::string nameFrame)
 {
-    std::cout << "Set Window ... " << nameFrame << std::endl;
     cv::setMouseCallback(nameFrame, Mouse::mouseCallback, this);
 }
 

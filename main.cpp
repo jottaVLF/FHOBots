@@ -37,6 +37,7 @@ int main(int argc, char* argv[])
     
     IVision * vision = new Vision(configuration.camera, &configuration);
     Global::communication = new Communication(configuration.communication);
+    Global::communication->configureRobots(configuration);
 
     vision->adjustFieldPosition();
     vision->calibration(); 
