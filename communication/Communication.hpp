@@ -12,8 +12,10 @@
 #include <utility>
 #include <cstring>
 #include <unistd.h>
+#include <thread>
 #include "ICommunication.hpp"
 #include "../config/Config.hpp"
+#include "../Global.hpp"
 
 class Communication : public ICommunication
 {
@@ -26,13 +28,19 @@ class Communication : public ICommunication
         void stopAll();
         void configureRobots(Config config);
         std::string getMessage();
-
+        volatile bool _robotsConfigured;
+        LibSerial::SerialStream * getSerial();
+        char * getBuffer();
+        volatile bool gotInput;
+        
     private:
         LibSerial::SerialStream _serial;
-        char _message[16];
+        char _writeBuffer[16];
+        char _readBuffer[16];
         bool allRobotsConfigured(std::unordered_map<std::string, std::pair<HardwareConfig *, bool>> map);
         void printRobotsConfigured(std::unordered_map<std::string, std::pair<HardwareConfig *, bool>> map);
         void sendConfigurationToRobot(std::string xbee, HardwareConfig * configuration);
+        static void readMessage();
 };
 
 

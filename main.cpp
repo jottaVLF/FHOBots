@@ -7,6 +7,7 @@
 #include <thread>
 #include <cstring>
 #include "vision/Vision.hpp"
+#include "vision/FakeVision.hpp"
 #include "model/Robot.hpp"
 
 void initializeModelAndStates(Config configuration){
@@ -35,10 +36,10 @@ int main(int argc, char* argv[])
 
     std::cout << "Configuration file successfully read!" << std::endl;
     
-    IVision * vision = new Vision(configuration.camera, &configuration);
+    IVision * vision = new FakeVision();//new Vision(configuration.camera, &configuration);
     Global::communication = new Communication(configuration.communication);
-    Global::communication->configureRobots(configuration);
-
+    //Global::communication->configureRobots(configuration);
+    
     vision->adjustFieldPosition();
     vision->calibration(); 
 
@@ -58,17 +59,17 @@ int main(int argc, char* argv[])
         Global::countFrameAttacker++;
         Global::countFrameDefender++;
         Global::bufferKeyboard = cv::waitKey(1);
-        Vision * realVision = dynamic_cast<Vision * >(vision);
-        realVision->show();
+        FakeVision * fakeVision = dynamic_cast<FakeVision * >(vision);
+        fakeVision->show();
 
-        Global::communication->sendMessage();
+      //  Global::communication->sendMessage();
     
     } while(Global::bufferKeyboard != 27);
 
     tAttacker.join();
- //   tDeffender.join();
-//    tGoalKeeper.join();
+    tDeffender.join();
+    tGoalKeeper.join();
 
-    Global::communication->stopAll();
+   // Global::communication->stopAll();
     return 0;
 }

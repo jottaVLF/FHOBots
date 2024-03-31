@@ -33,7 +33,7 @@ std::string AttackerStateAttacking::checkConditions()
         return "backoff";
 
     Vector2D posRobot = _robot->getPosition();
-    Vector2D oriRrobot = _robot->getOrientarion(); /// Orientação do Robô
+    Vector2D oriRrobot = _robot->getOrientation(); /// Orientação do Robô
     Vector2D comp;
 
     comp.set(1.0, 0.0);
@@ -71,7 +71,7 @@ void AttackerStateAttacking::entryActions()
     _robot->setPD(115, 220);
     _robot->setBasePwmValue(190);
     Vector2D robotToDestiny = Global::ball - _robot->getPosition();
-    _robot->setLastError((_robot->getOrientarion()||robotToDestiny));
+    _robot->setLastError((_robot->getOrientation()||robotToDestiny));
 }
 
 void AttackerStateAttacking::exitActions()

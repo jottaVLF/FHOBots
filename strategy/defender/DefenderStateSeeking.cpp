@@ -86,7 +86,7 @@ std::string DefenderStateSeeking::checkConditions()
     /*
 
     Vector2D posRobot = _robot->getPosition();
-    Vector2D oriRobot = _robot->getOrientarion(); /// Orientação do Robô
+    Vector2D oriRobot = _robot->getOrientation(); /// Orientação do Robô
     Vector2D comp;
 
     Vector2D destination = Global::ball;
@@ -121,10 +121,10 @@ std::string DefenderStateSeeking::checkConditions()
        && (oriRobot&&comp) > 0.50)
         return "backoff";
 
-    if(Global::robotNearBall(_robot->getPosition(), 10) && Global::eAreaDeffend == AREA_DEFFEND_LEFT && _robot->getOrientarion().x > 0)
+    if(Global::robotNearBall(_robot->getPosition(), 10) && Global::eAreaDeffend == AREA_DEFFEND_LEFT && _robot->getOrientation().x > 0)
         return "kicking";
 
-    if(Global::robotNearBall(_robot->getPosition(), 10) && Global::eAreaDeffend == AREA_DEFFEND_RIGHT && _robot->getOrientarion().x < 0)
+    if(Global::robotNearBall(_robot->getPosition(), 10) && Global::eAreaDeffend == AREA_DEFFEND_RIGHT && _robot->getOrientation().x < 0)
         return "kicking";
 
     if((Global::attacker.getPosition() - Global::ball).magnitude() <= (Global::deffender.getPosition() - Global::ball).magnitude() && !_robot->forceSeeking)

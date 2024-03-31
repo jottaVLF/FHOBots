@@ -27,7 +27,7 @@ class Control {
         double getBasePwmValue();
 
         /// Calcula o Pwm das Rodas
-        void calculatePwm(Vector2D& robotToDestiny, Vector2D orientationRobot);
+        void calculatePwm(Vector2D& robotToDestiny, Vector2D OrientationRobot);
 
         /// Calcula o Pwm das Rodas
         void calculatePwm(Vector2D& robotToDestiny, const double& angleRobot);
@@ -47,7 +47,7 @@ class Control {
     private:
 
         /// Calcula o PD
-        double calculatePD(Vector2D& robotToDestiny, Vector2D& orientarionRobot);
+        double calculatePD(Vector2D& robotToDestiny, Vector2D& OrientationRobot);
 
         /// Calcula o PD
         double calculatePD(Vector2D& robotToDestiny, const double& angleRobot);

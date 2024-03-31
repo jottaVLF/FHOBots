@@ -31,5 +31,5 @@ DefenderRobot::~DefenderRobot()
 
 std::string DefenderRobot::getMessage()
 {
-    return "Defender, " + Robot::getMessage();
+    return Robot::getMessage();
 }

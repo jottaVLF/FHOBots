@@ -36,7 +36,7 @@ std::string DefenderStateKicking::checkConditions()
         return "seeking";
 
     Vector2D posRobot = _robot->getPosition();
-    Vector2D oriRobot = _robot->getOrientarion(); /// Orientação do Robô
+    Vector2D oriRobot = _robot->getOrientation(); /// Orientação do Robô
     Vector2D comp;
 
     comp.set(1.0, 0.0);

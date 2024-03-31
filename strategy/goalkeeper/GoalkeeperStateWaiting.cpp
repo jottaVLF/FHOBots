@@ -21,8 +21,8 @@ void GoalkeeperStateWaiting::doActions() {
    // std::cout<<_robot->getPosition().x<<" "<<_robot->getPosition().y<<std::endl;
 
    Vector2D dist = Global::ballPos - _robot->getPosition();
-   double angle = dist.angleBetween(_robot->getOrientarion());
-   double prod = dist&&_robot->getOrientarion();
+   double angle = dist.angleBetween(_robot->getOrientation());
+   double prod = dist&&_robot->getOrientation();
    
         Global::communication->writeMessage(_robot->getPosMessage(), 0, 0);
 }
@@ -76,7 +76,7 @@ void GoalkeeperStateWaiting::exitActions() {
 
 bool GoalkeeperStateWaiting::waitingToMoveBack() {
 
-    if(abs(_robot->getOrientarion().y) > 0.5)
+    if(abs(_robot->getOrientation().y) > 0.5)
     {
         if((Global::eAreaDeffend == AREA_DEFFEND_LEFT && _robot->getPosition().x <= Global::areaToDeffend.x + Global::areaToDeffend.y) ||
            (Global::eAreaDeffend == AREA_DEFFEND_RIGHT && _robot->getPosition().x >= Global::areaToDeffend.x)) {
@@ -96,9 +96,9 @@ bool GoalkeeperStateWaiting::waitingToMoveBackLimit(int kind) {
 
     Area goalDefend = Global::areaGoalDeffend;
 
-    if(kind == 0 && _robot->getOrientarion().y >= 0 && _robot->getPosition().y > goalDefend.y)
+    if(kind == 0 && _robot->getOrientation().y >= 0 && _robot->getPosition().y > goalDefend.y)
         return true;
-    else if(kind == 1 && _robot->getOrientarion().y < 0 && _robot->getPosition().y < goalDefend.y + goalDefend.height)
+    else if(kind == 1 && _robot->getOrientation().y < 0 && _robot->getPosition().y < goalDefend.y + goalDefend.height)
         return true;
 
     return false;
@@ -106,15 +106,15 @@ bool GoalkeeperStateWaiting::waitingToMoveBackLimit(int kind) {
 
 bool GoalkeeperStateWaiting::waitingMoveToForward() {
 
-    if(abs(_robot->getOrientarion().y) > 0.5)
+    if(abs(_robot->getOrientation().y) > 0.5)
     {
         if((Global::eAreaDeffend == AREA_DEFFEND_LEFT && _robot->getPosition().x <= Global::areaToDeffend.x + Global::areaToDeffend.y) ||
                 (Global::eAreaDeffend == AREA_DEFFEND_RIGHT && _robot->getPosition().x >= Global::areaToDeffend.x)) {
             if (Global::ball.y - _robot->getPosition().y >= Global::frameCentimetersConstant * 6 &&
-                waitingMoveToForwardLimit(0) && _robot->getOrientarion().y >= 0)
+                waitingMoveToForwardLimit(0) && _robot->getOrientation().y >= 0)
                 return true;
             if (Global::ball.y - _robot->getPosition().y <= Global::frameCentimetersConstant * -6 &&
-                waitingMoveToForwardLimit(1) && _robot->getOrientarion().y <= 0)
+                waitingMoveToForwardLimit(1) && _robot->getOrientation().y <= 0)
                 return true;
         }
     }
@@ -126,9 +126,9 @@ bool GoalkeeperStateWaiting::waitingMoveToForwardLimit(int kind) {
 
     Area goalDeffend = Global::areaGoalDeffend;
 
-    if(kind == 0 && _robot->getOrientarion().y >= 0 && _robot->getPosition().y < goalDeffend.y + goalDeffend.height)
+    if(kind == 0 && _robot->getOrientation().y >= 0 && _robot->getPosition().y < goalDeffend.y + goalDeffend.height)
         return true;
-    else if(kind == 1 && _robot->getOrientarion().y < 0 && _robot->getPosition().y > goalDeffend.y)
+    else if(kind == 1 && _robot->getOrientation().y < 0 && _robot->getPosition().y > goalDeffend.y)
         return true;
     return false;
 }

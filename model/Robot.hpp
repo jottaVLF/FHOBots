@@ -9,7 +9,7 @@
 class Robot {
 
     public:
-
+        Vector2D objPos;
         Vector2D lastPos;
         Vector2D lastOri;
         Robot(const double kp, const double kd, const double basePwmValue);
@@ -27,7 +27,7 @@ class Robot {
 
 
         Vector2D& getPosition();
-        Vector2D& getOrientarion();
+        Vector2D& getOrientation();
         Vector2D& getLastPosition();
 
         void setBasePwmValue(const double pwm);
@@ -36,6 +36,8 @@ class Robot {
         void setPD(const double kp, const double kd);
         void setLastError(const double lError);
         void setMaxPwm(const int maxPwm = 160);
+        void setObjective(Vector2D v);
+        void setObjective(double x, double y);
 
         int getBasePwmValue();
         int getPwmLeft();
@@ -58,7 +60,7 @@ class Robot {
 
     private:
 
-        Vector2D _orientation;
+        Vector2D _Orientation;
         Vector2D _position;
         Control _control;
         Vector2D _lastPosition;

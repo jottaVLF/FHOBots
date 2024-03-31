@@ -108,8 +108,7 @@ double Vector2D::operator||(Vector2D& other)
 {
     /// Utilizo produto vetorial para saber se é negativo ou positivo a diferença de angulo
     double vetorial_product = x * other.y - other.x * y;
-  //  std::cout << "(" << x << ", " << y << ") (" << other.x << ", " << other.y << ")\n";
-    /// Utilizo produto escalar pra achar a direfença de angulo
+   /// Utilizo produto escalar pra achar a direfença de angulo
     double scalar_product = acos(((*this) * other) / (magnitude() * other.magnitude()));
     return vetorial_product >= 0 ? scalar_product : -1 * scalar_product;
 }

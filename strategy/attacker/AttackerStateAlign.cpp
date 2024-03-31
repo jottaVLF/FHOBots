@@ -57,7 +57,7 @@ std::string AttackerStateAlign::checkConditions()
         return "backoff";
 
     Vector2D posRobot = _robot->getPosition();
-    Vector2D oriRrobot = _robot->getOrientarion(); /// Orientação do Robô
+    Vector2D oriRrobot = _robot->getOrientation(); /// Orientação do Robô
     Vector2D comp;
 
     comp.set(1.0, 0.0);
@@ -83,8 +83,8 @@ std::string AttackerStateAlign::checkConditions()
 
     Vector2D robotToDestiny = Global::ball - _robot->getPosition();
 
-    printf("%f\n", (_robot->getOrientarion()||robotToDestiny));
-    if(((_robot->getOrientarion()||robotToDestiny) <= 0.25 && (_robot->getOrientarion()||robotToDestiny) >= -0.25))
+    printf("%f\n", (_robot->getOrientation()||robotToDestiny));
+    if(((_robot->getOrientation()||robotToDestiny) <= 0.25 && (_robot->getOrientation()||robotToDestiny) >= -0.25))
         return "seeking";
 
     if(Global::robotFarFromBall(_robot->getPosition()))

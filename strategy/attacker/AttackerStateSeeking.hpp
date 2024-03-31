@@ -3,6 +3,11 @@
 
 #include "../State.hpp"
 #include "../../model/Robot.hpp"
+#include "../../Global.hpp"
+#include "../../model/WorldModel.hpp"
+#include <iostream>
+#include <iomanip>
+
 
 class AttackerStateSeeking : public State
 {

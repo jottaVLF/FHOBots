@@ -13,7 +13,6 @@ class ICommunication{
         virtual void stopAll() = 0;
 
         virtual void configureRobots(Config config) = 0;
-
 };
 
 

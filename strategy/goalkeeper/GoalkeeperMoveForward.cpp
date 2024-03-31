@@ -22,9 +22,9 @@ void GoalkeeperMoveForward::doActions() {
 
     double halfBoardy = (Global::fieldRect.y + Global::fieldRect.height + Global::fieldRect.y)/2.0;
 
-    if(Global::ball.y > halfBoardy && _robot->getOrientarion().y >= 0)
+    if(Global::ball.y > halfBoardy && _robot->getOrientation().y >= 0)
         destination = {valueX, double(Global::fieldRect.y + Global::fieldRect.height)};
-    else if(Global::ball.y < halfBoardy && _robot->getOrientarion().y < 0)
+    else if(Global::ball.y < halfBoardy && _robot->getOrientation().y < 0)
         destination = {valueX, 0};
     else
         destination = {valueX, Global::ball.y};
@@ -86,9 +86,9 @@ bool GoalkeeperMoveForward::forwardToWaitingLimit() {
 
     Area goalDefend = Global::areaGoalDeffend;
 
-    if(_robot->getOrientarion().y >= 0 && _robot->getPosition().y > goalDefend.y + goalDefend.height)
+    if(_robot->getOrientation().y >= 0 && _robot->getPosition().y > goalDefend.y + goalDefend.height)
         return true;
-    else if(_robot->getOrientarion().y < 0 && _robot->getPosition().y < goalDefend.y)
+    else if(_robot->getOrientation().y < 0 && _robot->getPosition().y < goalDefend.y)
         return true;
 
     return false;
@@ -96,10 +96,10 @@ bool GoalkeeperMoveForward::forwardToWaitingLimit() {
 
 bool GoalkeeperMoveForward::forwardToBack() {
 
-    if(abs(_robot->getOrientarion().y) > 0.5){
-        if(Global::ball.y - _robot->getPosition().y >= Global::frameCentimetersConstant*8 && _robot->getOrientarion().y <= 0)
+    if(abs(_robot->getOrientation().y) > 0.5){
+        if(Global::ball.y - _robot->getPosition().y >= Global::frameCentimetersConstant*8 && _robot->getOrientation().y <= 0)
             return true;
-        if(Global::ball.y - _robot->getPosition().y <= -1 * Global::frameCentimetersConstant*8 && _robot->getOrientarion().y >= 0)
+        if(Global::ball.y - _robot->getPosition().y <= -1 * Global::frameCentimetersConstant*8 && _robot->getOrientation().y >= 0)
             return true;
     }
 

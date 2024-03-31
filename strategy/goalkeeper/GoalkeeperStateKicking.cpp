@@ -13,7 +13,7 @@ void GoalkeeperStateKicking::doActions()
 {
     Vector2D destination = Global::ballPos - _robot->getPosition();
 
-    if((destination.y < 0 && _robot->getOrientarion().y > 0) || (destination.y > 0 && _robot->getOrientarion().y < 0))
+    if((destination.y < 0 && _robot->getOrientation().y > 0) || (destination.y > 0 && _robot->getOrientation().y < 0))
     {
         //moveback
         destination = Global::ballPos;

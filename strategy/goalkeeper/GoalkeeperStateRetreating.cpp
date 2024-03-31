@@ -19,7 +19,7 @@ void GoalkeeperStateRetreating::doActions()
     if(Global::eAreaDeffend == AREA_DEFFEND_LEFT && (_robot->getPosition().x <= Global::areaToDeffend.x))
     {
         _robot->calculatePwm(destination);
-        if(_robot->getOrientarion().x > 0)
+        if(_robot->getOrientation().x > 0)
             Global::communication->writeMessage(_robot->getPosMessage(), _robot->getPwmLeft(), _robot->getPwmRight());
 
         else
@@ -31,7 +31,7 @@ void GoalkeeperStateRetreating::doActions()
     if(Global::eAreaDeffend == AREA_DEFFEND_RIGHT && (_robot->getPosition().x >= Global::areaToDeffend.x + Global::areaToDeffend.width))
     {
         _robot->calculatePwm(destination);
-        if(_robot->getOrientarion().x > 0)
+        if(_robot->getOrientation().x > 0)
             Global::communication->writeMessage(_robot->getPosMessage(), 45, 45 + 129);
 
         else
@@ -40,7 +40,7 @@ void GoalkeeperStateRetreating::doActions()
         return;
     }
 
-    Vector2D oriRobot = _robot->getOrientarion();
+    Vector2D oriRobot = _robot->getOrientation();
     Vector2D posRobot = _robot->getPosition();
     Vector2D comp;
 

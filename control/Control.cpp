@@ -25,9 +25,9 @@ double Control::getBasePwmValue()
     return _basePwmValue;
 }
 
-void Control::calculatePwm(Vector2D& robotToDestiny, Vector2D orientationRobot)
+void Control::calculatePwm(Vector2D& robotToDestiny, Vector2D OrientationRobot)
 {
-    double pd = calculatePD(robotToDestiny, orientationRobot);
+    double pd = calculatePD(robotToDestiny, OrientationRobot);
 
     _pwmLeftWheel = static_cast<int>(_basePwmValue + pd);
     if(_pwmLeftWheel > _maxPwmValue)
@@ -40,8 +40,6 @@ void Control::calculatePwm(Vector2D& robotToDestiny, Vector2D orientationRobot)
         _pwmRightWheel = _maxPwmValue;
     else if(_pwmRightWheel < 35)
         _pwmRightWheel = 35;
-    
-    std::cout << this->_pwmLeftWheel << " " << this->_pwmRightWheel << std::endl;
 }
 
 void Control::calculatePwm(Vector2D& robotToDestiny, const double& angleRobot)
@@ -59,8 +57,6 @@ void Control::calculatePwm(Vector2D& robotToDestiny, const double& angleRobot)
         _pwmRightWheel = _maxPwmValue;
     else if(_pwmRightWheel < 35)
         _pwmRightWheel = 35;
-    
-    //std::cout << this->_pwmLeftWheel << " " << this->_pwmRightWheel << std::endl;
 }
 
 void Control::setMaxPwm(const int maxPwm)
@@ -88,10 +84,9 @@ int Control::getPwmRightWheel()
     return _pwmRightWheel;
 }
 
-double Control::calculatePD(Vector2D& robotToDestiny, Vector2D& orientarionRobot)
+double Control::calculatePD(Vector2D& robotToDestiny, Vector2D& OrientationRobot)
 {
-    double angleError = orientarionRobot||robotToDestiny;
-    std::cout << angleError *180 / M_PI << std::endl;
+    double angleError = OrientationRobot||robotToDestiny;
     double p = angleError;
     double d = angleError - _lastError;
     _lastError = angleError;
@@ -101,8 +96,8 @@ double Control::calculatePD(Vector2D& robotToDestiny, Vector2D& orientarionRobot
 
 double Control::calculatePD(Vector2D& robotToDestiny, const double& angleRobot)
 {
-    Vector2D orientarionRobot(cos(angleRobot), sin(angleRobot));
-    double angleError = orientarionRobot||robotToDestiny;
+    Vector2D OrientationRobot(cos(angleRobot), sin(angleRobot));
+    double angleError = OrientationRobot||robotToDestiny;
 
     double p = angleError;
     double d = angleError - _lastError;

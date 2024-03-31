@@ -20,12 +20,10 @@ void GoalkeeperStateReturnToArea::doActions() {
 
         destination.set(Global::areaToDeffend.x, Global::areaToDeffend.y);
         Vector2D oriAux = destination - _robot->getPosition();
-        std::cout<<"Destinaton: (" << destination.x << ", " << destination.y << ")" << std::endl;
         
-        std::cout<<(_robot->getOrientarion()||oriAux)<< " " << oriAux.magnitude() << std::endl;
-        if((_robot->getOrientarion()||oriAux) >= M_PI/4)
+        if((_robot->getOrientation()||oriAux) >= M_PI/4)
             Global::communication->writeMessage(_robot->getPosMessage(), 51, 50);
-        else if((_robot->getOrientarion()||oriAux) <= -M_PI/4){
+        else if((_robot->getOrientation()||oriAux) <= -M_PI/4){
             Global::communication->writeMessage(_robot->getPosMessage(), 50, 51);
         }
         else{

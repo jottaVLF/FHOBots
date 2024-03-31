@@ -14,9 +14,9 @@ void DefenderStateAlign::doActions()
 
     Vector2D oriAux = destination - _robot->getPosition();
 
-    if((_robot->getOrientarion()||oriAux) >= M_PI/4)
+    if((_robot->getOrientation()||oriAux) >= M_PI/4)
         Global::communication->writeMessage(_robot->getPosMessage(), 2, 38);
-    else if((_robot->getOrientarion()||oriAux) <= -M_PI/4){
+    else if((_robot->getOrientation()||oriAux) <= -M_PI/4){
         Global::communication->writeMessage(_robot->getPosMessage(), 3, 38);
     }
     else{

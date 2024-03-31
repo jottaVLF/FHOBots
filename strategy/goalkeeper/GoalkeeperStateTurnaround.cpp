@@ -13,14 +13,14 @@ void GoalkeeperStateTurnaround::doActions()
     Vector2D destination = Global::ball - _robot->getPosition();
     if(destination.y > 0)
     {
-       if(_robot->getOrientarion().x < 0 )
+       if(_robot->getOrientation().x < 0 )
            Global::communication->writeMessage(_robot->getPosMessage(), 40 + 129, 40);
        else
             Global::communication->writeMessage(_robot->getPosMessage(), 40, 40 + 129);
     }
     else
     {
-        if(_robot->getOrientarion().x < 0 )
+        if(_robot->getOrientation().x < 0 )
             Global::communication->writeMessage(_robot->getPosMessage(), 40, 40 + 129);
         else
             Global::communication->writeMessage(_robot->getPosMessage(), 40 + 129, 40);
@@ -59,7 +59,7 @@ std::string GoalkeeperStateTurnaround::checkConditions()
    // if(abs((int)destination.y) < 15)
        // return "align";
 
-    if(((_robot->getOrientarion()&&comp) < -7 && destination.y > 0) || ((_robot->getOrientarion()&&comp) > 7 && destination.y < 0))
+    if(((_robot->getOrientation()&&comp) < -7 && destination.y > 0) || ((_robot->getOrientation()&&comp) > 7 && destination.y < 0))
         return "seeking";
 
     return "";

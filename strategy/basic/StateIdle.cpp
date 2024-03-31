@@ -32,5 +32,5 @@ void StateIdle::entryActions()
 void StateIdle::exitActions()
 {
     Vector2D robotToDestiny = Global::ball - _robot->getPosition();
-    _robot->setLastError((_robot->getOrientarion()||robotToDestiny));
+    _robot->setLastError((_robot->getOrientation()||robotToDestiny));
 }

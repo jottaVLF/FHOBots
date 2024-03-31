@@ -3,12 +3,15 @@
 
 Communication::Communication(const std::string port)
 {
+    // REMOVER!!!!
+    return;
     _serial.Open(port);
     _serial.SetBaudRate(LibSerial::BaudRate::BAUD_9600);
     _serial.SetCharacterSize(LibSerial::CharacterSize::CHAR_SIZE_8);
     _serial.SetParity( LibSerial::Parity::PARITY_NONE);
     _serial.SetFlowControl( LibSerial::FlowControl::FLOW_CONTROL_NONE );
     _serial.SetStopBits( LibSerial::StopBits::STOP_BITS_1);
+    this->_robotsConfigured = false;
 }
 
 Communication::~Communication()
@@ -17,25 +20,25 @@ Communication::~Communication()
 
 void Communication::writeMessage(const int index, const unsigned char pwmLeft, const unsigned char pwmRight, const bool reverseLeft, const bool reverseRight)
 {
-    _message[0] = 0x5B;
+    _writeBuffer[0] = 0x5B;
     
     unsigned char maskLeft  = reverseLeft  ? (1 << 2*index + 1) : ~(1 << index*2 + 1); 
     unsigned char maskRight = reverseRight ? (1 << 2*index)     : ~(1 << index*2);
-    _message[1] = reverseLeft  ? _message[1] | maskLeft  : _message[1] & maskLeft;
-    _message[1] = reverseRight ? _message[1] | maskRight : _message[1] & maskRight;
+    _writeBuffer[1] = reverseLeft  ? _writeBuffer[1] | maskLeft  : _writeBuffer[1] & maskLeft;
+    _writeBuffer[1] = reverseRight ? _writeBuffer[1] | maskRight : _writeBuffer[1] & maskRight;
     
-    _message[2 * index + 1] = pwmLeft;
-    _message[2 * index + 2] = pwmRight;
+    _writeBuffer[2 * index + 1] = pwmLeft;
+    _writeBuffer[2 * index + 2] = pwmRight;
 }
 
 void Communication::sendMessage()
 {
-    _serial.write(_message, 9);
+    _serial.write(_writeBuffer, 9);
 }
 
 std::string Communication::getMessage()
 {
-    std::string buffer(_message);
+    std::string buffer(_writeBuffer);
     return buffer;
 }
 
@@ -45,7 +48,8 @@ void Communication::stopAll(){
 }
 
 void Communication::configureRobots(Config config){
-    
+
+    std::thread tread(&Communication::readMessage);
     std::unordered_map<std::string, std::pair<HardwareConfig *, bool>> map;    
     if(config.r0.active)
         map[config.r0.hardware.xbee] = std::make_pair<HardwareConfig * , bool>(&config.r0.hardware, false);
@@ -56,50 +60,61 @@ void Communication::configureRobots(Config config){
     if(config.r2.active)
         map[config.r2.hardware.xbee] = std::make_pair<HardwareConfig *, bool>(&config.r2.hardware, false);
     
-    std::cout << "Sending hello to all ... " << std::endl;
-    _message[0] = 0x5C;
-    _message[1] = 0x01;
+    std::cout << "Sending hello to all ... " << std::endl << std::flush;
+    _writeBuffer[0] = 0x5C;
+    _writeBuffer[1] = 0x01;
     
-    _serial.write(_message, 2);
+    _serial.write(_writeBuffer, 2);
     _serial.DrainWriteBuffer();
 
+    this->gotInput = false;
     long long i = 0;
     while(!allRobotsConfigured(map) && i < 1E5){
-        memset(_message, 0, 16);
-        _serial.read(_message, 16);
-        if(_message[0] == 0x5C){
+        memset(_writeBuffer, 0, 16);
+        if(_readBuffer[0] == 0x5C && this->gotInput){
             std::cout << "Got a xbee serial ... " << std::endl;
-            std::string xbee(_message, 9);
+            std::string xbee(_readBuffer, 9);
             xbee = xbee.substr(1, 8);
-            
             for(int i = 1; i < 9; i++)
-                std::cout << std::hex << (unsigned char) _message[i];
-            std::cout << std::endl;
+                std::cout << std::hex << (unsigned char) _readBuffer[i];
+            std::cout << std::endl << std::flush;
 
             if(map.find(xbee) != map.end() && !map[xbee].second){
-                map[xbee].second = true;
-                std::cout << "Found robot " << map[xbee].first->chassis << ", sending hardware configuration ... " << std::endl;
+                std::cout << "Found robot " << map[xbee].first->chassis << ", sending hardware configuration ... " << std::endl << std::flush;
                 sendConfigurationToRobot(xbee, map[xbee].first);
             }else
                 _serial.FlushInputBuffer();
-        }else if(_message[0] == 0x5D){
+            memset(_readBuffer, 0, 16);
+            this->gotInput = false;
+        }else if(_readBuffer[0] == 0x5D && this->gotInput){
             std::cout << "Configuration received: ";
-            for(int i = 0; i < 15; i++)
-                std::cout << std::hex << (unsigned char) _message[i] << " ";
-            std::cout << std::endl;
+            std::string xbee(_readBuffer, 15);
+            xbee = xbee.substr(1, 8);
+            std::cout << xbee << std::endl << std::flush;
+            map[xbee].second = true;
+            memset(_readBuffer, 0, 16);
+            this->gotInput = false;
+
+        }else if(_readBuffer[0] != 0 && this->gotInput){
+            memset(_readBuffer, 0, 16);
+            _serial.FlushInputBuffer();
+            this->gotInput = false;
         }
         usleep(1000);
         i++;
-        if(i % (long long) 1E3 == 0)
+        if(i % (long long) 1E4 == 0)
         {
-            memset(_message, 0, 16);
-            std::cout << "Sending hello to all again ... " << std::endl;
-            _message[0] = 0x5C;
-            _message[1] = 0x01;
-            _serial.write(_message, 2);
+            memset(_writeBuffer, 0, 16);
+            std::cout << std::dec << i << " Sending hello to all again ... " << std::endl << std::flush;
+            _writeBuffer[0] = 0x5C;
+            _writeBuffer[1] = 0x01;
+            _serial.write(_writeBuffer, 2);
+            _serial.DrainWriteBuffer();
         }
     }
+    this->_robotsConfigured = true;
     printRobotsConfigured(map);
+    tread.join();
 }
 
 bool Communication::allRobotsConfigured(std::unordered_map<std::string, std::pair<HardwareConfig *, bool>> map){
@@ -115,22 +130,51 @@ void Communication::printRobotsConfigured(std::unordered_map<std::string, std::p
 
     for(auto i = map.begin(); i != map.end(); i++)
         if(i->second.second)
-            std::cout << i->second.first->chassis << " - OK" << std::endl;
+            std::cout << i->second.first->chassis << " - OK" << std::endl << std::flush;
         else
             std::cerr << "WARNING: " << i->second.first->chassis << " NOT FOUND!" << std::endl;
 }
 
 void Communication::sendConfigurationToRobot(std::string xbee, HardwareConfig * configuration){
-    memset(_message, 0, 16);
-    _message[0] = 0x5D;
+    memset(_writeBuffer, 0, 16);
+    _writeBuffer[0] = 0x5D;
     for(int i = 0; i < 8; i++)
-        _message[i+1] = xbee[i];
-    _message[9]  = (unsigned char) configuration->id + 10;
-    _message[10] = (unsigned char) configuration->pinMotorEsqA;
-    _message[11] = (unsigned char) configuration->pinMotorEsqB;
-    _message[12] = (unsigned char) configuration->pinMotorDirA;
-    _message[13] = (unsigned char) configuration->pinMotorDirB;
-    _message[14] = 0x01;
-    _serial.write(_message, 15);
+        _writeBuffer[i+1] = xbee[i];
+    _writeBuffer[9]  = (unsigned char) configuration->id + 10;
+    _writeBuffer[10] = (unsigned char) configuration->pinMotorEsqA;
+    _writeBuffer[11] = (unsigned char) configuration->pinMotorEsqB;
+    _writeBuffer[12] = (unsigned char) configuration->pinMotorDirA;
+    _writeBuffer[13] = (unsigned char) configuration->pinMotorDirB;
+    _writeBuffer[14] = 0x01;
+    _serial.write(_writeBuffer, 15);
     _serial.DrainWriteBuffer();
+}
+
+void Communication::readMessage(){
+    Communication * communication = dynamic_cast<Communication *>(Global::communication);
+    LibSerial::SerialStream * stream = communication->getSerial();
+    char * buffer = communication->getBuffer();
+    memset(buffer, 0, 16);
+    char nextChar;
+    std::cout << communication->gotInput << std::endl << std::flush;
+    int s = 0;
+    while(!communication->_robotsConfigured){
+        *stream >> std::noskipws >> nextChar;
+        if(nextChar != 0x01 && !communication->gotInput)
+            buffer[s++] = (unsigned char) nextChar;
+        else if(!communication->gotInput){
+            buffer[s] = 0x01;
+            s = 0;
+            communication->gotInput = true;
+        }
+        std::this_thread::sleep_for(std::chrono::microseconds(5000));
+    }
+}
+
+LibSerial::SerialStream * Communication::getSerial(){
+    return &this->_serial;
+}
+
+char * Communication::getBuffer(){
+    return (char *) this->_readBuffer;
 }

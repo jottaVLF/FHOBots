@@ -37,7 +37,7 @@ std::string AttackerStateWaiting::checkConditions()
         return "backoff";
 
     Vector2D posRobot = _robot->getPosition();
-    Vector2D oriRrobot = _robot->getOrientarion(); 
+    Vector2D oriRrobot = _robot->getOrientation(); 
     Vector2D comp;
 
     comp.set(1.0, 0.0);
@@ -71,11 +71,11 @@ void AttackerStateWaiting::entryActions()
     _robot->setBasePwmValue(180);
     _robot->setMaxPwm(255);
     _robot->lastPos = _robot->getPosition();
-    _robot->lastOri = _robot->getOrientarion();
+    _robot->lastOri = _robot->getOrientation();
 }
 
 void AttackerStateWaiting::exitActions()
 {
     Vector2D robotToDestiny = Global::ball - _robot->getPosition();
-    _robot->setLastError((_robot->getOrientarion()||robotToDestiny));
+    _robot->setLastError((_robot->getOrientation()||robotToDestiny));
 }

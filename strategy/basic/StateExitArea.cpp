@@ -38,7 +38,7 @@ void StateExitArea::doActions() {
 std::string StateExitArea::checkConditions() {
 
     Vector2D posRobot = _robot->getPosition();
-    Vector2D oriRobot = _robot->getOrientarion(); /// Orientação do Robô
+    Vector2D oriRobot = _robot->getOrientation(); /// Orientação do Robô
     Vector2D comp;
 
     Vector2D destination = Global::ball;

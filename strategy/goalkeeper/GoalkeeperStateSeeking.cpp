@@ -64,13 +64,13 @@ std::string GoalkeeperStateSeeking::checkConditions()
     Vector2D comp;
     comp.set(1, 0);
     Vector2D destination = Global::ball - _robot->getPosition();
-    if(((_robot->getOrientarion()&&comp) > -8 && destination.y > 10) ||
-       ((_robot->getOrientarion()&&comp) < 8 && destination.y < -10))
+    if(((_robot->getOrientation()&&comp) > -8 && destination.y > 10) ||
+       ((_robot->getOrientation()&&comp) < 8 && destination.y < -10))
         return "turnaround";
 
     if(((_robot->getPosition().y >= Global::areaGoalDeffend.y + Global::areaGoalDeffend.height &&
-         _robot->getOrientarion().y > 0) || (_robot->getPosition().y <= Global::areaGoalDeffend.y &&
-                                             _robot->getOrientarion().y < 0)))
+         _robot->getOrientation().y > 0) || (_robot->getPosition().y <= Global::areaGoalDeffend.y &&
+                                             _robot->getOrientation().y < 0)))
         return "align";
 
 

@@ -10,7 +10,7 @@ GoalkeeperStateAlign::~GoalkeeperStateAlign()
 
 void GoalkeeperStateAlign::doActions()
 {
-    double angleError = ((Global::ball - _robot->getPosition())||_robot->getOrientarion());
+    double angleError = ((Global::ball - _robot->getPosition())||_robot->getOrientation());
     int pwmRight, pwmLeft;
 
     if(angleError > 0.35)
@@ -44,7 +44,7 @@ std::string GoalkeeperStateAlign::checkConditions()
     Vector2D comp(1, 0);
     Vector2D destination = Global::ball - _robot->getPosition();
 
-    if(((_robot->getOrientarion()&&comp) > -8 && destination.y > 10) || ((_robot->getOrientarion()&&comp) < 8 && destination.y < -10))
+    if(((_robot->getOrientation()&&comp) > -8 && destination.y > 10) || ((_robot->getOrientation()&&comp) < 8 && destination.y < -10))
         return "turnaround";
 
     return "";

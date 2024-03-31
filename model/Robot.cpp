@@ -9,6 +9,7 @@
 Robot::Robot(const double kp, const double kd, const double basePwmValue) : _control(kp, kd, basePwmValue)
 {
     forceSeeking = false;
+    this->setObjective(0, 0);
 }
 
 Robot::~Robot()
@@ -16,24 +17,26 @@ Robot::~Robot()
 
 void Robot::calculatePwm(Vector2D &destination)
 {
+    setObjective(destination);
     Vector2D v = destination - _position;
-    _control.calculatePwm(v, _orientation);
+    _control.calculatePwm(v, _Orientation);
 }
 
 void Robot::calculatePwmR(Vector2D &destination)
 {
+    setObjective(destination);
     Vector2D v = destination - _position;
-    _control.calculatePwm(v, (_orientation * -1));
+    _control.calculatePwm(v, (_Orientation * -1));
 }
 
 void Robot::setOrientationRobot(const double x, const double y)
 {
-    _orientation.set(x, y);
+    _Orientation.set(x, y);
 }
 
 void Robot::setOrientationRobot(const Vector2D v)
 {
-    _orientation = v;
+    _Orientation = v;
 }
 
 void Robot::setPosition(const double x, const double y)
@@ -61,9 +64,9 @@ Vector2D& Robot::getLastPosition()
     return _lastPosition;
 }
 
-Vector2D& Robot::getOrientarion()
+Vector2D& Robot::getOrientation()
 {
-    return _orientation;
+    return _Orientation;
 }
 
 void Robot::setBasePwmValue(const double pwm)
@@ -103,14 +106,13 @@ int Robot::getPosMessage()
 
 std::string Robot::getMessage()
 {
-    return "State: " + _machineState.currentState();
+    return _machineState.currentState();
 }
 
 void Robot::updateRobot()
 {
     do
     {
-        std::cout << this->_posMessage << " - " << this->_position.x << " " << this->_position.y << std::endl;
         _machineState.think();
         std::this_thread::sleep_for(std::chrono::microseconds(1000));
 
@@ -130,4 +132,14 @@ void Robot::setMaxPwm(const int maxPwm)
 void Robot::setLastError(const double lError)
 {
     _control.setLastError(lError);
+}
+
+void Robot::setObjective(Vector2D v){
+    this->objPos.x = v.x;
+    this->objPos.y = v.y;
+}
+
+void Robot::setObjective(double x, double y){
+    this->objPos.x = x;
+    this->objPos.y = y;
 }

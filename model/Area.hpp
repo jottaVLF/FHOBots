@@ -12,6 +12,8 @@ class Area : public Vector2D{
         Area(Vector2D center, int width, int height);
         Area(cv::Rect area);
         ~Area();
+        bool isInside(Vector2D point);
+        bool isOnLeft(double x);
 };
 
 #endif

@@ -38,5 +38,5 @@ GoalkeeperRobot::~GoalkeeperRobot()
 
 std::string GoalkeeperRobot::getMessage()
 {
-    return "Goalkeeper, " + Robot::getMessage();
+    return Robot::getMessage();
 }

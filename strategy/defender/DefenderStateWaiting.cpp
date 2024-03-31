@@ -67,7 +67,7 @@ std::string DefenderStateWaiting::checkConditions()
 
 
     Vector2D posRobot = _robot->getPosition();
-    Vector2D oriRobot = _robot->getOrientarion(); /// Orientação do Robô
+    Vector2D oriRobot = _robot->getOrientation(); /// Orientação do Robô
     Vector2D comp;
 
     if(Global::ball.x == -10)

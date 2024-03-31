@@ -74,13 +74,13 @@ bool Global::isInsideOwnGoal(Vector2D &pos) {
 
 bool Global::robotNearRobot(Robot *robot, const int dist)
 {
-    if(robot != &attacker && (robot->getPosition() - Global::attacker.getPosition()).magnitude() < dist * frameCentimetersConstant && abs(robot->getOrientarion()||Global::attacker.getOrientarion()) > 1.55)
+    if(robot != &attacker && (robot->getPosition() - Global::attacker.getPosition()).magnitude() < dist * frameCentimetersConstant && abs(robot->getOrientation()||Global::attacker.getOrientation()) > 1.55)
         return true;
 
-    if(robot != &deffender && (robot->getPosition() - Global::deffender.getPosition()).magnitude() < dist * frameCentimetersConstant && abs(robot->getOrientarion()||Global::deffender.getOrientarion()) > 1.55)
+    if(robot != &deffender && (robot->getPosition() - Global::deffender.getPosition()).magnitude() < dist * frameCentimetersConstant && abs(robot->getOrientation()||Global::deffender.getOrientation()) > 1.55)
         return true;
 
-    if(robot != &goalkeeper && (robot->getPosition() - Global::goalkeeper.getPosition()).magnitude() < dist * frameCentimetersConstant && abs(robot->getOrientarion()||Global::goalkeeper.getOrientarion()) > 1.55)
+    if(robot != &goalkeeper && (robot->getPosition() - Global::goalkeeper.getPosition()).magnitude() < dist * frameCentimetersConstant && abs(robot->getOrientation()||Global::goalkeeper.getOrientation()) > 1.55)
         return true;
 
     return false;

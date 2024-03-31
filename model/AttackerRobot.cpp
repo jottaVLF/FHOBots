@@ -40,5 +40,5 @@ AttackerRobot::~AttackerRobot()
 
 std::string AttackerRobot::getMessage()
 {
-    return "Attacker, " + Robot::getMessage();
+    return Robot::getMessage();
 }
