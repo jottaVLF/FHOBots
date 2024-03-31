@@ -1,3 +1,4 @@
+bin/*.o
 bin/communication/*.o
 bin/config/*.o
 bin/control/*.o
