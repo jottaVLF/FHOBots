@@ -3,8 +3,17 @@
 
 #include "Vector2D.hpp"
 #include "../Global.hpp"
+#include "Robot.hpp"
 #include <cmath>
 #include <algorithm>
+#include <iostream>
+
+enum direction{
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT
+};
 
 class WorldModel{
 
@@ -17,6 +26,14 @@ public:
     static bool isNearWall(Vector2D v, int offset = 30);
     static bool isAlignedWithWall(Vector2D p, Vector2D o, int offset = 30);
     static Robot * nearstRobotTo(Vector2D v);
+    static bool isInAttackArea(Robot * r);
+    static bool isInDeffenseArea(Robot * r);
+    static bool isInAttackArea(Vector2D v);
+    static bool isInDeffenseArea(Vector2D v);
+    static void halfTime();
+    static bool isFacing(Vector2D o, direction d);
+    static bool isFacingArea(Vector2D o, Area a);
+    static bool otherRobotInDeffenseArea(Robot * r);
 
 private:
     static double distanceBetween(Vector2D v, Vector2D w);

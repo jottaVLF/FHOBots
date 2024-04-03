@@ -21,6 +21,8 @@ void GoalkeeperStateReturnToArea::doActions() {
         destination.set(Global::areaToDeffend.x, Global::areaToDeffend.y);
         Vector2D oriAux = destination - _robot->getPosition();
         
+        _robot->calculatePwm(destination);
+
         if((_robot->getOrientation()||oriAux) >= M_PI/4)
             Global::communication->writeMessage(_robot->getPosMessage(), 51, 50);
         else if((_robot->getOrientation()||oriAux) <= -M_PI/4){
@@ -30,7 +32,7 @@ void GoalkeeperStateReturnToArea::doActions() {
             if(!alinhado)
                 Global::communication->writeMessage(_robot->getPosMessage(), 0, 0);
             alinhado = true;
-            _robot->calculatePwm(destination);
+
 
             if(_robot->getPwmLeft() % 2 == 0)
                 _robot->setPwmLeft(_robot->getPwmLeft() + 1);
@@ -53,8 +55,6 @@ std::string GoalkeeperStateReturnToArea::checkConditions() {
 }
 
 void GoalkeeperStateReturnToArea::entryActions() {
-    valueX = (Global::areaToDeffend.x + Global::areaToDeffend.width + Global::areaToDeffend.x) / 2.0;
-    valueY = (Global::areaToDeffend.y + Global::areaToDeffend.y + Global::areaToDeffend.height)/2.0;
     alinhado = false;
 }
 

@@ -9,7 +9,6 @@ AttackerStateSeeking::~AttackerStateSeeking()
 void AttackerStateSeeking::doActions()
 {
     Vector2D destination = Global::ball;
-
     _robot->calculatePwm(destination);
     _robot->setPwmRight(Global::pwmRightAtt(_robot->getPwmRight()));
     Global::communication->writeMessage(_robot->getPosMessage(), _robot->getPwmLeft(), _robot->getPwmRight());
@@ -17,15 +16,24 @@ void AttackerStateSeeking::doActions()
 
 std::string AttackerStateSeeking::checkConditions()
 {
+    bool isAlignedWithBall =        WorldModel::isAlignedWith(_robot->getOrientation(), Global::ball - _robot->getPosition());
+    bool isAlignedWithAttackGoal =  WorldModel::isAlignedWith(_robot->getOrientation(), Global::areaGoalAttack - _robot->getPosition());
+
     if(Global::bufferKeyboard == (int)'p')
         return "idle";
+
+    if(isAlignedWithBall && isAlignedWithAttackGoal)
+        return "attacking";
 
     if(WorldModel::isAlignedWithWall(_robot->getPosition(), _robot->getOrientation()))
         return "backoff";
 
-    if(WorldModel::isInsideDeffenseArea(_robot->getPosition()))
+    if(WorldModel::isInsideDeffenseArea(_robot->getPosition()) && WorldModel::isFacingArea(_robot->getOrientation(), Global::areaToDeffend))
         return "backoff";
  
+    if(WorldModel::isInsideDeffenseArea(Global::ball) && !WorldModel::isInsideDeffenseArea(_robot->getPosition()))
+        return "waiting";
+
     return ""; 
 }
 

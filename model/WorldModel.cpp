@@ -109,3 +109,65 @@ double WorldModel::distanceBetween(Vector2D v, Vector2D w){
     return sqrt(pow(v.x- w.x, 2) + pow(v.y - w.y, 2));
 }
 
+bool WorldModel::isInAttackArea(Robot * r){
+    return Global::areaToAttack.isInside(r->getPosition());
+}
+
+bool WorldModel::isInDeffenseArea(Robot * r){
+    return Global::areaToDeffend.isInside(r->getPosition());
+}
+
+bool WorldModel::isInAttackArea(Vector2D v){
+    return Global::areaToAttack.isInside(v);
+}
+
+bool WorldModel::isInDeffenseArea(Vector2D v){
+    return Global::areaToDeffend.isInside(v);
+}
+
+void WorldModel::halfTime(){
+    std::cout << "HalfTime " << std::endl;
+    Area areaGoalAttack; 
+    Area areaToAttack;
+
+    Global::areaGoalAttack.copy(areaGoalAttack);
+    Global::areaToAttack.copy(areaToAttack);
+
+    Global::areaGoalAttack.set(Global::areaGoalDeffend);
+    Global::areaToAttack.set(Global::areaToDeffend);
+
+    Global::areaGoalDeffend.set(areaGoalAttack);
+    Global::areaToDeffend.set(areaToAttack);
+
+}
+
+bool WorldModel::isFacing(Vector2D o, direction d){
+    double angle = atan2(o.y, o.x);
+
+    switch(d){
+        case DOWN: return angle <= 2 * M_PI / 3 && angle >= M_PI / 3; 
+        case UP:   return angle >= -2 * M_PI / 3 && angle <= -M_PI / 3; 
+        case LEFT: return angle >= 2 * M_PI/3 || angle <= - 2 * M_PI / 3; 
+        case RIGHT:return angle >= -M_PI / 3 && angle <= M_PI / 3; 
+    }
+    return false;
+}
+
+bool WorldModel::isFacingArea(Vector2D o, Area a){
+    double fieldWidth = Global::fieldRect.width;
+    direction d = a.isOnLeft(fieldWidth/2) ? LEFT : RIGHT;
+
+    return WorldModel::isFacing(o, d);
+}
+
+bool WorldModel::otherRobotInDeffenseArea(Robot * r){
+    bool isOtherInArea = false;
+    if(r != &Global::attacker)
+        isOtherInArea = isOtherInArea || WorldModel::isInDeffenseArea(&Global::attacker);
+    if(r != &Global::deffender)
+        isOtherInArea = isOtherInArea || WorldModel::isInDeffenseArea(&Global::deffender);
+    if(r != &Global::goalkeeper)
+        isOtherInArea = isOtherInArea || WorldModel::isInDeffenseArea(&Global::goalkeeper);
+    
+    return isOtherInArea;
+}

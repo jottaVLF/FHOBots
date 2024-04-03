@@ -32,3 +32,17 @@ bool Area::isInside(Vector2D point){
 bool Area::isOnLeft(double x){
     return this->x < x;
 }
+
+void Area::copy(Area & other){
+    other.x = this->x;
+    other.y = this->y;
+    other.width = this->width;
+    other.height = this->height;
+}
+
+void Area::set(Area other){
+    this->x = other.x;
+    this->y = other.y;
+    this->width = other.width;
+    this->height= other.height;
+}

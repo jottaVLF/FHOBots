@@ -4,6 +4,7 @@
 #include "IVision.hpp"
 #include "../Global.hpp"
 #include "../model/Vector2D.hpp"
+#include "../model/WorldModel.hpp"
 #include "opencv2/imgproc.hpp"
 #include "opencv2/opencv.hpp"
 #include <cmath>
@@ -28,6 +29,7 @@ private:
     bool ballSelected;
     bool isClicked(Vector2D v, int x, int y);
     bool _changed;
+    bool _halfTime;
 };
 
 

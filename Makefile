@@ -22,3 +22,6 @@ help:
 clean: 
 	rm -f $(OBJ)
 	rm -f $(BIN)
+
+run:
+	./$(BIN)

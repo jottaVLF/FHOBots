@@ -5,6 +5,7 @@ FakeVision::FakeVision(){
     this->selectedRobot = NULL;
     this->ballSelected = false;
     this->_changed = false;
+    this->_halfTime = false;
 }
 
 void FakeVision::adjustFieldPosition(){
@@ -129,6 +130,7 @@ void FakeVision::mouseActions(int event, int x, int y, int flags, void * userdat
             if(!self->_changed)
                 self->_changed = true;
             self->selectedRobot->setPosition(x, y);
+            self->selectedRobot = NULL;
         }else{
             if(self->isClicked(Global::attacker.getPosition(), x, y))
                 self->selectedRobot = &Global::attacker;
@@ -147,6 +149,7 @@ void FakeVision::mouseActions(int event, int x, int y, int flags, void * userdat
                 self->_changed = true;
             Global::ball.x = x;
             Global::ball.y = y;
+            self->ballSelected = false;
         }
     }else if(event == cv::EVENT_MBUTTONDOWN){
         if(self->selectedRobot != NULL){
@@ -158,6 +161,9 @@ void FakeVision::mouseActions(int event, int x, int y, int flags, void * userdat
     }else if(flags == cv::EVENT_FLAG_CTRLKEY){
         self->selectedRobot = NULL;
         self->ballSelected  = false;
+    }else if(flags == cv::EVENT_FLAG_SHIFTKEY && !self->_halfTime){
+        WorldModel::halfTime();
+        self->_halfTime = true;
     }
 
 }

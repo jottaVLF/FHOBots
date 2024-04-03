@@ -14,6 +14,8 @@ class Area : public Vector2D{
         ~Area();
         bool isInside(Vector2D point);
         bool isOnLeft(double x);
+        void copy(Area & other);
+        void set(Area other);
 };
 
 #endif

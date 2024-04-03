@@ -56,26 +56,7 @@ std::string AttackerStateAlign::checkConditions()
     if(Global::robotNearRobot(_robot))
         return "backoff";
 
-    Vector2D posRobot = _robot->getPosition();
-    Vector2D oriRrobot = _robot->getOrientation(); /// Orientação do Robô
-    Vector2D comp;
-
-    comp.set(1.0, 0.0);
-    if(posRobot.y - 3.75 * Global::frameCentimetersConstant < Global::frameCentimetersConstant * 10 && (oriRrobot&&comp) > 0.2)
-        return "backoff";
-
-    comp.set(-1.0, 0.0);
-    if(posRobot.y + 3.75 * Global::frameCentimetersConstant > Global::fieldRect.height - Global::frameCentimetersConstant * 10
-       && (oriRrobot&&comp) > 0)
-        return "backoff";
-
-    comp.set(0.0, -1.0);
-    if(posRobot.x - 3.75 * Global::frameCentimetersConstant < Global::frameCentimetersConstant * 20 && (oriRrobot&&comp) > 0.2)
-        return "backoff";
-
-    comp.set(0.0, 1.0);
-    if(posRobot.x + 3.75 * Global::frameCentimetersConstant > Global::fieldRect.width - Global::frameCentimetersConstant * 20
-       && (oriRrobot&&comp) > 0.2)
+    if(WorldModel::isAlignedWithWall(_robot->getPosition(), _robot->getOrientation()))
         return "backoff";
 
     if(Global::robotNearBall2(_robot->getPosition(), 9))
@@ -83,7 +64,6 @@ std::string AttackerStateAlign::checkConditions()
 
     Vector2D robotToDestiny = Global::ball - _robot->getPosition();
 
-    printf("%f\n", (_robot->getOrientation()||robotToDestiny));
     if(((_robot->getOrientation()||robotToDestiny) <= 0.25 && (_robot->getOrientation()||robotToDestiny) >= -0.25))
         return "seeking";
 
