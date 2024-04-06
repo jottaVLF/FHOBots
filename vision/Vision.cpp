@@ -19,8 +19,8 @@ Vision::Vision(int deviceNumber, Config * config)
     if(!ocl::useOpenCL())
        ocl::setUseOpenCL(true);
 
-    /*_videoCapture.set(3, 640);
-    _videoCapture.set(4, 480);*/
+    _videoCapture.set(3, 640);
+    _videoCapture.set(4, 480);
     this->logger = new Logger("files/logs/Vision.log");
     this->config = config;
 }
@@ -118,7 +118,7 @@ void Vision::calibrateColor(ColorDetection * color){
          readFrame();
          color->calibrate();
          show(color->getFilterState());
-         color->detect();
+         color->detect(true);
          Global::bufferKeyboard = waitKey(16);
       }
       cout << "Exiting calibration of color "<< color->getWindowName() << endl;
@@ -227,14 +227,23 @@ void Vision::detectionColors()
 }
 
 void Vision::show(cv::UMat frame){
-    
-    imshow("Game original", frame);
+    cv::Mat output;
+    std::vector<UMat> channels(3);
+    std::vector<UMat> outPuts(3);
+    cv::split(_gpuFrame, channels);
+    for(int i = 0; i < channels.size(); i++){
+        cv::bitwise_and(channels[i],frame,outPuts[i]);
+    }
+
+    cv::merge(outPuts, output);
+    imshow("Game original", output);
 }
 
 void Vision::show(bool resized)
 {
    Mat newFrame;
    if(resized){
+        drawInfo();
         resize(_gpuFrame, newFrame, newFrame.size(), 1.75, 1.75);
         imshow("Game resized", newFrame);
         return;
@@ -318,4 +327,65 @@ void Vision::readRectFields()
         arq.read((char*)&Global::areaGoalDeffend, sizeof(Global::areaGoalDeffend));
     }
     arq.close();
+}
+
+void Vision::drawInfo(){
+    if(this->config->r0.active)
+        drawRole(this->config->r0.role, this->config->r0.color);
+    if(this->config->r1.active)
+        drawRole(this->config->r1.role, this->config->r1.color);
+    if(this->config->r2.active)
+        drawRole(this->config->r2.role, this->config->r2.color);
+    drawSafeZone();
+}
+
+cv::Point Vision::toPixel(Vector2D v){
+    return cv::Point(v.x, v.y);
+}
+
+void Vision::drawRole(std::string role, std::string colorString){
+    Robot * robot = NULL;
+    cv::Scalar color;
+    if(colorString == "purple")
+        color = cv::Scalar(255, 70, 168, 0.8);
+    else if(colorString == "green")
+        color = cv::Scalar(0, 170, 0, 0.8);
+    else if(colorString == "red")
+        color = cv::Scalar(0, 0, 168, 0.8);
+
+    if(role == "attacker")
+        robot = &Global::attacker;
+    else if(role == "deffender")
+        robot = &Global::deffender;
+    else if(role == "goalkeeper")
+        robot = &Global::goalkeeper;
+    
+    char robotPosition[100];
+    sprintf(robotPosition, "%.1lf, %.1lf", robot->getPosition().x, robot->getPosition().y);
+    cv::line(_gpuFrame, toPixel(robot->getPosition()), cv::Point(robot->getPosition().x + 3* robot->getOrientation().x, robot->getPosition().y + 3* robot->getOrientation().y), cv::Scalar(255,255, 255, 1), 1, cv::LINE_4);
+    cv::putText(_gpuFrame, robot->getMessage(),cv::Point(robot->getPosition().x, robot->getPosition().y - 25) ,cv::FONT_HERSHEY_COMPLEX, 0.4, cv::Scalar(255,255,255, 1), 1);
+    cv::putText(_gpuFrame, robotPosition,cv::Point(robot->getPosition().x, robot->getPosition().y + 25) ,cv::FONT_HERSHEY_COMPLEX, 0.4, cv::Scalar(255,255,255, 1), 1);
+    cv::line(_gpuFrame, toPixel(robot->getPosition()),  toPixel(robot->objPos), color, 1, cv::LINE_4);
+}
+
+void Vision::drawSafeZone(){
+    int offset = WorldModel::_offset;
+    double fieldWidth = Global::fieldRect.width;
+    double fieldHeight = Global::fieldRect.height;
+
+    double xmin =  Global::areaGoalDeffend.isOnLeft(fieldWidth/2) ? 
+                   Global::areaGoalDeffend.width + offset
+                  :Global::areaGoalAttack.width + offset;
+    double xmax = Global::areaGoalDeffend.isOnLeft(fieldWidth/2) ? 
+                   fieldWidth - (Global::areaGoalDeffend.width + offset)
+                  :fieldWidth - (Global::areaGoalAttack.width + offset);
+    
+    double ymin = offset;
+    double ymax = fieldHeight - offset;
+    cv::line(_gpuFrame, cv::Point(xmin, ymin), cv::Point(xmax, ymin), cv::Scalar(20,150, 150, 1), 1, cv::LINE_4);
+    cv::line(_gpuFrame, cv::Point(xmin, ymin), cv::Point(xmin, ymax), cv::Scalar(20,150, 150, 1), 1, cv::LINE_4);
+    cv::line(_gpuFrame, cv::Point(xmax, ymin), cv::Point(xmax, ymax), cv::Scalar(20,150, 150, 1), 1, cv::LINE_4);
+    cv::line(_gpuFrame, cv::Point(xmax, ymax), cv::Point(xmin, ymax), cv::Scalar(20,150, 150, 1), 1, cv::LINE_4);
+
+
 }

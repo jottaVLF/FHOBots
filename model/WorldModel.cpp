@@ -1,5 +1,7 @@
 #include "WorldModel.hpp"
 
+int WorldModel::_offset = 30;
+
 bool WorldModel::isInsideDeffenseArea(Vector2D position){
     return Global::areaToDeffend.isInside(position);
 }    
@@ -32,10 +34,11 @@ bool WorldModel::isOnAttackField(Vector2D position){
 
 bool WorldModel::isAlignedWith(Vector2D v, Vector2D w){
     double angle = v.angleBetween(w);
-    return fabs(angle) <= M_PI/30;
+    return fabs(angle) <= M_PI/6;
 }
 
-bool WorldModel::isNearWall(Vector2D v, int offset){
+bool WorldModel::isNearWall(Vector2D v){
+    int offset = WorldModel::_offset;
     double fieldWidth = Global::fieldRect.width;
     double fieldHeight = Global::fieldRect.height;
 
@@ -54,7 +57,8 @@ bool WorldModel::isNearWall(Vector2D v, int offset){
     return !isInSafeZone;
 }
 
-bool WorldModel::isAlignedWithWall(Vector2D p, Vector2D o, int offset){
+bool WorldModel::isAlignedWithWall(Vector2D p, Vector2D o){
+    int offset = WorldModel::_offset;
     double fieldWidth = Global::fieldRect.width;
     double fieldHeight = Global::fieldRect.height;
 

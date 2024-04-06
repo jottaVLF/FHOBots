@@ -22,15 +22,15 @@ void ColorDetection::showTrackBar()
 }
 
 
-void ColorDetection::detect()
+void ColorDetection::detect(bool onCalibration)
 {
     if(_pos.size() > 0)
-        _pos.clear(); /// Limpar sempre o array de posições, se houver elemento
+        _pos.clear(); 
 
     filter();
     morphologicOperations();
 
-    std::vector<std::vector<cv::Point>> contours; /// Matrix de Contornos
+    std::vector<std::vector<cv::Point>> contours;
     cv::UMat hierarchy;
 
     cv::findContours(_mask, contours, hierarchy, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE, cv::Point(0,0));
@@ -61,8 +61,9 @@ void ColorDetection::detect()
                else if(getWindowName()=="ball")
                    cor = cv::Scalar(0, 165, 255);
 
-                cv::drawContours(*_gpuFrameOriginal, contours, i, cor, 3, 8, hierarchy);
-                setPosition(contours[i]);
+              /*if(!onCalibration)
+                    cv::drawContours(*_gpuFrameOriginal, contours, i, cor, 3, 8, hierarchy);*/
+               setPosition(contours[i]);
             }
         }
     }

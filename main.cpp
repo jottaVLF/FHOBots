@@ -9,6 +9,7 @@
 #include "vision/Vision.hpp"
 #include "vision/FakeVision.hpp"
 #include "model/Robot.hpp"
+#include "model/Robot.hpp"
 
 void initializeModelAndStates(Config configuration){
     Global::attacker.createMachineStates();
@@ -29,14 +30,14 @@ void initializeModelAndStates(Config configuration){
 }
 
 int main(int argc, char* argv[])
-{   
+{ 
     ConfigParser configParser;
 
     Config configuration = configParser.createConfiguration();
 
     std::cout << "Configuration file successfully read!" << std::endl;
     
-    IVision * vision = new FakeVision();//new Vision(configuration.camera, &configuration);
+    IVision * vision = new Vision(configuration.camera, &configuration);
     Global::communication = new Communication(configuration.communication);
     //Global::communication->configureRobots(configuration);
     
@@ -48,9 +49,9 @@ int main(int argc, char* argv[])
     initializeModelAndStates(configuration);
 
     Global::bufferKeyboard = 0;
-    std::thread tAttacker(&Robot::updateRobot, &Global::attacker);
-    std::thread tDeffender(&Robot::updateRobot, &Global::deffender);
-    std::thread tGoalKeeper(&Robot::updateRobot, &Global::goalkeeper);
+  //  std::thread tAttacker(&Robot::updateRobot, &Global::attacker);
+  //  std::thread tDeffender(&Robot::updateRobot, &Global::deffender);
+  //  std::thread tGoalKeeper(&Robot::updateRobot, &Global::goalkeeper);
 
     do
     {
@@ -59,17 +60,24 @@ int main(int argc, char* argv[])
         Global::countFrameAttacker++;
         Global::countFrameDefender++;
         Global::bufferKeyboard = cv::waitKey(1);
-        FakeVision * fakeVision = dynamic_cast<FakeVision * >(vision);
-        fakeVision->show();
+        Vision * realVision = dynamic_cast<Vision * >(vision);
+        realVision->show();
 
-      //  Global::communication->sendMessage();
+        Global::communication->writeMessage(0, 128, 128);
+        Global::communication->writeMessage(1, 128, 128);
+        Global::communication->sendMessage();
+        Communication * com = dynamic_cast<Communication *> (Global::communication);
+        std::string message = com->getMessage();
+        for(int i = 0; (int) message[i] != 1; i++)
+            std::cout << std::hex << (int)message[i];
+        std::cout <<std::dec << std::endl;
     
     } while(Global::bufferKeyboard != 27);
 
-    tAttacker.join();
-    tDeffender.join();
-    tGoalKeeper.join();
+   // tAttacker.join();
+   // tDeffender.join();
+   // tGoalKeeper.join();
 
-   // Global::communication->stopAll();
+    Global::communication->stopAll();
     return 0;
 }

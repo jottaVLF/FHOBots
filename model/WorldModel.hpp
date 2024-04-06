@@ -18,13 +18,14 @@ enum direction{
 class WorldModel{
 
 public:
+    static int _offset;
     static bool isInsideDeffenseArea(Vector2D position);    
     static bool isInsideAttackArea(Vector2D position);
     static bool isOnDeffenseField(Vector2D position);
     static bool isOnAttackField(Vector2D position);
     static bool isAlignedWith(Vector2D v, Vector2D w);
-    static bool isNearWall(Vector2D v, int offset = 30);
-    static bool isAlignedWithWall(Vector2D p, Vector2D o, int offset = 30);
+    static bool isNearWall(Vector2D v);
+    static bool isAlignedWithWall(Vector2D p, Vector2D o);
     static Robot * nearstRobotTo(Vector2D v);
     static bool isInAttackArea(Robot * r);
     static bool isInDeffenseArea(Robot * r);

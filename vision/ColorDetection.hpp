@@ -16,7 +16,7 @@ class ColorDetection
         void exitCalibrate();
         void showTrackBar();
 
-        void detect();
+        void detect(bool onCalibration = false);
         void calibrate();
 
         std::vector<Coordinates<double>>& getPositionsColor();

@@ -3,8 +3,6 @@
 
 Communication::Communication(const std::string port)
 {
-    // REMOVER!!!!
-    return;
     _serial.Open(port);
     _serial.SetBaudRate(LibSerial::BaudRate::BAUD_9600);
     _serial.SetCharacterSize(LibSerial::CharacterSize::CHAR_SIZE_8);
@@ -21,9 +19,9 @@ Communication::~Communication()
 void Communication::writeMessage(const int index, const unsigned char pwmLeft, const unsigned char pwmRight, const bool reverseLeft, const bool reverseRight)
 {
     _writeBuffer[0] = 0x5B;
-    
-    unsigned char maskLeft  = reverseLeft  ? (1 << 2*index + 1) : ~(1 << index*2 + 1); 
-    unsigned char maskRight = reverseRight ? (1 << 2*index)     : ~(1 << index*2);
+    int id_mask = index + 1;
+    unsigned char maskLeft  = reverseLeft  ? (1 << 2*id_mask + 1) : ~(1 << id_mask*2 + 1); 
+    unsigned char maskRight = reverseRight ? (1 << 2*id_mask)     : ~(1 << id_mask*2);
     _writeBuffer[1] = reverseLeft  ? _writeBuffer[1] | maskLeft  : _writeBuffer[1] & maskLeft;
     _writeBuffer[1] = reverseRight ? _writeBuffer[1] | maskRight : _writeBuffer[1] & maskRight;
     

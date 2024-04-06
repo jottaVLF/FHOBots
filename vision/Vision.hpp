@@ -7,8 +7,11 @@
 #include "IVision.hpp"
 #include "../logging/Logger.hpp"
 #include <cstring>
+#include <cstdlib>
 #include <unordered_map>
 #include "../config/Config.hpp"
+#include "../model/Vector2D.hpp"
+#include "../model/WorldModel.hpp"
 
 enum Position
 {
@@ -42,6 +45,10 @@ class Vision : public IVision
         void calculatePosRobot(const std::vector<Coordinates<double>>& colorIndividual, const std::vector<Coordinates<double>>& colorTeam, Robot * robot);
         void writeRectFields();
         void readRectFields();
+        void drawInfo();
+        void drawRole(std::string role, std::string colorString);
+        cv::Point toPixel(Vector2D v);
+        void drawSafeZone();
         
         Logger * logger;
         cv::Mat _gpuFrame;
