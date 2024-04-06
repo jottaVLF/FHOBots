@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
   //  std::thread tAttacker(&Robot::updateRobot, &Global::attacker);
   //  std::thread tDeffender(&Robot::updateRobot, &Global::deffender);
   //  std::thread tGoalKeeper(&Robot::updateRobot, &Global::goalkeeper);
-
+    int i = 0;
     do
     {
         vision->detectionColors();
@@ -63,15 +63,20 @@ int main(int argc, char* argv[])
         Vision * realVision = dynamic_cast<Vision * >(vision);
         realVision->show();
 
-        Global::communication->writeMessage(0, 128, 128);
-        Global::communication->writeMessage(1, 128, 128);
+        if(i > 50){
+            Global::communication->writeMessage(0, 80, 80);
+            Global::communication->writeMessage(1, 80, 80);
+        }else{
+            Global::communication->writeMessage(0, 80, 80, true, true);
+            Global::communication->writeMessage(1, 80, 80, true, true);
+        }
         Global::communication->sendMessage();
         Communication * com = dynamic_cast<Communication *> (Global::communication);
-        std::string message = com->getMessage();
-        for(int i = 0; (int) message[i] != 1; i++)
-            std::cout << std::hex << (int)message[i];
-        std::cout <<std::dec << std::endl;
-    
+        com->getMessage();
+        i++;
+
+        if(i > 1E2)
+            break;            
     } while(Global::bufferKeyboard != 27);
 
    // tAttacker.join();
@@ -79,5 +84,6 @@ int main(int argc, char* argv[])
    // tGoalKeeper.join();
 
     Global::communication->stopAll();
+    Global::communication->sendMessage();
     return 0;
 }

@@ -27,7 +27,7 @@ class Communication : public ICommunication
         void sendMessage();
         void stopAll();
         void configureRobots(Config config);
-        std::string getMessage();
+        void getMessage();
         volatile bool _robotsConfigured;
         LibSerial::SerialStream * getSerial();
         char * getBuffer();

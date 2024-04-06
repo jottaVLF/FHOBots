@@ -20,24 +20,25 @@ void Communication::writeMessage(const int index, const unsigned char pwmLeft, c
 {
     _writeBuffer[0] = 0x5B;
     int id_mask = index + 1;
-    unsigned char maskLeft  = reverseLeft  ? (1 << 2*id_mask + 1) : ~(1 << id_mask*2 + 1); 
+    unsigned char maskLeft  = reverseLeft  ? (1 << (2*id_mask + 1)) : ~(1 << (id_mask*2 + 1)); 
     unsigned char maskRight = reverseRight ? (1 << 2*id_mask)     : ~(1 << id_mask*2);
     _writeBuffer[1] = reverseLeft  ? _writeBuffer[1] | maskLeft  : _writeBuffer[1] & maskLeft;
     _writeBuffer[1] = reverseRight ? _writeBuffer[1] | maskRight : _writeBuffer[1] & maskRight;
-    
-    _writeBuffer[2 * index + 1] = pwmLeft;
-    _writeBuffer[2 * index + 2] = pwmRight;
+    _writeBuffer[2 * index + 2] = pwmLeft;
+    _writeBuffer[2 * index + 3] = pwmRight;
 }
 
 void Communication::sendMessage()
 {
+    _writeBuffer[8] = 1;
     _serial.write(_writeBuffer, 9);
 }
 
-std::string Communication::getMessage()
+void Communication::getMessage()
 {
-    std::string buffer(_writeBuffer);
-    return buffer;
+    for(int i = 0; i < 16; i++)
+        std::cout << std::hex << (unsigned short) _writeBuffer[i];
+    std::cout << std::dec << std::endl;
 }
 
 void Communication::stopAll(){
