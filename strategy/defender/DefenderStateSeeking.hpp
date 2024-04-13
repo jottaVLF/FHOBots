@@ -3,6 +3,7 @@
 
 #include "../../model/Robot.hpp"
 #include "../State.hpp"
+#include "../../model/WorldModel.hpp"
 
 class DefenderStateSeeking : public State
 {

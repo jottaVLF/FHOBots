@@ -9,7 +9,7 @@ StateBackOff::~StateBackOff()
 
 void StateBackOff::doActions()
 {
-    Vector2D destination = Global::ball - _robot->getPosition();
+    Global::communication->writeMessage(_robot->getPosMessage(), 80, 80, true,true);
 
 
 }
@@ -21,14 +21,15 @@ std::string StateBackOff::checkConditions()
 
     Vector2D posRobot = _robot->getPosition();
     
-    if(Global::ball.x == -10)
-        return "spinning";
 
-    if(Global::robotNearRobot(_robot))
-        return "";
-
+    
+    //if(abs((_robot->getPosition() - Global::ballPos).magnitude()) >= Global::frameCentimetersConstant * 8)
+       // return "spinning";
     if(!WorldModel::isAlignedWithWall(_robot->getPosition(), _robot->getOrientation()))
         return "seeking";
+    
+    if(Global::robotNearRobot(_robot))
+        return "";
 
     return "";
 }

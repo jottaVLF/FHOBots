@@ -49,9 +49,9 @@ int main(int argc, char* argv[])
     initializeModelAndStates(configuration);
 
     Global::bufferKeyboard = 0;
-  //  std::thread tAttacker(&Robot::updateRobot, &Global::attacker);
-  //  std::thread tDeffender(&Robot::updateRobot, &Global::deffender);
-  //  std::thread tGoalKeeper(&Robot::updateRobot, &Global::goalkeeper);
+    std::thread tAttacker(&Robot::updateRobot, &Global::attacker);
+   // std::thread tDeffender(&Robot::updateRobot, &Global::deffender);
+ //   std::thread tGoalKeeper(&Robot::updateRobot, &Global::goalkeeper);
     int i = 0;
     do
     {
@@ -63,25 +63,12 @@ int main(int argc, char* argv[])
         Vision * realVision = dynamic_cast<Vision * >(vision);
         realVision->show();
 
-        if(i > 50){
-            Global::communication->writeMessage(0, 80, 80);
-            Global::communication->writeMessage(1, 80, 80);
-        }else{
-            Global::communication->writeMessage(0, 80, 80, true, true);
-            Global::communication->writeMessage(1, 80, 80, true, true);
-        }
-        Global::communication->sendMessage();
-        Communication * com = dynamic_cast<Communication *> (Global::communication);
-        com->getMessage();
-        i++;
-
-        if(i > 1E2)
-            break;            
+        Global::communication->sendMessage();            
     } while(Global::bufferKeyboard != 27);
 
-   // tAttacker.join();
-   // tDeffender.join();
-   // tGoalKeeper.join();
+    tAttacker.join();
+ //   tDeffender.join();
+//    tGoalKeeper.join();
 
     Global::communication->stopAll();
     Global::communication->sendMessage();

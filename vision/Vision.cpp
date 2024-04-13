@@ -345,6 +345,7 @@ cv::Point Vision::toPixel(Vector2D v){
 
 void Vision::drawRole(std::string role, std::string colorString){
     Robot * robot = NULL;
+    int id = 0;
     cv::Scalar color;
     if(colorString == "purple")
         color = cv::Scalar(255, 70, 168, 0.8);
@@ -353,19 +354,31 @@ void Vision::drawRole(std::string role, std::string colorString){
     else if(colorString == "red")
         color = cv::Scalar(0, 0, 168, 0.8);
 
-    if(role == "attacker")
+    if(role == "attacker"){
         robot = &Global::attacker;
-    else if(role == "deffender")
+        id = robot->getPosMessage();
+    }
+    else if(role == "deffender"){
         robot = &Global::deffender;
-    else if(role == "goalkeeper")
+        id = robot->getPosMessage();
+    }
+    else if(role == "goalkeeper"){
         robot = &Global::goalkeeper;
-    
+        id = robot->getPosMessage();
+    }
+
     char robotPosition[100];
     sprintf(robotPosition, "%.1lf, %.1lf", robot->getPosition().x, robot->getPosition().y);
     cv::line(_gpuFrame, toPixel(robot->getPosition()), cv::Point(robot->getPosition().x + 3* robot->getOrientation().x, robot->getPosition().y + 3* robot->getOrientation().y), cv::Scalar(255,255, 255, 1), 1, cv::LINE_4);
-    cv::putText(_gpuFrame, robot->getMessage(),cv::Point(robot->getPosition().x, robot->getPosition().y - 25) ,cv::FONT_HERSHEY_COMPLEX, 0.4, cv::Scalar(255,255,255, 1), 1);
+    cv::putText(_gpuFrame, robot->getMessage(),cv::Point(robot->getPosition().x + 25, robot->getPosition().y) ,cv::FONT_HERSHEY_COMPLEX, 0.4, cv::Scalar(255,255,255, 1), 1);
     cv::putText(_gpuFrame, robotPosition,cv::Point(robot->getPosition().x, robot->getPosition().y + 25) ,cv::FONT_HERSHEY_COMPLEX, 0.4, cv::Scalar(255,255,255, 1), 1);
     cv::line(_gpuFrame, toPixel(robot->getPosition()),  toPixel(robot->objPos), color, 1, cv::LINE_4);
+    Communication * communication = dynamic_cast<Communication *>(Global::communication);
+
+    sprintf(robotPosition, "%d, %d", communication->getLeftPwm(id), communication->getRightPwm(id));
+    cv::putText(_gpuFrame, robotPosition,cv::Point(robot->getPosition().x, robot->getPosition().y - 25) ,cv::FONT_HERSHEY_COMPLEX, 0.3, cv::Scalar(255,255,255, 1), 1);
+    
+    
 }
 
 void Vision::drawSafeZone(){

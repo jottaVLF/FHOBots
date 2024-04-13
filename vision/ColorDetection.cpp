@@ -29,7 +29,8 @@ void ColorDetection::detect(bool onCalibration)
 
     filter();
     morphologicOperations();
-
+    if(getWindowName() == "ball")
+        cv::imshow("ball", _mask);
     std::vector<std::vector<cv::Point>> contours;
     cv::UMat hierarchy;
 

@@ -175,3 +175,7 @@ bool WorldModel::otherRobotInDeffenseArea(Robot * r){
     
     return isOtherInArea;
 }
+bool WorldModel::isNearOf(Vector2D o, Vector2D p){
+    Vector2D r= o-p;
+    return r.magnitude()<20;
+}

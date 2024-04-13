@@ -17,26 +17,7 @@ AttackerStateSpinning::~AttackerStateSpinning() {
 
 void AttackerStateSpinning::doActions() {
 
-    if(Global::eAreaDeffend == AREA_DEFFEND_LEFT)
-    {
-        if(_robot->getPosition().y <= (Global::fieldRect.y + Global::fieldRect.height) / 2.0)
-        {
-            Global::communication->writeMessage(_robot->getPosMessage(), 2, 255); //horario
-        }
-        else{
-            Global::communication->writeMessage(_robot->getPosMessage(), 3, 255); //anti
-        }
-    }
-    else
-    {
-        if(_robot->getPosition().y <= (Global::fieldRect.y + Global::fieldRect.height) / 2.0)
-        {
-            Global::communication->writeMessage(_robot->getPosMessage(), 3, 255); // anti
-        }
-        else{
-            Global::communication->writeMessage(_robot->getPosMessage(), 2, 255); // horario
-        }
-    }
+       Global::communication->writeMessage(_robot->getPosMessage(), 80, 30, true,false);
 
 
 }
@@ -46,7 +27,7 @@ std::string AttackerStateSpinning::checkConditions() {
         return "idle";
 
     if(spinningToSeeking())
-        return "seeking";
+       return "seeking";
 
     return "";
 }

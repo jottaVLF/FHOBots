@@ -10,6 +10,8 @@ Communication::Communication(const std::string port)
     _serial.SetFlowControl( LibSerial::FlowControl::FLOW_CONTROL_NONE );
     _serial.SetStopBits( LibSerial::StopBits::STOP_BITS_1);
     this->_robotsConfigured = false;
+    for(int i = 0; i <16; i++)
+        _writeBuffer[i] = 0;
 }
 
 Communication::~Communication()
@@ -37,8 +39,8 @@ void Communication::sendMessage()
 void Communication::getMessage()
 {
     for(int i = 0; i < 16; i++)
-        std::cout << std::hex << (unsigned short) _writeBuffer[i];
-    std::cout << std::dec << std::endl;
+        std::cout << std::hex << (unsigned short) _writeBuffer[i] << std::endl;
+    std::cout << std::dec << std::endl << std::endl;
 }
 
 void Communication::stopAll(){
@@ -176,4 +178,12 @@ LibSerial::SerialStream * Communication::getSerial(){
 
 char * Communication::getBuffer(){
     return (char *) this->_readBuffer;
+}
+
+int Communication::getLeftPwm(int id){
+    return _writeBuffer[2*id + 2];
+}
+
+int Communication::getRightPwm(int id){
+    return _writeBuffer[2*id + 3];
 }

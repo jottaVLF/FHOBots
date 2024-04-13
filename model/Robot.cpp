@@ -143,3 +143,7 @@ void Robot::setObjective(double x, double y){
     this->objPos.x = x;
     this->objPos.y = y;
 }
+
+Vector2D& Robot::getObjective(){
+    return this->objPos;
+}

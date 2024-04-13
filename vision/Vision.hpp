@@ -12,6 +12,7 @@
 #include "../config/Config.hpp"
 #include "../model/Vector2D.hpp"
 #include "../model/WorldModel.hpp"
+#include "../communication/Communication.hpp"
 
 enum Position
 {

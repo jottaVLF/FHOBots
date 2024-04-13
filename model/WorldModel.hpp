@@ -35,6 +35,7 @@ public:
     static bool isFacing(Vector2D o, direction d);
     static bool isFacingArea(Vector2D o, Area a);
     static bool otherRobotInDeffenseArea(Robot * r);
+    static bool isNearOf(Vector2D o, Vector2D p);
 
 private:
     static double distanceBetween(Vector2D v, Vector2D w);

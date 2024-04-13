@@ -42,7 +42,7 @@
     "r1" : {
         "role" : "deffender",
         "color": "green",
-        "active": "false",
+        "active": "true",
         "pwm": {
             "max": 255,
             "min": 0,

@@ -32,6 +32,8 @@ class Communication : public ICommunication
         LibSerial::SerialStream * getSerial();
         char * getBuffer();
         volatile bool gotInput;
+        int getLeftPwm(int id);
+        int getRightPwm(int id);
         
     private:
         LibSerial::SerialStream _serial;

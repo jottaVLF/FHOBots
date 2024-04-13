@@ -39,8 +39,8 @@ std::string AttackerStateSeeking::checkConditions()
 
 void AttackerStateSeeking::entryActions()
 {
-    _robot->setPD(40, -10);
-    _robot->setBasePwmValue(80);
+    _robot->setPD(40, 0);
+    _robot->setBasePwmValue(60);
     _robot->setMaxPwm(120);
     _robot->lastPos = _robot->getPosition();
     _robot->lastOri = _robot->getOrientation();

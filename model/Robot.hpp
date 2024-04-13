@@ -29,6 +29,7 @@ class Robot {
         Vector2D& getPosition();
         Vector2D& getOrientation();
         Vector2D& getLastPosition();
+        Vector2D& getObjective();
 
         void setBasePwmValue(const double pwm);
         void setPwmLeft(const int pwm);
