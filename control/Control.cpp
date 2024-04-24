@@ -86,7 +86,8 @@ int Control::getPwmRightWheel()
 
 double Control::calculatePD(Vector2D& robotToDestiny, Vector2D& OrientationRobot)
 {
-    double angleError = OrientationRobot||robotToDestiny;
+    double angleRobot = atan2(OrientationRobot.y, OrientationRobot.x);
+    double angleError = calculateError(robotToDestiny, angleRobot);
     double p = angleError;
     double d = angleError - _lastError;
     _lastError = angleError;
@@ -97,7 +98,7 @@ double Control::calculatePD(Vector2D& robotToDestiny, Vector2D& OrientationRobot
 double Control::calculatePD(Vector2D& robotToDestiny, const double& angleRobot)
 {
     Vector2D OrientationRobot(cos(angleRobot), sin(angleRobot));
-    double angleError = OrientationRobot||robotToDestiny;
+    double angleError = calculateError(robotToDestiny, angleRobot);
 
     double p = angleError;
     double d = angleError - _lastError;
@@ -109,4 +110,22 @@ double Control::calculatePD(Vector2D& robotToDestiny, const double& angleRobot)
 void Control::setLastError(const double lerror)
 {
     _lastError = lerror;
+}
+
+double Control::calculateError(Vector2D& robotToDestiny, double angleRobot){
+
+    double angleRobotDestiny = atan2(robotToDestiny.y, robotToDestiny.x);
+    double error = angleRobotDestiny - angleRobot;
+
+    if( fabs(error) > M_PI){
+        if(angleRobotDestiny < 0)
+            angleRobotDestiny = 2*M_PI + angleRobotDestiny;
+
+        if(angleRobot < 0)
+            angleRobot = 2*M_PI + angleRobot;
+
+        error = angleRobotDestiny - angleRobot;
+    }
+    return error;
+
 }

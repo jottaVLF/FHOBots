@@ -61,6 +61,8 @@ class Control {
 
         int _pwmLeftWheel;
         int _pwmRightWheel;
+
+        double calculateError(Vector2D& robotToDestiny, double angleRobot);
 };
 
 

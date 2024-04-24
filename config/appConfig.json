@@ -79,7 +79,7 @@
     "r2" : {
         "role" : "goalkeeper",
         "color": "red",
-        "active": "false",
+        "active": "true",
         "pwm": {
             "max": 255,
             "min": 0,

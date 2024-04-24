@@ -50,8 +50,8 @@ int main(int argc, char* argv[])
 
     Global::bufferKeyboard = 0;
     std::thread tAttacker(&Robot::updateRobot, &Global::attacker);
-   // std::thread tDeffender(&Robot::updateRobot, &Global::deffender);
- //   std::thread tGoalKeeper(&Robot::updateRobot, &Global::goalkeeper);
+    std::thread tDeffender(&Robot::updateRobot, &Global::deffender);
+    std::thread tGoalKeeper(&Robot::updateRobot, &Global::goalkeeper);
     int i = 0;
     do
     {
@@ -62,13 +62,14 @@ int main(int argc, char* argv[])
         Global::bufferKeyboard = cv::waitKey(1);
         Vision * realVision = dynamic_cast<Vision * >(vision);
         realVision->show();
+        std::this_thread::sleep_for(std::chrono::microseconds(300));
+        Global::communication->sendMessage();
 
-        Global::communication->sendMessage();            
     } while(Global::bufferKeyboard != 27);
 
     tAttacker.join();
- //   tDeffender.join();
-//    tGoalKeeper.join();
+    tDeffender.join();
+    tGoalKeeper.join();
 
     Global::communication->stopAll();
     Global::communication->sendMessage();
