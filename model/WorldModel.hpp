@@ -36,7 +36,9 @@ public:
     static bool isFacingArea(Vector2D o, Area a);
     static bool otherRobotInDeffenseArea(Robot * r);
     static bool isNearOf(Vector2D o, Vector2D p);
-
+    static bool isAlignedWithWallAndBall(Vector2D robotPosition, Vector2D robotOrientation, Vector2D ball); 
+    static Vector2D getGoalKeeperDeffencePosition();
+    static Vector2D getDeffenderDeffencePosition();
 private:
     static double distanceBetween(Vector2D v, Vector2D w);
 };

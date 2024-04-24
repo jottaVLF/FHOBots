@@ -7,6 +7,7 @@
 
 #include "../../model/Robot.hpp"
 #include "../State.hpp"
+#include "../../model/WorldModel.hpp"
 
 class GoalkeeperStateReturnToArea : public State {
     public:
@@ -19,10 +20,6 @@ class GoalkeeperStateReturnToArea : public State {
         void exitActions();
 
     private:
-        double valueY;
-        double valueX;
-        bool alinhado;
-        bool returnToWaiting();
         Robot* _robot;
 };
 

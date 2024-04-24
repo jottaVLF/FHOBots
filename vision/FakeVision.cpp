@@ -10,28 +10,28 @@ FakeVision::FakeVision(){
 
 void FakeVision::adjustFieldPosition(){
 
-    Global::areaGoalAttack.x  = 165*800/170.;
-    Global::areaGoalAttack.y  = 300;
+    Global::areaGoalAttack.x  = 165*800/170. - widthToPixel(10)/2;
+    Global::areaGoalAttack.y  = 300 - heigthToPixel(40)/2;
     Global::areaGoalAttack.height = heigthToPixel(40);
     Global::areaGoalAttack.width = widthToPixel(10);
     
-    Global::areaGoalDeffend.x  = 5*800/170.;
-    Global::areaGoalDeffend.y  = 300;
+    Global::areaGoalDeffend.x  = 5*800/170. - widthToPixel(10)/2;
+    Global::areaGoalDeffend.y  = 300 - heigthToPixel(40)/2;
     Global::areaGoalDeffend.height = heigthToPixel(40);
     Global::areaGoalDeffend.width = widthToPixel(10);
     
-    Global::areaToAttack.x  = 152.5*800/170.;
-    Global::areaToAttack.y  = 300;
+    Global::areaToAttack.x  = 152.5*800/170. - widthToPixel(15)/2;
+    Global::areaToAttack.y  = 300 - heigthToPixel(70)/2;
     Global::areaToAttack.height = heigthToPixel(70);
     Global::areaToAttack.width = widthToPixel(15);
     
-    Global::areaToDeffend.x  = 17.5*800/170.;
-    Global::areaToDeffend.y  = 300;
+    Global::areaToDeffend.x  = 17.5*800/170. - widthToPixel(15)/2;
+    Global::areaToDeffend.y  = 300 - heigthToPixel(70)/2;
     Global::areaToDeffend.height = heigthToPixel(70);
     Global::areaToDeffend.width = widthToPixel(15);
 
-    Global::fieldRect.x = 400;
-    Global::fieldRect.x = 300;
+    Global::fieldRect.x = 10;
+    Global::fieldRect.y = 0;
     Global::fieldRect.width = 800;
     Global::fieldRect.height = 600;
 
@@ -43,19 +43,19 @@ void FakeVision::calibration(){
 
     cv::namedWindow("Fake game");
     cv::setMouseCallback("Fake game", FakeVision::mouseActions, this);
+
+    Global::attacker.setPosition(300, 300);
+    Global::deffender.setPosition(400, 400);
+    Global::goalkeeper.setPosition(500, 500);
+    Global::attacker.setOrientationRobot(cos(M_PI/6.), sin(M_PI/6.));
+    Global::deffender.setOrientationRobot(cos(-M_PI/6.), sin(-M_PI/6.));
+    Global::goalkeeper.setOrientationRobot(cos(-3*M_PI/6.), sin(-3*M_PI/6.));
+    Global::ball.x = 300;
+    Global::ball.y = 10;
 }
 
 void FakeVision::detectionColors(){
-    if(!this->_changed){
-        Global::attacker.setPosition(300, 300);
-        Global::deffender.setPosition(400, 400);
-        Global::goalkeeper.setPosition(500, 500);
-        Global::attacker.setOrientationRobot(cos(M_PI/6.), sin(M_PI/6.));
-        Global::deffender.setOrientationRobot(cos(-M_PI/6.), sin(-M_PI/6.));
-        Global::goalkeeper.setOrientationRobot(cos(-3*M_PI/6.), sin(-3*M_PI/6.));
-        Global::ball.x = 300;
-        Global::ball.y = 10;
-    }
+    
 }
 
 void FakeVision::show(){

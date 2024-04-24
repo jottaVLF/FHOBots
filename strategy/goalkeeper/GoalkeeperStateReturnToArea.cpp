@@ -14,33 +14,11 @@ GoalkeeperStateReturnToArea::~GoalkeeperStateReturnToArea() {
 
 }
 
-void GoalkeeperStateReturnToArea::doActions() {
-
-        Vector2D destination;
-
-        destination.set(Global::areaToDeffend.x, Global::areaToDeffend.y);
-        Vector2D oriAux = destination - _robot->getPosition();
-        
+void GoalkeeperStateReturnToArea::doActions() 
+{
+        Vector2D destination(Global::areaToDeffend.getCenter());        
         _robot->calculatePwm(destination);
-
-        if((_robot->getOrientation()||oriAux) >= M_PI/4)
-            Global::communication->writeMessage(_robot->getPosMessage(), 51, 50);
-        else if((_robot->getOrientation()||oriAux) <= -M_PI/4){
-            Global::communication->writeMessage(_robot->getPosMessage(), 50, 51);
-        }
-        else{
-            if(!alinhado)
-                Global::communication->writeMessage(_robot->getPosMessage(), 0, 0);
-            alinhado = true;
-
-
-            if(_robot->getPwmLeft() % 2 == 0)
-                _robot->setPwmLeft(_robot->getPwmLeft() + 1);
-            if(_robot->getPwmRight() %2 == 0)
-                _robot->setPwmRight(_robot->getPwmRight() + 1);
-
-            Global::communication->writeMessage(_robot->getPosMessage(),  _robot->getPwmLeft(), _robot->getPwmRight() + 10);
-        }
+        Global::communication->writeMessage(_robot->getPosMessage(),  _robot->getPwmLeft(), _robot->getPwmRight());
 }
 
 std::string GoalkeeperStateReturnToArea::checkConditions() {
@@ -48,24 +26,15 @@ std::string GoalkeeperStateReturnToArea::checkConditions() {
     if(Global::bufferKeyboard == (int)'p')
         return "idle";
 
-    if(returnToWaiting())
-        return "waiting";
+    if(WorldModel::isInDeffenseArea(_robot->getPosition()))
+        return "seeking";
 
     return "";
 }
 
 void GoalkeeperStateReturnToArea::entryActions() {
-    alinhado = false;
 }
 
 void GoalkeeperStateReturnToArea::exitActions() {
 
-}
-
-bool GoalkeeperStateReturnToArea::returnToWaiting() {
-
-    if(Global::isInsideOwnArea(_robot->getPosition()))
-        return true;
-
-    return false;
 }

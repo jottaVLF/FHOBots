@@ -21,10 +21,9 @@ std::string StateBackOff::checkConditions()
 
     Vector2D posRobot = _robot->getPosition();
     
-
+    if(fabs((_robot->getPosition() - Global::ballPos).magnitude()) >= 20)
+        return "spinning";
     
-    //if(abs((_robot->getPosition() - Global::ballPos).magnitude()) >= Global::frameCentimetersConstant * 8)
-       // return "spinning";
     if(!WorldModel::isAlignedWithWall(_robot->getPosition(), _robot->getOrientation()))
         return "seeking";
     

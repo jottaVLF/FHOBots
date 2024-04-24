@@ -16,6 +16,7 @@ class Area : public Vector2D{
         bool isOnLeft(double x);
         void copy(Area & other);
         void set(Area other);
+        Vector2D getCenter();
 };
 
 #endif

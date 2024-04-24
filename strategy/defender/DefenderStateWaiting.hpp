@@ -4,6 +4,7 @@
 #include "../State.hpp"
 #include "../../model/Robot.hpp"
 #include "../../model/WorldModel.hpp"
+#include "../../Global.hpp"
 
 class DefenderStateWaiting : public State
 {

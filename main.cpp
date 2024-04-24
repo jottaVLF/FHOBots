@@ -10,6 +10,7 @@
 #include "vision/FakeVision.hpp"
 #include "model/Robot.hpp"
 #include "model/Robot.hpp"
+#include "FakePhysics.hpp"
 
 void initializeModelAndStates(Config configuration){
     Global::attacker.createMachineStates();
@@ -41,12 +42,12 @@ int main(int argc, char* argv[])
     Global::communication = new Communication(configuration.communication);
     //Global::communication->configureRobots(configuration);
     
+    initializeModelAndStates(configuration);
+
     vision->adjustFieldPosition();
     vision->calibration(); 
 
-    std::cout << "Initial configurations and calibrations ... OK";
-
-    initializeModelAndStates(configuration);
+    std::cout << "Initial configurations and calibrations ... OK" <<std::endl;
 
     Global::bufferKeyboard = 0;
     std::thread tAttacker(&Robot::updateRobot, &Global::attacker);

@@ -10,7 +10,7 @@ AttackerStateAttacking::~AttackerStateAttacking()
 void AttackerStateAttacking::doActions()
 {
     Vector2D destination;
-    destination = Global::areaGoalAttack;
+    destination = Global::areaGoalAttack.getCenter();
     _robot->calculatePwm(destination);
     Global::communication->writeMessage(_robot->getPosMessage(), _robot->getPwmLeft(), _robot->getPwmRight());
 }

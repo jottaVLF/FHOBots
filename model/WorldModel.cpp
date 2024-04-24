@@ -175,7 +175,33 @@ bool WorldModel::otherRobotInDeffenseArea(Robot * r){
     
     return isOtherInArea;
 }
+
 bool WorldModel::isNearOf(Vector2D o, Vector2D p){
     Vector2D r= o-p;
-    return r.magnitude()<20;
+    return r.magnitude() < 20;
+}
+
+bool WorldModel::isAlignedWithWallAndBall(Vector2D robotPosition, Vector2D robotOrientation, Vector2D ball){
+
+    return isAlignedWithWall(robotPosition, robotOrientation) && isNearOf(robotPosition, ball) && isAlignedWith(robotOrientation, ball);
+
+}
+
+Vector2D WorldModel::getGoalKeeperDeffencePosition(){
+    double m = (Global::areaGoalDeffend.getCenter().y - Global::ball.y) / 
+               (Global::areaGoalDeffend.getCenter().x - Global::ball.x);
+    
+    double y = m * (Global::areaToDeffend.getCenter().x - Global::ball.x) + Global::ball.y;
+    Vector2D destination(Global::areaToDeffend.getCenter().x, y);
+    return destination;
+}
+
+Vector2D WorldModel::getDeffenderDeffencePosition(){
+    double fieldCenter = Global::fieldRect.width/2;
+    bool isAreaOnLeft  = Global::areaToAttack.isOnLeft(fieldCenter);
+
+    double x = isAreaOnLeft ? 3*Global::fieldRect.width/4 : Global::fieldRect.width/4;
+    double y = Global::ball.y;
+    Vector2D destination(x, y);
+    return destination;
 }

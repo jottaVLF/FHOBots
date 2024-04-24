@@ -25,6 +25,11 @@ std::string AttackerStateSeeking::checkConditions()
     if(isAlignedWithBall && isAlignedWithAttackGoal)
         return "attacking";
 
+    if(WorldModel::isOnDeffenseField(_robot->getPosition()) &&
+       WorldModel::isOnDeffenseField(Global::ball) && 
+       WorldModel::nearstRobotTo(Global::ball) != _robot)
+        return "waiting";
+
     if(WorldModel::isAlignedWithWall(_robot->getPosition(), _robot->getOrientation()))
         return "backoff";
 

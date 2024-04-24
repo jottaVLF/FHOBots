@@ -10,8 +10,8 @@ DefenderStateSeeking::~DefenderStateSeeking()
 
 void DefenderStateSeeking::doActions()
 {
-    Vector2D destination(_robot->getPosition().x,Global::ball.y);
-    if(WorldModel::isOnDeffenseField(Global::ball)){
+    Vector2D destination = WorldModel::getDeffenderDeffencePosition();
+    if(WorldModel::isOnDeffenseField(Global::ball) && WorldModel::nearstRobotTo(Global::ball) == _robot){
         _robot->calculatePwm(Global::ball);
     }
     else{
@@ -26,7 +26,12 @@ std::string DefenderStateSeeking::checkConditions()
 {
     if(Global::bufferKeyboard == (int)'p')
         return "idle";
+
     if(WorldModel::isNearOf(_robot->getPosition(),_robot->getObjective())){
+        return "waiting";
+    }
+
+    if(WorldModel::nearstRobotTo(Global::ball) != _robot && WorldModel::isNearOf(_robot->getPosition(), Global::attacker.getPosition())){
         return "waiting";
     }
     

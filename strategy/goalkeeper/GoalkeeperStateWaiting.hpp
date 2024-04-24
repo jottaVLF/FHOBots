@@ -7,6 +7,10 @@
 
 #include "../State.hpp"
 #include "../../model/Robot.hpp"
+#include "../../Global.hpp"
+#include <cmath>
+#include <iostream>
+#include "../../model/WorldModel.hpp"
 
 class GoalkeeperStateWaiting : public State{
 public:
@@ -21,18 +25,8 @@ public:
 private:
 
     Robot* _robot;
-    bool waitingToMoveBack();
-    bool waitingToMoveBackLimit(int kind);
     double valueX;
     bool farFromWall;
-
-    bool waitingMoveToForward();
-    bool waitingMoveToForwardLimit(int kind);
-
-    bool waitingToSpinning();
-    bool waitingToKicking();
-
-    bool waitingToReturn();
 };
 
 
