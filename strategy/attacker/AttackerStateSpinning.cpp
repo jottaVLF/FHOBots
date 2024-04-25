@@ -16,10 +16,10 @@ AttackerStateSpinning::~AttackerStateSpinning() {
 }
 
 void AttackerStateSpinning::doActions() {
-
-       Global::communication->writeMessage(_robot->getPosMessage(), 80, 30, true,false);
-
-
+    if(_robot->getPosition().y < Global::fieldRect.height/2 && WorldModel::isDeffenseFieldOnLeft())
+        Global::communication->writeMessage(_robot->getPosMessage(), 80, 80, false,true);
+    else if(_robot->getPosition().y > Global::fieldRect.height/2 && WorldModel::isDeffenseFieldOnLeft())
+        Global::communication->writeMessage(_robot->getPosMessage(), 80, 80, true,false);
 }
 
 std::string AttackerStateSpinning::checkConditions() {

@@ -18,7 +18,7 @@ Robot::~Robot()
 void Robot::calculatePwm(Vector2D &destination)
 {
     setObjective(destination);
-    Vector2D v = destination - _position;
+    Vector2D v = (destination - _position)*50;
     _control.calculatePwm(v, _Orientation);
 }
 

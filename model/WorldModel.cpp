@@ -1,6 +1,6 @@
 #include "WorldModel.hpp"
 
-int WorldModel::_offset = 30;
+int WorldModel::_offset = 50;
 
 bool WorldModel::isInsideDeffenseArea(Vector2D position){
     return Global::areaToDeffend.isInside(position);
@@ -9,7 +9,11 @@ bool WorldModel::isInsideDeffenseArea(Vector2D position){
 bool WorldModel::isInsideAttackArea(Vector2D position){
     return Global::areaToAttack.isInside(position);
 }
-    
+bool WorldModel::isDeffenseFieldOnLeft(){
+    double fieldCenter = Global::fieldRect.width/2;
+    bool isAreaOnLeft = Global::areaToDeffend.isOnLeft(fieldCenter);
+    return isAreaOnLeft;
+}
 bool WorldModel::isOnDeffenseField(Vector2D position){
     double fieldCenter = Global::fieldRect.width/2;
     bool isAreaOnLeft = Global::areaToDeffend.isOnLeft(fieldCenter);
@@ -178,12 +182,12 @@ bool WorldModel::otherRobotInDeffenseArea(Robot * r){
 
 bool WorldModel::isNearOf(Vector2D o, Vector2D p){
     Vector2D r= o-p;
-    return r.magnitude() < 20;
+    return r.magnitude() < 50;
 }
 
-bool WorldModel::isAlignedWithWallAndBall(Vector2D robotPosition, Vector2D robotOrientation, Vector2D ball){
-
-    return isAlignedWithWall(robotPosition, robotOrientation) && isNearOf(robotPosition, ball) && isAlignedWith(robotOrientation, ball);
+bool WorldModel::isAlignedWithWallAndBall(Vector2D robotPosition, Vector2D robotOrientation){
+    Vector2D robotToBall = Global::ball - robotPosition;
+    return isAlignedWithWall(robotPosition, robotOrientation) && isNearOf(robotPosition, Global::ball) && isAlignedWith(robotOrientation, robotToBall);
 
 }
 

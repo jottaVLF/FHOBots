@@ -9,7 +9,7 @@ StateBackOff::~StateBackOff()
 
 void StateBackOff::doActions()
 {
-    Global::communication->writeMessage(_robot->getPosMessage(), 80, 80, true,true);
+    Global::communication->writeMessage(_robot->getPosMessage(), 100, 100, true,true);
 
 
 }
@@ -18,17 +18,9 @@ std::string StateBackOff::checkConditions()
 {
     if(Global::bufferKeyboard == (int)'p')
         return "idle";
-
-    Vector2D posRobot = _robot->getPosition();
-    
-    if(fabs((_robot->getPosition() - Global::ballPos).magnitude()) >= 20)
-        return "spinning";
     
     if(!WorldModel::isAlignedWithWall(_robot->getPosition(), _robot->getOrientation()))
         return "seeking";
-    
-    if(Global::robotNearRobot(_robot))
-        return "";
 
     return "";
 }

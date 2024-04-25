@@ -24,6 +24,7 @@ public:
     static bool isOnDeffenseField(Vector2D position);
     static bool isOnAttackField(Vector2D position);
     static bool isAlignedWith(Vector2D v, Vector2D w);
+    static bool isDeffenseFieldOnLeft();
     static bool isNearWall(Vector2D v);
     static bool isAlignedWithWall(Vector2D p, Vector2D o);
     static Robot * nearstRobotTo(Vector2D v);
@@ -36,7 +37,7 @@ public:
     static bool isFacingArea(Vector2D o, Area a);
     static bool otherRobotInDeffenseArea(Robot * r);
     static bool isNearOf(Vector2D o, Vector2D p);
-    static bool isAlignedWithWallAndBall(Vector2D robotPosition, Vector2D robotOrientation, Vector2D ball); 
+    static bool isAlignedWithWallAndBall(Vector2D robotPosition, Vector2D robotOrientation); 
     static Vector2D getGoalKeeperDeffencePosition();
     static Vector2D getDeffenderDeffencePosition();
 private:

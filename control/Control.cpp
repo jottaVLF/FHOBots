@@ -32,14 +32,14 @@ void Control::calculatePwm(Vector2D& robotToDestiny, Vector2D OrientationRobot)
     _pwmLeftWheel = static_cast<int>(_basePwmValue + pd);
     if(_pwmLeftWheel > _maxPwmValue)
         _pwmLeftWheel = _maxPwmValue;
-    else if(_pwmLeftWheel < 35)
-        _pwmLeftWheel = 35;
+    else if(_pwmLeftWheel < 10)
+        _pwmLeftWheel = 10;
 
     _pwmRightWheel = static_cast<int>(_basePwmValue - pd);
     if(_pwmRightWheel > _maxPwmValue)
         _pwmRightWheel = _maxPwmValue;
-    else if(_pwmRightWheel < 35)
-        _pwmRightWheel = 35;
+    else if(_pwmRightWheel < 10)
+        _pwmRightWheel = 10;
 }
 
 void Control::calculatePwm(Vector2D& robotToDestiny, const double& angleRobot)
@@ -49,14 +49,14 @@ void Control::calculatePwm(Vector2D& robotToDestiny, const double& angleRobot)
     _pwmLeftWheel = static_cast<int>(_basePwmValue + pd);
     if(_pwmLeftWheel > _maxPwmValue)
         _pwmLeftWheel = _maxPwmValue;
-    else if(_pwmLeftWheel < 35)
-        _pwmLeftWheel = 35;
+    else if(_pwmLeftWheel < 10)
+        _pwmLeftWheel = 10;
 
     _pwmRightWheel = static_cast<int>(_basePwmValue - pd);
     if(_pwmRightWheel > _maxPwmValue)
         _pwmRightWheel = _maxPwmValue;
-    else if(_pwmRightWheel < 35)
-        _pwmRightWheel = 35;
+    else if(_pwmRightWheel < 10)
+        _pwmRightWheel = 10;
 }
 
 void Control::setMaxPwm(const int maxPwm)

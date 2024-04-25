@@ -17,16 +17,20 @@ void DefenderStateSeeking::doActions()
     else{
         _robot->calculatePwm(destination);
     }
-        
+    //Vector2D destination = Global::ball;
+    //_robot->calculatePwm(destination);   
     Global::communication->writeMessage(_robot->getPosMessage(), _robot->getPwmLeft(), _robot->getPwmRight());
 
 }
 
 std::string DefenderStateSeeking::checkConditions()
 {
+    Vector2D robotToGol = Global::areaGoalAttack-_robot->getPosition();
     if(Global::bufferKeyboard == (int)'p')
         return "idle";
-
+    //return "";
+    if(WorldModel::isAlignedWith(_robot->getOrientation(),robotToGol)&& WorldModel::isNearOf(Global::ball, _robot->getPosition()))
+        return "kicking";
     if(WorldModel::isNearOf(_robot->getPosition(),_robot->getObjective())){
         return "waiting";
     }
@@ -40,7 +44,8 @@ std::string DefenderStateSeeking::checkConditions()
 
     if(WorldModel::isInsideDeffenseArea(_robot->getPosition()) && WorldModel::isFacingArea(_robot->getOrientation(), Global::areaToDeffend))
         return "backoff";
- 
+    
+
     if(WorldModel::isInsideDeffenseArea(Global::ball) && !WorldModel::isInsideDeffenseArea(_robot->getPosition()))
         return "waiting";
 
@@ -49,9 +54,9 @@ std::string DefenderStateSeeking::checkConditions()
 
 void DefenderStateSeeking::entryActions()
 {
-    _robot->setPD(40, 0); ///180.5, -950.35
-    _robot->setBasePwmValue(80);
-    _robot->setMaxPwm(120);
+    _robot->setPD(20, 80);
+    _robot->setBasePwmValue(55);
+    _robot->setMaxPwm(80);
     atkLastX = Global::attacker.getPosition().x;
 }
 

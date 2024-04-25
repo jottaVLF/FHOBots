@@ -11,6 +11,7 @@ GoalkeeperStateSeeking::~GoalkeeperStateSeeking()
 
 void GoalkeeperStateSeeking::doActions()
 {
+    //Vector2D destination = Global::ball;
     Vector2D destination = WorldModel::getGoalKeeperDeffencePosition();
     _robot->calculatePwm(destination);
     Global::communication->writeMessage(_robot->getPosMessage(), _robot->getPwmLeft(), _robot->getPwmRight());
@@ -20,7 +21,7 @@ std::string GoalkeeperStateSeeking::checkConditions()
 {
     if(Global::bufferKeyboard == (int)'p')
         return "idle";
-
+    //return "";
     if(WorldModel::isNearOf(_robot->getPosition(),_robot->getObjective())){
         return "waiting";
     }
@@ -34,9 +35,9 @@ std::string GoalkeeperStateSeeking::checkConditions()
 
 void GoalkeeperStateSeeking::entryActions()
 {
-    _robot->setBasePwmValue(160);
-    _robot->setMaxPwm(255);
-    _robot->setPD(108.,210.);
+    _robot->setPD(10, 250);
+    _robot->setBasePwmValue(35);
+    _robot->setMaxPwm(80);
 }
 
 void GoalkeeperStateSeeking::exitActions()

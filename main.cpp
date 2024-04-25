@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
         Global::bufferKeyboard = cv::waitKey(1);
         Vision * realVision = dynamic_cast<Vision * >(vision);
         realVision->show();
-        std::this_thread::sleep_for(std::chrono::microseconds(300));
+        std::this_thread::sleep_for(std::chrono::microseconds(5000));
         Global::communication->sendMessage();
 
     } while(Global::bufferKeyboard != 27);

@@ -33,6 +33,9 @@ std::string GoalkeeperStateReturnToArea::checkConditions() {
 }
 
 void GoalkeeperStateReturnToArea::entryActions() {
+    _robot->setPD(10, 0); ///180.5, -950.35
+    _robot->setBasePwmValue(35);
+    _robot->setMaxPwm(60);
 }
 
 void GoalkeeperStateReturnToArea::exitActions() {

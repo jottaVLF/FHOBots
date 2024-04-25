@@ -12,6 +12,7 @@ void DefenderStateWaiting::doActions()
     Vector2D destination = WorldModel::getDeffenderDeffencePosition();
     _robot->setPwmLeft(0);
     _robot->setPwmRight(0);
+    _robot->setObjective(destination);
     Global::communication->writeMessage(_robot->getPosMessage(), _robot->getPwmLeft(), _robot->getPwmRight());
 }
 

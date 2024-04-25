@@ -4,7 +4,7 @@
 
 #ifndef FHOBOTS_ATTACKERSTATESPINNING_HPP
 #define FHOBOTS_ATTACKERSTATESPINNING_HPP
-
+#include "../../model/WorldModel.hpp"
 #include "../../model/Robot.hpp"
 #include "../State.hpp"
 
