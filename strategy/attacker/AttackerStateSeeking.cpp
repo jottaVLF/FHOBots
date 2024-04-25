@@ -8,8 +8,6 @@ AttackerStateSeeking::~AttackerStateSeeking()
 
 void AttackerStateSeeking::doActions()
 {   
-    
-    //Vector2D versor = robotToBall /robotToBall.magnitude()
     Vector2D destination = Global::ball;
     _robot->calculatePwm(destination);
     Global::communication->writeMessage(_robot->getPosMessage(), _robot->getPwmLeft(), _robot->getPwmRight());

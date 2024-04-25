@@ -192,11 +192,15 @@ bool WorldModel::isAlignedWithWallAndBall(Vector2D robotPosition, Vector2D robot
 }
 
 Vector2D WorldModel::getGoalKeeperDeffencePosition(){
-    double m = (Global::areaGoalDeffend.getCenter().y - Global::ball.y) / 
-               (Global::areaGoalDeffend.getCenter().x - Global::ball.x);
-    
-    double y = m * (Global::areaToDeffend.getCenter().x - Global::ball.x) + Global::ball.y;
-    Vector2D destination(Global::areaToDeffend.getCenter().x, y);
+    double upperGoalLimit = Global::areaGoalDeffend.y;
+    double lowerGoalLimit = upperGoalLimit + Global::areaGoalDeffend.height;
+    Vector2D destination = Global::ball;
+    if(Global::ball.y > lowerGoalLimit)
+        destination.set(Global::areaToDeffend.getCenter().x, lowerGoalLimit);
+    else if(Global::ball.y < upperGoalLimit)
+        destination.set(Global::areaToDeffend.getCenter().x, upperGoalLimit);
+    else
+        destination.set(Global::areaToDeffend.getCenter().x, Global::ball.y);
     return destination;
 }
 
@@ -208,4 +212,8 @@ Vector2D WorldModel::getDeffenderDeffencePosition(){
     double y = Global::ball.y;
     Vector2D destination(x, y);
     return destination;
+}
+
+bool WorldModel::isInFrontOf(Vector2D v, Vector2D w){
+    return fabs(v.angleBetween(w)) < M_PI / 2;
 }

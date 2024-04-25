@@ -48,9 +48,14 @@ class Robot {
         virtual std::string getMessage();
 
         void updateRobot();
+        void spinClockWise(int pwm);
+        void spinCounterClockWise(int pwm);
+        void moveForward(int pwm);
+        void moveBackward(int pwm);
 
         int unchangedPosCounter;
         bool forceSeeking;
+        bool reverseLeft, reverseRight;
 
     protected:
 

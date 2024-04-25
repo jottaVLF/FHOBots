@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
         realVision->show();
         std::this_thread::sleep_for(std::chrono::microseconds(5000));
         Global::communication->sendMessage();
-
+        
     } while(Global::bufferKeyboard != 27);
 
     tAttacker.join();

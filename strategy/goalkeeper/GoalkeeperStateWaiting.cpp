@@ -12,17 +12,34 @@ GoalkeeperStateWaiting::~GoalkeeperStateWaiting() {
 void GoalkeeperStateWaiting::doActions() {
     Vector2D destination = WorldModel::getGoalKeeperDeffencePosition();
     _robot->setObjective(destination);
-    _robot->setPwmLeft(0);
-    _robot->setPwmRight(0);
+    _robot->moveForward(0);
     Global::communication->writeMessage(_robot->getPosMessage(), 0, 0);
 }
 
 std::string GoalkeeperStateWaiting::checkConditions() {
+    Vector2D pointToDeffend  = WorldModel::getGoalKeeperDeffencePosition();
+    Vector2D robotToObjective = pointToDeffend - _robot->getPosition();
+
     if(Global::bufferKeyboard == (int)'p')
         return "idle";
 
-    if(!WorldModel::isNearOf(_robot->getPosition(), _robot->getObjective()))
+    if(!WorldModel::isInDeffenseArea(Global::ball) && 
+       !WorldModel::isInFrontOf(_robot->getOrientation(), robotToObjective) &&
+       WorldModel::isInDeffenseArea(_robot->getPosition()) &&
+       !WorldModel::isNearOf(_robot->getPosition(), pointToDeffend))
+        return "moveback";
+    
+    if(!WorldModel::isInDeffenseArea(Global::ball) && 
+       WorldModel::isInFrontOf(_robot->getOrientation(), robotToObjective) &&
+       WorldModel::isInDeffenseArea(_robot->getPosition()) &&
+       !WorldModel::isNearOf(_robot->getPosition(), pointToDeffend))
+        return "moveforward";
+
+    if(WorldModel::isInDeffenseArea(Global::ball) && !WorldModel::isNearOf(_robot->getPosition(), _robot->getObjective()))
         return "seeking";
+
+    if(WorldModel::isNearOf(_robot->getPosition(), Global::ball) && WorldModel::isInsideDeffenseArea(_robot->getPosition()))
+        return "spinning";
 /*
     if(Global::isInsideOwnGoal(_robot->getPosition()))
         return "exit";

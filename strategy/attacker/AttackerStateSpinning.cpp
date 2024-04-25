@@ -16,18 +16,21 @@ AttackerStateSpinning::~AttackerStateSpinning() {
 }
 
 void AttackerStateSpinning::doActions() {
-    if(_robot->getPosition().y < Global::fieldRect.height/2 && WorldModel::isDeffenseFieldOnLeft())
+    if(_robot->getPosition().y < Global::fieldRect.height/2 && WorldModel::isDeffenseFieldOnLeft()){
+        _robot->spinCounterClockWise(80);
         Global::communication->writeMessage(_robot->getPosMessage(), 80, 80, false,true);
-    else if(_robot->getPosition().y > Global::fieldRect.height/2 && WorldModel::isDeffenseFieldOnLeft())
+    }else if(_robot->getPosition().y > Global::fieldRect.height/2 && WorldModel::isDeffenseFieldOnLeft()){
+        _robot->spinClockWise(80);
         Global::communication->writeMessage(_robot->getPosMessage(), 80, 80, true,false);
+    }
 }
 
 std::string AttackerStateSpinning::checkConditions() {
     if(Global::bufferKeyboard == (int)'p')
         return "idle";
 
-    if(spinningToSeeking())
-       return "seeking";
+     if(!WorldModel::isNearOf(_robot->getPosition(), Global::ball))
+        return "seeking";
 
     return "";
 }
@@ -37,13 +40,5 @@ void AttackerStateSpinning::entryActions() {
 }
 
 void AttackerStateSpinning::exitActions() {
-
-}
-
-bool AttackerStateSpinning::spinningToSeeking() {
-
-    if(abs((_robot->getPosition() - Global::ballPos).magnitude()) >= Global::frameCentimetersConstant * 8 && Global::ball.x != -10)
-        return true;
-
-    return false;
+    _robot->moveForward(0);
 }

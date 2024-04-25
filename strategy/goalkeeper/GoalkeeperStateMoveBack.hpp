@@ -7,6 +7,11 @@
 
 #include "../State.hpp"
 #include "../../model/Robot.hpp"
+#include "../../model/WorldModel.hpp"
+#include "../../Global.hpp"
+#include <cmath>
+#include <iostream>
+
 
 class GoalkeeperStateMoveBack : public State{
 public:
@@ -19,13 +24,7 @@ public:
     void exitActions();
 
 private:
-    double valueX;
-
     Robot* _robot;
-    bool backToWaiting();
-    bool backToWaitingLimit();
-    bool backToForward();
-    bool backToBackOff();
 
 };
 

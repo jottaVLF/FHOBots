@@ -7,6 +7,7 @@
 
 #include "../State.hpp"
 #include "../../model/Robot.hpp"
+#include "../../model/WorldModel.hpp"
 
 class GoalkeeperMoveForward : public State{
 public:
@@ -19,12 +20,7 @@ public:
     void exitActions();
 
 private:
-    double valueX;
-
     Robot* _robot;
-    bool forwardToWaiting();
-    bool forwardToWaitingLimit();
-    bool forwardToBack();
 
 
 };

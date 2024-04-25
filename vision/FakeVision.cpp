@@ -66,9 +66,9 @@ void FakeVision::show(){
     cv::line(_gui, toPixel(Global::deffender.getPosition()), cv::Point(Global::deffender.getPosition().x + 50* Global::deffender.getOrientation().x, Global::deffender.getPosition().y + 50* Global::deffender.getOrientation().y), cv::Scalar(255,255, 255, 1), 1, cv::LINE_4);
     cv::line(_gui, toPixel(Global::goalkeeper.getPosition()), cv::Point(Global::goalkeeper.getPosition().x + 50* Global::goalkeeper.getOrientation().x, Global::goalkeeper.getPosition().y + 50* Global::goalkeeper.getOrientation().y), cv::Scalar(255,255, 255, 1), 1, cv::LINE_4);
     // robots
-    cv::circle(_gui, toPixel(Global::attacker.getPosition()), 5, cv::Scalar(255, 70, 168, 0.8), 10);
-    cv::circle(_gui, toPixel(Global::deffender.getPosition()), 5, cv::Scalar(0, 170, 0, 0.8), 10);
-    cv::circle(_gui, toPixel(Global::goalkeeper.getPosition()), 5, cv::Scalar(0, 0, 168, 0.8), 10);
+    cv::circle(_gui, toPixel(Global::attacker.getPosition()), heigthToPixel(3.5), cv::Scalar(255, 70, 168, 0.8), 10);
+    cv::circle(_gui, toPixel(Global::deffender.getPosition()), heigthToPixel(3.5), cv::Scalar(0, 170, 0, 0.8), 10);
+    cv::circle(_gui, toPixel(Global::goalkeeper.getPosition()), heigthToPixel(3.5), cv::Scalar(0, 0, 168, 0.8), 10);
     // robots state
     cv::putText(_gui, Global::attacker.getMessage(),cv::Point(Global::attacker.getPosition().x, Global::attacker.getPosition().y - 25) ,cv::FONT_HERSHEY_COMPLEX, 0.4, cv::Scalar(255,255,255, 1), 1);
     cv::putText(_gui, Global::deffender.getMessage(),cv::Point(Global::deffender.getPosition().x, Global::deffender.getPosition().y - 25) ,cv::FONT_HERSHEY_COMPLEX, 0.4, cv::Scalar(255,255,255, 1), 1);

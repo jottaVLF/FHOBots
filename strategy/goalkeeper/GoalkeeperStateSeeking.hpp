@@ -18,6 +18,7 @@ class GoalkeeperStateSeeking : public State
 
     private:
         Robot* _robot;
+        bool _stopped = true;
 };
 
 

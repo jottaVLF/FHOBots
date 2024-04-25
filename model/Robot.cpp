@@ -10,6 +10,8 @@ Robot::Robot(const double kp, const double kd, const double basePwmValue) : _con
 {
     forceSeeking = false;
     this->setObjective(0, 0);
+    this->reverseLeft = false;
+    this->reverseRight= false;
 }
 
 Robot::~Robot()
@@ -18,15 +20,15 @@ Robot::~Robot()
 void Robot::calculatePwm(Vector2D &destination)
 {
     setObjective(destination);
-    Vector2D v = (destination - _position)*50;
-    _control.calculatePwm(v, _Orientation);
+    Vector2D v = destination - _position;
+    _control.calculatePwm(v, _Orientation * 50);
 }
 
 void Robot::calculatePwmR(Vector2D &destination)
 {
     setObjective(destination);
     Vector2D v = destination - _position;
-    _control.calculatePwm(v, (_Orientation * -1));
+    _control.calculatePwm(v, _Orientation * -50);
 }
 
 void Robot::setOrientationRobot(const double x, const double y)
@@ -146,4 +148,32 @@ void Robot::setObjective(double x, double y){
 
 Vector2D& Robot::getObjective(){
     return this->objPos;
+}
+
+void Robot::spinClockWise(int pwm){
+    this->reverseLeft = false;
+    this->reverseRight= true;
+    _control.setPwmLeftWheel(pwm);
+    _control.setPwmRightWheel(pwm);
+}
+
+void Robot::spinCounterClockWise(int pwm){
+    this->reverseLeft  = true;
+    this->reverseRight = false;
+    _control.setPwmLeftWheel(pwm);
+    _control.setPwmRightWheel(pwm);
+}
+
+void Robot::moveForward(int pwm){
+    this->reverseLeft  = false;
+    this->reverseRight = false;
+    _control.setPwmLeftWheel(pwm);
+    _control.setPwmRightWheel(pwm);
+}
+
+void Robot::moveBackward(int pwm){
+    this->reverseLeft  = true;
+    this->reverseRight = true;
+    _control.setPwmLeftWheel(pwm);
+    _control.setPwmRightWheel(pwm);
 }

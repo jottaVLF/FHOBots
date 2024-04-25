@@ -9,9 +9,12 @@ void Physics::updateRobots(){
 }
 
 void Physics::updateRobot(Robot * robot){
-    double dt = 0.033;
+    double dt = 0.1;
     double wl = 47. / 255. * robot->getPwmLeft();
     double wr = 47. / 255. * robot->getPwmRight();
+
+    wl = robot->reverseLeft ? -wl : wl;
+    wr = robot->reverseRight? -wr : wr;
 
     double v = (wl + wr) * 0.35 / 2;
     double w = (wl - wr) * 0.35 / 0.7;

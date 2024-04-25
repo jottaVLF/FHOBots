@@ -7,6 +7,7 @@
 
 #include "../State.hpp"
 #include "../../model/Robot.hpp"
+#include "../../model/WorldModel.hpp"
 
 class GoalkeeperStateSpinning : public State{
 public:
