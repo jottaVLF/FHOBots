@@ -370,14 +370,14 @@ void Vision::drawRole(std::string role, std::string colorString){
     char robotPosition[100];
     sprintf(robotPosition, "%.1lf, %.1lf", robot->getPosition().x, robot->getPosition().y);
     cv::line(_gpuFrame, toPixel(robot->getPosition()), cv::Point(robot->getPosition().x + 3* robot->getOrientation().x, robot->getPosition().y + 3* robot->getOrientation().y), cv::Scalar(255,255, 255, 1), 1, cv::LINE_4);
-    cv::putText(_gpuFrame, robot->getMessage(),cv::Point(robot->getPosition().x + 25, robot->getPosition().y) ,cv::FONT_HERSHEY_COMPLEX, 0.4, cv::Scalar(255,255,255, 1), 1);
-    cv::putText(_gpuFrame, robotPosition,cv::Point(robot->getPosition().x, robot->getPosition().y + 25) ,cv::FONT_HERSHEY_COMPLEX, 0.4, cv::Scalar(255,255,255, 1), 1);
+    cv::putText(_gpuFrame, robot->getMessage(),cv::Point(robot->getPosition().x - 15 , robot->getPosition().y + 40) ,cv::FONT_HERSHEY_COMPLEX, 0.3, cv::Scalar(255,255,255, 1), 1);
+    cv::putText(_gpuFrame, robotPosition,cv::Point(robot->getPosition().x - 15, robot->getPosition().y + 25) ,cv::FONT_HERSHEY_COMPLEX, 0.3, cv::Scalar(255,255,255, 1), 1);
     cv::line(_gpuFrame, toPixel(robot->getPosition()),  toPixel(robot->objPos), color, 1, cv::LINE_4);
     Communication * communication = dynamic_cast<Communication *>(Global::communication);
 
     sprintf(robotPosition, "%d, %d", communication->getLeftPwm(id), communication->getRightPwm(id));
     cv::putText(_gpuFrame, robotPosition,cv::Point(robot->getPosition().x, robot->getPosition().y - 25) ,cv::FONT_HERSHEY_COMPLEX, 0.3, cv::Scalar(255,255,255, 1), 1);
-    
+    cv::circle(_gpuFrame, toPixel(robot->objPos), WorldModel::_precision, color, 1);
     
 }
 

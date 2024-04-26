@@ -5,6 +5,7 @@
 #include "../strategy/defender/DefenderStateSeeking.hpp"
 #include "../strategy/defender/DefenderStateKicking.hpp"
 #include "../strategy/defender/DefenderStateAlign.hpp"
+#include "../strategy/defender/DefenderStateSpinning.hpp"
 #include "../strategy/attacker/AttackerStateSpinning.hpp"
 #include "../strategy/basic/StateExitArea.hpp"
 
@@ -23,6 +24,7 @@ void DefenderRobot::createMachineStates(){
     this->_machineState.addState(new AttackerStateSpinning(this));
     this->_machineState.addState(new DefenderStateAlign(this));
     this->_machineState.addState(new StateExitArea(this));
+    this->_machineState.addState(new DefenderStateSpinning(this));
     this->_machineState.setState("idle");
 }
 

@@ -17,8 +17,8 @@ void DefenderStateSeeking::doActions()
     else{
         _robot->calculatePwm(destination);
     }
-    //Vector2D destination = Global::ball;
-    //_robot->calculatePwm(destination);   
+    /*Vector2D destination = Global::ball;
+    _robot->calculatePwm(destination);   */
     Global::communication->writeMessage(_robot->getPosMessage(), _robot->getPwmLeft(), _robot->getPwmRight());
 
 }
@@ -31,10 +31,16 @@ std::string DefenderStateSeeking::checkConditions()
     //return "";
     if(WorldModel::isAlignedWith(_robot->getOrientation(),robotToGol)&& WorldModel::isNearOf(Global::ball, _robot->getPosition()))
         return "kicking";
+    if(WorldModel::isAlignedWithWallAndBall(_robot->getPosition(), _robot->getOrientation()))
+        return "spinning"; 
+    
+    if(WorldModel::isOnDeffenseField(Global::ball)&& WorldModel::isNearOf(_robot->getPosition(),Global::ball)){
+        return "spinning";
+    }
     if(WorldModel::isNearOf(_robot->getPosition(),_robot->getObjective())){
         return "waiting";
     }
-
+    
     if(WorldModel::nearstRobotTo(Global::ball) != _robot && WorldModel::isNearOf(_robot->getPosition(), Global::attacker.getPosition())){
         return "waiting";
     }
@@ -54,9 +60,9 @@ std::string DefenderStateSeeking::checkConditions()
 
 void DefenderStateSeeking::entryActions()
 {
-    _robot->setPD(20, 80);
-    _robot->setBasePwmValue(55);
-    _robot->setMaxPwm(80);
+    _robot->setPD(50, 60);
+    _robot->setBasePwmValue(90);
+    _robot->setMaxPwm(100);
     atkLastX = Global::attacker.getPosition().x;
 }
 

@@ -21,8 +21,9 @@ std::string DefenderStateKicking::checkConditions()
     if(Global::bufferKeyboard == (int)'p')
         return "idle";
 
-    if(!WorldModel::isAlignedWith(_robot->getOrientation(),robotToGol)&& WorldModel::isNearOf(Global::ball, _robot->getPosition()))
+    if(!WorldModel::isAlignedWith(_robot->getOrientation(), Global::ball - _robot->getPosition()))
         return "seeking";
+
     return "";
 }
 

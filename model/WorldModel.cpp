@@ -1,6 +1,7 @@
 #include "WorldModel.hpp"
 
 int WorldModel::_offset = 50;
+int WorldModel::_precision = 26;
 
 bool WorldModel::isInsideDeffenseArea(Vector2D position){
     return Global::areaToDeffend.isInside(position);
@@ -182,7 +183,7 @@ bool WorldModel::otherRobotInDeffenseArea(Robot * r){
 
 bool WorldModel::isNearOf(Vector2D o, Vector2D p){
     Vector2D r= o-p;
-    return r.magnitude() < 50;
+    return r.magnitude() < WorldModel::_precision;
 }
 
 bool WorldModel::isAlignedWithWallAndBall(Vector2D robotPosition, Vector2D robotOrientation){

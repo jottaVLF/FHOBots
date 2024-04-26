@@ -11,21 +11,23 @@ GoalkeeperStateSeeking::~GoalkeeperStateSeeking()
 
 void GoalkeeperStateSeeking::doActions()
 {
-    if(!_stopped){
+    
         Vector2D destination = Global::ball;
         _robot->calculatePwm(destination);
         Global::communication->writeMessage(_robot->getPosMessage(), _robot->getPwmLeft(), _robot->getPwmRight());
-    }
+    
 }
 
 std::string GoalkeeperStateSeeking::checkConditions()
 {
     Vector2D pointToDeffend  = WorldModel::getGoalKeeperDeffencePosition();
     Vector2D robotToObjective = pointToDeffend - _robot->getPosition();
+    
 
     if(Global::bufferKeyboard == (int)'p')
         return "idle";
 
+    //return "";
     // Robot is in the area
 
     if(!WorldModel::isInDeffenseArea(Global::ball) && 
@@ -47,7 +49,7 @@ std::string GoalkeeperStateSeeking::checkConditions()
     if(!WorldModel::isInDeffenseArea(_robot->getPosition()))
         return "return";
     
-    _stopped = false;
+    
 
     return "";
 }
@@ -55,9 +57,9 @@ std::string GoalkeeperStateSeeking::checkConditions()
 void GoalkeeperStateSeeking::entryActions()
 {
     _stopped = true;
-    _robot->setPD(10, 250);
-    _robot->setBasePwmValue(35);
-    _robot->setMaxPwm(80);
+    _robot->setPD(10, 260);
+    _robot->setBasePwmValue(45);
+    _robot->setMaxPwm(70);
 }
 
 void GoalkeeperStateSeeking::exitActions()

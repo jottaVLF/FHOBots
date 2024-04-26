@@ -27,7 +27,9 @@ std::string DefenderStateWaiting::checkConditions()
     if(WorldModel::nearstRobotTo(Global::ball) == _robot && !WorldModel::isNearOf(_robot->getPosition(),_robot->getObjective())){
         return "seeking";
     }
-
+    if(WorldModel::isOnDeffenseField(Global::ball)&& WorldModel::isNearOf(_robot->getPosition(),Global::ball)){
+        return "spinning";
+    }
     return "";
 }
 

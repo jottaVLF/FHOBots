@@ -17,15 +17,15 @@ GoalkeeperStateSpinning::~GoalkeeperStateSpinning() {
 void GoalkeeperStateSpinning::doActions() {
     if(WorldModel::isDeffenseFieldOnLeft()) {
         if ((Global::ball - _robot->getPosition()).y > 0)
-            _robot->spinClockWise(80);
-        else
             _robot->spinCounterClockWise(80);
+        else
+            _robot->spinClockWise(80);
     }
     else {
         if ((Global::ball - _robot->getPosition()).y > 0)
-            _robot->spinCounterClockWise(80);
-        else
             _robot->spinClockWise(80);
+        else
+            _robot->spinCounterClockWise(80);
     }
     Global::communication->writeMessage(_robot->getPosMessage(), _robot->getPwmLeft(), _robot->getPwmRight(), _robot->reverseLeft, _robot->reverseRight);
 }

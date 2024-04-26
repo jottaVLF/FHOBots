@@ -19,6 +19,7 @@ class WorldModel{
 
 public:
     static int _offset;
+    static int _precision;
     static bool isInsideDeffenseArea(Vector2D position);    
     static bool isInsideAttackArea(Vector2D position);
     static bool isOnDeffenseField(Vector2D position);
