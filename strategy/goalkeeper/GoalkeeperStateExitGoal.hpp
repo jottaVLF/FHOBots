@@ -7,6 +7,8 @@
 
 #include "../State.hpp"
 #include "../../model/Robot.hpp"
+#include "../../model/WorldModel.hpp"
+#include "../../Global.hpp"
 
 class GoalkeeperStateExitGoal : public State {
     public:
@@ -19,11 +21,7 @@ class GoalkeeperStateExitGoal : public State {
         void exitActions();
 
     private:
-
-        double valueX, valueY;
-        bool alinhado;
         Robot* _robot;
-        bool exitgoalToWaiting();
 };
 
 

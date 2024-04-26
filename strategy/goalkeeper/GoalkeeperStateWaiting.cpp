@@ -10,6 +10,14 @@ GoalkeeperStateWaiting::~GoalkeeperStateWaiting() {
 }
 
 void GoalkeeperStateWaiting::doActions() {
+    
+    if((_ballPos - Global::ball).magnitude() < 10)
+        _timer++;
+    else{
+        _timer = 0;
+        _ballPos = Global::ball;
+    }
+
     Vector2D destination = WorldModel::getGoalKeeperDeffencePosition();
     _robot->setObjective(destination);
     _robot->moveForward(0);
@@ -22,6 +30,12 @@ std::string GoalkeeperStateWaiting::checkConditions() {
 
     if(Global::bufferKeyboard == (int)'p')
         return "idle";
+
+    if(WorldModel::isBallNearDeffenceArea() && WorldModel::nearstRobotTo(Global::ball) == _robot && _timer > 2000)
+        return "kicking";
+
+    if(WorldModel::isStuckAtDeffenseGoal(_robot->getPosition(), _robot->getOrientation()))
+        return "exit";
 
     if(!WorldModel::isInDeffenseArea(Global::ball) && 
        !WorldModel::isInFrontOf(_robot->getOrientation(), robotToObjective) &&
@@ -40,36 +54,14 @@ std::string GoalkeeperStateWaiting::checkConditions() {
 
     if(WorldModel::isNearOf(_robot->getPosition(), Global::ball) && WorldModel::isInsideDeffenseArea(_robot->getPosition()))
         return "spinning";
-/*
-    if(Global::isInsideOwnGoal(_robot->getPosition()))
-        return "exit";
 
-    if(waitingToReturn())
-        return "return";
-
-    if(waitingToSpinning())
-        return "spinning";
-
-    if(waitingToKicking())
-        return "kicking";
-
-    if(waitingToMoveBack())
-        return "moveback";
-
-    if(waitingMoveToForward())
-        return "moveforward";
-
-   // if(waitingToKicking())
-     //   return "kicking";*/
     return "";
 }
 
 void GoalkeeperStateWaiting::entryActions() {
 
-   const Area rect = Global::areaToDeffend;
-
-    valueX = rect.x;
-
+    _timer = 0;
+    _ballPos = Global::ball;
     double halfboardY = (Global::fieldRect.y + Global::fieldRect.y + Global::fieldRect.height) / 2.0;
 
     if(_robot->getPosition().y <= halfboardY)

@@ -177,3 +177,7 @@ void Robot::moveBackward(int pwm){
     _control.setPwmLeftWheel(pwm);
     _control.setPwmRightWheel(pwm);
 }
+
+double Robot::getErrorAngleTo(Vector2D objective){
+    return _control.calculateError(objective, _Orientation.angle());
+}

@@ -10,48 +10,22 @@ AttackerStateAlign::~AttackerStateAlign()
 
 void AttackerStateAlign::doActions()
 {
-    Vector2D destination = Global::ball;
-    switch (Global::eAreaAttack)
-    {
-        case AREA_ATTACK_RIGHT:
-            destination -= _robot->getPosition();
-            if(destination.x <= 10)
-                destination.set(Global::ball.x - 20, destination.y <= 0 ? Global::ball.y + 40 : Global::ball.y - 40);
-
-            else if(destination.x <= 90 && (destination.y > 15 || destination.y < -15))
-                destination.set(Global::ball.x, Global::ball.y);
-
-            else if(destination.x > 110)
-                destination.set(Global::ball.x - destination.x / 2, Global::ball.y);
-            else
-                destination = Global::ball;
-            break;
-
-        case AREA_ATTACK_LEFT:
-            destination -= _robot->getPosition();
-            if(destination.x >= -5)
-                destination.set(Global::ball.x + 20, destination.y <= 0 ? Global::ball.y + 40 : Global::ball.y - 40);
-
-            else if(destination.x >= -90 && (destination.y > 15 || destination.y < -15))
-                destination.set(Global::ball.x, Global::ball.y);
-
-            else if(destination.x < -110)
-                destination.set(Global::ball.x - destination.x / 2,  Global::ball.y);
-            else
-                destination = Global::ball;
-            break;
-    }
-
-    _robot->calculatePwm(destination);
-    _robot->setPwmRight(Global::pwmRightAtt(_robot->getPwmRight()));
-    Global::posPointAttack = destination;
-    Global::communication->writeMessage(_robot->getPosMessage(), _robot->getPwmLeft(), _robot->getPwmRight());
+    Vector2D ballToRobot = Global::ball - _robot->getPosition();
+    if(_robot->getErrorAngleTo(ballToRobot) > 0)
+        _robot->spinClockWise(30);
+    else
+        _robot->spinCounterClockWise(30);
+    Global::communication->writeMessage(_robot->getPosMessage(), _robot->getPwmLeft(), _robot->getPwmRight(), _robot->reverseLeft, _robot->reverseRight);
 }
 
 std::string AttackerStateAlign::checkConditions()
 {
+    Vector2D ballToRobot = Global::ball - _robot->getPosition();
     if(Global::bufferKeyboard == (int)'p')
         return "idle";
+
+    if(fabs(_robot->getErrorAngleTo(ballToRobot)) < M_PI / 10)
+        return "seeking";
 
     if(Global::robotNearRobot(_robot))
         return "backoff";
@@ -59,18 +33,8 @@ std::string AttackerStateAlign::checkConditions()
     if(WorldModel::isAlignedWithWall(_robot->getPosition(), _robot->getOrientation()))
         return "backoff";
 
-    if(Global::robotNearBall2(_robot->getPosition(), 9))
-        return "attacking";
 
-    Vector2D robotToDestiny = Global::ball - _robot->getPosition();
-
-    if(((_robot->getOrientation()||robotToDestiny) <= 0.25 && (_robot->getOrientation()||robotToDestiny) >= -0.25))
-        return "seeking";
-
-    if(Global::robotFarFromBall(_robot->getPosition()))
-        return "seeking";
-
-        return "";
+    return "";
 }
 
 void AttackerStateAlign::entryActions()
@@ -82,5 +46,6 @@ void AttackerStateAlign::entryActions()
 
 void AttackerStateAlign::exitActions()
 {
+    _robot->moveForward(0);
     _robot->setMaxPwm(160);
 }

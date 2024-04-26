@@ -57,6 +57,8 @@ class Robot {
         bool forceSeeking;
         bool reverseLeft, reverseRight;
 
+        double getErrorAngleTo(Vector2D objective);
+
     protected:
 
         int _posMessage;

@@ -42,6 +42,8 @@ public:
     static Vector2D getGoalKeeperDeffencePosition();
     static Vector2D getDeffenderDeffencePosition();
     static bool isInFrontOf(Vector2D v, Vector2D w);
+    static bool isStuckAtDeffenseGoal(Vector2D robotPosition, Vector2D robotOrientation);
+    static bool isBallNearDeffenceArea();
 private:
     static double distanceBetween(Vector2D v, Vector2D w);
 };

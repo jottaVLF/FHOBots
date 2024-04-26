@@ -17,8 +17,6 @@ void DefenderStateSeeking::doActions()
     else{
         _robot->calculatePwm(destination);
     }
-    /*Vector2D destination = Global::ball;
-    _robot->calculatePwm(destination);   */
     Global::communication->writeMessage(_robot->getPosMessage(), _robot->getPwmLeft(), _robot->getPwmRight());
 
 }
@@ -28,9 +26,10 @@ std::string DefenderStateSeeking::checkConditions()
     Vector2D robotToGol = Global::areaGoalAttack-_robot->getPosition();
     if(Global::bufferKeyboard == (int)'p')
         return "idle";
-    //return "";
+
     if(WorldModel::isAlignedWith(_robot->getOrientation(),robotToGol)&& WorldModel::isNearOf(Global::ball, _robot->getPosition()))
         return "kicking";
+    
     if(WorldModel::isAlignedWithWallAndBall(_robot->getPosition(), _robot->getOrientation()))
         return "spinning"; 
     

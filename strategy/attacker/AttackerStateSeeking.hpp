@@ -6,7 +6,7 @@
 #include "../../Global.hpp"
 #include "../../model/WorldModel.hpp"
 #include <iostream>
-#include <iomanip>
+#include <cmath>
 
 
 class AttackerStateSeeking : public State

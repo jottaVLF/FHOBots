@@ -25,6 +25,9 @@ std::string GoalkeeperStateMoveBack::checkConditions() {
     if(Global::bufferKeyboard == (int)'p')
         return "idle";
 
+    if(WorldModel::isStuckAtDeffenseGoal(_robot->getPosition(), _robot->getOrientation()))
+        return "exit";
+
     if(WorldModel::isInDeffenseArea(Global::ball) && WorldModel::isNearOf(_robot->getPosition(),Global::ball))
         return "spinning";
     

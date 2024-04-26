@@ -1,6 +1,6 @@
 {
     "camera" : 2,
-    "communication" : "/dev/ttyUSB1",
+    "communication" : "/dev/ttyUSB0",
     "team-color": "blue",
     "r0" : {
         "role" : "attacker",

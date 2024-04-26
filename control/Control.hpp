@@ -44,6 +44,8 @@ class Control {
         /// Retorna o Pwm da Roda Direita
         int getPwmRightWheel();
 
+        double calculateError(Vector2D& robotToDestiny, double angleRobot);
+
     private:
 
         /// Calcula o PD
@@ -62,7 +64,7 @@ class Control {
         int _pwmLeftWheel;
         int _pwmRightWheel;
 
-        double calculateError(Vector2D& robotToDestiny, double angleRobot);
+        
 };
 
 

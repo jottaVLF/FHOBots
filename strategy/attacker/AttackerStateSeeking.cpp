@@ -15,15 +15,19 @@ void AttackerStateSeeking::doActions()
 
 std::string AttackerStateSeeking::checkConditions()
 {
-    
+    Vector2D ballToRobot = Global::ball - _robot->getPosition();   
     bool isAlignedWithBall =        WorldModel::isAlignedWith(_robot->getOrientation(), Global::ball - _robot->getPosition());
     bool isAlignedWithAttackGoal =  WorldModel::isAlignedWith(_robot->getOrientation(), Global::areaGoalAttack - _robot->getPosition());
 
     if(Global::bufferKeyboard == (int)'p')
         return "idle";
-    //return "";
+    
+    if(fabs(_robot->getErrorAngleTo(ballToRobot)) > M_PI/2)
+        return "align";
+
     if(isAlignedWithBall && isAlignedWithAttackGoal)
         return "attacking";
+    
     if(WorldModel::isAlignedWithWallAndBall(_robot->getPosition(), _robot->getOrientation()))
         return "spinning";   
 

@@ -1,7 +1,5 @@
 #include "GoalkeeperStateKicking.hpp"
-#include "../../Global.hpp"
-#include <iostream>
-#include <iomanip>
+
 
 GoalkeeperStateKicking::GoalkeeperStateKicking(Robot *robot) : State("kicking"), _robot(robot)
 {}
@@ -11,33 +9,9 @@ GoalkeeperStateKicking::~GoalkeeperStateKicking()
 
 void GoalkeeperStateKicking::doActions()
 {
-    Vector2D destination = Global::ballPos - _robot->getPosition();
-
-    if((destination.y < 0 && _robot->getOrientation().y > 0) || (destination.y > 0 && _robot->getOrientation().y < 0))
-    {
-        //moveback
-        destination = Global::ballPos;
-        _robot->calculatePwmR(destination);
-
-        if(_robot->getPwmLeft() % 2 != 0)
-            _robot->setPwmLeft(_robot->getPwmLeft() - 1);
-
-        if(_robot->getPwmRight() % 2 != 0)
-            _robot->setPwmRight(_robot->getPwmRight() - 1);
-
-    }
-    else{
-        destination = Global::ballPos;
-        _robot->calculatePwm(destination);
-
-        if(_robot->getPwmLeft() % 2 == 0)
-            _robot->setPwmLeft(_robot->getPwmLeft() + 1);
-        if(_robot->getPwmRight() %2 == 0)
-            _robot->setPwmRight(_robot->getPwmRight() + 1);
-
-    }
-
-    Global::communication->writeMessage(_robot->getPosMessage(), _robot->getPwmLeft(), _robot->getPwmRight() + 10);
+    Vector2D destination = Global::ball;
+    _robot->calculatePwm(destination);
+    Global::communication->writeMessage(_robot->getPosMessage(),  _robot->getPwmLeft(), _robot->getPwmRight());
 }
 
 std::string GoalkeeperStateKicking::checkConditions()
@@ -45,11 +19,9 @@ std::string GoalkeeperStateKicking::checkConditions()
     if(Global::bufferKeyboard == (int)'p')
         return "idle";
 
-    if(kickingToWaiting())
-        return "waiting";
-
-    if(Global::ball.x == -10)
-        return "spinning";
+    if(!WorldModel::isBallNearDeffenceArea())
+        return "return";
+    
     return "";
 }
 
@@ -61,12 +33,4 @@ void GoalkeeperStateKicking::entryActions()
 
 void GoalkeeperStateKicking::exitActions()
 {
-    ///Nada
-}
-
-bool GoalkeeperStateKicking::kickingToWaiting() {
-    if(!Global::isInsideOwnArea(Global::ballPos))
-        return true;
-
-    return false;
 }

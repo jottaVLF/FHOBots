@@ -27,8 +27,8 @@ std::string GoalkeeperStateSeeking::checkConditions()
     if(Global::bufferKeyboard == (int)'p')
         return "idle";
 
-    //return "";
-    // Robot is in the area
+    if(WorldModel::isStuckAtDeffenseGoal(_robot->getPosition(), _robot->getOrientation()))
+        return "exit";
 
     if(!WorldModel::isInDeffenseArea(Global::ball) && 
        !WorldModel::isInFrontOf(_robot->getOrientation(), robotToObjective) &&

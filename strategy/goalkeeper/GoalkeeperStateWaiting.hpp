@@ -23,10 +23,9 @@ public:
     void exitActions();
 
 private:
-
     Robot* _robot;
-    double valueX;
-    bool farFromWall;
+    int _timer = 0;
+    Vector2D _ballPos;
 };
 
 

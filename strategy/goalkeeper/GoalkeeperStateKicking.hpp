@@ -3,6 +3,9 @@
 
 #include "../State.hpp"
 #include "../../model/Robot.hpp"
+#include "../../model/WorldModel.hpp"
+#include "../../Global.hpp"
+#include <iostream>
 
 class GoalkeeperStateKicking : public State
 {

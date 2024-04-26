@@ -218,3 +218,26 @@ Vector2D WorldModel::getDeffenderDeffencePosition(){
 bool WorldModel::isInFrontOf(Vector2D v, Vector2D w){
     return fabs(v.angleBetween(w)) < M_PI / 2;
 }
+
+bool WorldModel::isStuckAtDeffenseGoal(Vector2D robotPosition, Vector2D robotOrientation){
+    bool isInsideGoal = Global::areaGoalDeffend.isInside(robotPosition);
+    
+    if(!isInsideGoal)
+        return false;
+    
+    Vector2D robotToGoal = Global::areaGoalDeffend.getCenter() - robotPosition;
+
+    return !WorldModel::isAlignedWith(robotOrientation, robotToGoal);
+}
+
+bool WorldModel::isBallNearDeffenceArea(){
+    double fieldCenter = Global::fieldRect.width/2;
+    bool isAreaOnLeft  = Global::areaToDeffend.isOnLeft(fieldCenter);
+
+    int xmin = isAreaOnLeft ? Global::areaToDeffend.x + Global::areaToDeffend.width
+                            : 3 * Global::fieldRect.width/4;
+    int xmax = isAreaOnLeft ? Global::fieldRect.width/4
+                            : Global::areaToDeffend.x;
+
+    return Global::ball.x > xmin && Global::ball.x < xmax;
+}
