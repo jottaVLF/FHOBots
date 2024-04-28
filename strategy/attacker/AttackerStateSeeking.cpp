@@ -21,9 +21,18 @@ std::string AttackerStateSeeking::checkConditions()
 
     if(Global::bufferKeyboard == (int)'p')
         return "idle";
-    
+
+    if(Global::bufferKeyboard == 32)
+        return "attacking";
+
     if(fabs(_robot->getErrorAngleTo(ballToRobot)) > M_PI/2)
         return "align";
+
+    if(WorldModel::isDeffenseFieldOnLeft() && 
+    WorldModel::isFacing(_robot->getOrientation(),LEFT) &&
+     _robot->getPosition().x < 5*Global::fieldRect.width/8  
+    )
+        return "spinning";
 
     if(isAlignedWithBall && isAlignedWithAttackGoal)
         return "attacking";
@@ -40,7 +49,8 @@ std::string AttackerStateSeeking::checkConditions()
         !WorldModel::isInAttackArea(_robot->getPosition()))
         return "backoff";
 
-    if(WorldModel::isInsideDeffenseArea(_robot->getPosition()) && WorldModel::isFacingArea(_robot->getOrientation(), Global::areaToDeffend))
+    if(WorldModel::isInsideDeffenseArea(_robot->getPosition()) && 
+    WorldModel::isFacingArea(_robot->getOrientation(), Global::areaToDeffend))
         return "backoff";
 
     if(WorldModel::isInsideDeffenseArea(Global::ball) && !WorldModel::isInsideDeffenseArea(_robot->getPosition()))
@@ -52,9 +62,9 @@ std::string AttackerStateSeeking::checkConditions()
 void AttackerStateSeeking::entryActions()
 {
     Vector2D dist = Global::ball - _robot->getPosition();
-    _robot->setPD(15, 70);
-    _robot->setBasePwmValue(70);
-    _robot->setMaxPwm(100);
+    _robot->setPD(10,0);
+    _robot->setBasePwmValue(45);
+    _robot->setMaxPwm(50);
     _robot->lastPos = _robot->getPosition();
     _robot->lastOri = _robot->getOrientation();
 }

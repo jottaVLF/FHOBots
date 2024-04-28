@@ -19,7 +19,7 @@ std::string AttackerStateAttacking::checkConditions()
 {
     if(Global::bufferKeyboard == (int)'p')
         return "idle";
-
+    
     if(!WorldModel::isAlignedWith(_robot->getOrientation(), Global::ball - _robot->getPosition()))
         return "seeking";
 
@@ -28,8 +28,8 @@ std::string AttackerStateAttacking::checkConditions()
 
 void AttackerStateAttacking::entryActions()
 {
-    _robot->setPD(115, 220);
-    _robot->setBasePwmValue(190);
+    _robot->setPD(120, 160);
+    _robot->setBasePwmValue(70);
     Vector2D robotToDestiny = Global::ball - _robot->getPosition();
     _robot->setLastError((_robot->getOrientation()||robotToDestiny));
 }
