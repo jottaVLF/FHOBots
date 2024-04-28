@@ -26,7 +26,7 @@ std::string DefenderStateSeeking::checkConditions()
     Vector2D robotToGol = Global::areaGoalAttack-_robot->getPosition();
     if(Global::bufferKeyboard == (int)'p')
         return "idle";
-
+    
     if(WorldModel::isAlignedWith(_robot->getOrientation(),robotToGol)&& WorldModel::isNearOf(Global::ball, _robot->getPosition()))
         return "kicking";
     
@@ -60,8 +60,8 @@ std::string DefenderStateSeeking::checkConditions()
 void DefenderStateSeeking::entryActions()
 {
     _robot->setPD(50, 60);
-    _robot->setBasePwmValue(90);
-    _robot->setMaxPwm(100);
+    _robot->setBasePwmValue(40);
+    _robot->setMaxPwm(60);
     atkLastX = Global::attacker.getPosition().x;
 }
 

@@ -44,7 +44,7 @@ std::string GoalkeeperMoveForward::checkConditions() {
 }
 
 void GoalkeeperMoveForward::entryActions() {
-    _robot->setPD(10, 250);
+    _robot->setPD(10, 290);
 }
 
 void GoalkeeperMoveForward::exitActions() {

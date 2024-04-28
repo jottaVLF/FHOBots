@@ -22,6 +22,7 @@ class GoalkeeperStateExitGoal : public State {
 
     private:
         Robot* _robot;
+        bool checkGoalWalls();
 };
 
 

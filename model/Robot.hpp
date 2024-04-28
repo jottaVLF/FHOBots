@@ -50,6 +50,8 @@ class Robot {
         void updateRobot();
         void spinClockWise(int pwm);
         void spinCounterClockWise(int pwm);
+        void spinOverRightWheel(int pwm);
+        void spinOverLeftWheel(int pwm);
         void moveForward(int pwm);
         void moveBackward(int pwm);
 

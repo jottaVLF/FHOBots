@@ -244,7 +244,7 @@ void Vision::show(bool resized)
    Mat newFrame;
    if(resized){
         drawInfo();
-        resize(_gpuFrame, newFrame, newFrame.size(), 1.75, 1.75);
+        resize(_gpuFrame, newFrame, newFrame.size(), 1.25, 1.25);
         imshow("Game resized", newFrame);
         return;
    }

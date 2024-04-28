@@ -4,7 +4,8 @@
 
 #include "../State.hpp"
 #include "../../model/Robot.hpp"
-
+#include "../../Global.hpp"
+#include "../../model/WorldModel.hpp"
 class GoalkeeperStateAlign : public State
 {
     public:
@@ -17,7 +18,7 @@ class GoalkeeperStateAlign : public State
         void exitActions();
 
     private:
-
+        void alignWith(Vector2D objective);
         Robot* _robot;
 };
 

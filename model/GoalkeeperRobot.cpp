@@ -26,6 +26,7 @@ void GoalkeeperRobot::createMachineStates(){
     this->_machineState.addState(new GoalkeeperStateMoveBack(this));
     this->_machineState.addState(new GoalkeeperMoveForward(this));
     this->_machineState.addState(new GoalkeeperStateSpinning(this));
+    this->_machineState.addState(new GoalkeeperStateAlign(this));
     this->_machineState.addState(new GoalkeeperStateWaiting(this));
     this->_machineState.addState(new GoalkeeperStateReturnToArea(this));
     this->_machineState.addState(new GoalkeeperStateExitGoal(this));

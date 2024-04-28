@@ -28,7 +28,8 @@ std::string GoalkeeperStateReturnToArea::checkConditions() {
 
     if(WorldModel::isInDeffenseArea(_robot->getPosition()))
         return "seeking";
-
+    if(WorldModel::isStuckAtDeffenseGoal(_robot->getPosition(), _robot->getOrientation()))
+        return "exit";
     return "";
 }
 

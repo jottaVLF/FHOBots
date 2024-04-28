@@ -7,55 +7,62 @@ GoalkeeperStateAlign::GoalkeeperStateAlign(Robot *robot) : State("align"), _robo
 
 GoalkeeperStateAlign::~GoalkeeperStateAlign()
 {}
+void GoalkeeperStateAlign::alignWith(Vector2D objective){
+    Vector2D robotToObjective = objective - _robot->getPosition();
+    if(WorldModel::isDeffenseFieldOnLeft()){
+        if(_robot->getOrientation().y > 0)
+          _robot->spinClockWise(50);
+        else
+         _robot->spinCounterClockWise(50);
+    }
+    else{
+        if(_robot->getOrientation().y > 0)
+          _robot->spinCounterClockWise(50);
+        else
+         _robot->spinClockWise(50);
+    }
+    
+    Global::communication->writeMessage(_robot->getPosMessage(), _robot->getPwmLeft(), _robot->getPwmRight(), _robot->reverseLeft, _robot->reverseRight);
+}
 
 void GoalkeeperStateAlign::doActions()
 {
-    double angleError = ((Global::ball - _robot->getPosition())||_robot->getOrientation());
-    int pwmRight, pwmLeft;
+    
 
-    if(angleError > 0.35)
-    {
-        pwmRight = 50;
-        pwmLeft = 50+129;
-
+    if(WorldModel::isNearOf(_robot->getPosition(),Global::areaToDeffend.getCenter())){
+        Vector2D yAxis(0,1);
+        alignWith(yAxis);
+        
     }
-    else if(angleError < - 0.35)
-    {
-        pwmRight = 50+129;
-        pwmLeft = 50;
-    }
-    else
-    {
-        pwmLeft = 0;
-        pwmRight = 0;
-    }
-
-    Global::communication->writeMessage(_robot->getPosMessage(), 0, 0);
+    
 }
 
 std::string GoalkeeperStateAlign::checkConditions()
 {
+    Vector2D yAxis(0,1);
+    Vector2D yAxisToRobot = yAxis - _robot->getPosition();
+    Vector2D robotToCenterArea = Global::areaToDeffend.getCenter() - _robot->getPosition();
     if(Global::bufferKeyboard == (int)'p')
         return "idle";
 
-    if(Global::robotNearBall(_robot->getPosition(), 12) && Global::isInsideOwnArea(Global::ballPos))
-        return "kicking";
+    if(fabs(_robot->getErrorAngleTo(yAxisToRobot)) < M_PI / 10 && WorldModel::isNearOf(_robot->getPosition(),Global::areaToDeffend.getCenter()))
+        return "seeking";
+    
 
-    Vector2D comp(1, 0);
-    Vector2D destination = Global::ball - _robot->getPosition();
-
-    if(((_robot->getOrientation()&&comp) > -8 && destination.y > 10) || ((_robot->getOrientation()&&comp) < 8 && destination.y < -10))
-        return "turnaround";
-
+    if(WorldModel::isInsideDeffenseArea(_robot->getPosition()) && !WorldModel::isNearOf(_robot->getPosition(),Global::areaGoalDeffend.getCenter()))
+        return "seeking";
     return "";
 }
 
 void GoalkeeperStateAlign::entryActions()
 {
-    Global::communication->writeMessage(_robot->getPosMessage(), 0, 0);
+    _robot->setPD(100.55, 425);
+    _robot->setMaxPwm(255);
+    _robot->setBasePwmValue(100);
 }
 
 void GoalkeeperStateAlign::exitActions()
 {
-
+    _robot->moveForward(0);
+    _robot->setMaxPwm(160);
 }

@@ -7,6 +7,10 @@ bool WorldModel::isInsideDeffenseArea(Vector2D position){
     return Global::areaToDeffend.isInside(position);
 }    
 
+bool WorldModel::isInsideDeffenseGoal(Vector2D position){
+    return Global::areaGoalDeffend.isInside(position);
+}  
+
 bool WorldModel::isInsideAttackArea(Vector2D position){
     return Global::areaToAttack.isInside(position);
 }
@@ -208,9 +212,15 @@ Vector2D WorldModel::getGoalKeeperDeffencePosition(){
 Vector2D WorldModel::getDeffenderDeffencePosition(){
     double fieldCenter = Global::fieldRect.width/2;
     bool isAreaOnLeft  = Global::areaToAttack.isOnLeft(fieldCenter);
+    double ymin = fieldCenter/2;
+    double ymax = 3*fieldCenter/2;
 
-    double x = isAreaOnLeft ? 3*Global::fieldRect.width/4 : Global::fieldRect.width/4;
+    double x = isAreaOnLeft ? 5*Global::fieldRect.width/8 : 3 * Global::fieldRect.width/8;
     double y = Global::ball.y;
+    if(y > ymax)
+        y = ymax;
+    if(y < ymin)
+        y = ymin;
     Vector2D destination(x, y);
     return destination;
 }

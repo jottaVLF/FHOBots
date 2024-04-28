@@ -10,7 +10,7 @@ StateBackOff::~StateBackOff()
 void StateBackOff::doActions()
 {
     _robot->moveBackward(100);
-    Global::communication->writeMessage(_robot->getPosMessage(), 100, 100, true,true);
+    Global::communication->writeMessage(_robot->getPosMessage(),80, 80, true,true);
 }
 
 std::string StateBackOff::checkConditions()

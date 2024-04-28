@@ -150,6 +150,21 @@ Vector2D& Robot::getObjective(){
     return this->objPos;
 }
 
+
+void Robot::spinOverLeftWheel(int pwm){
+    this->reverseLeft = false;
+    this->reverseRight= true;
+    _control.setPwmLeftWheel(0);
+    _control.setPwmRightWheel(pwm);
+}
+
+void Robot::spinOverRightWheel(int pwm){
+    this->reverseLeft = true;
+    this->reverseRight= false;
+    _control.setPwmLeftWheel(pwm);
+    _control.setPwmRightWheel(0);
+}
+
 void Robot::spinClockWise(int pwm){
     this->reverseLeft = false;
     this->reverseRight= true;
@@ -163,6 +178,7 @@ void Robot::spinCounterClockWise(int pwm){
     _control.setPwmLeftWheel(pwm);
     _control.setPwmRightWheel(pwm);
 }
+
 
 void Robot::moveForward(int pwm){
     this->reverseLeft  = false;

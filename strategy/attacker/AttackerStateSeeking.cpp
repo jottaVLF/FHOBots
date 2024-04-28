@@ -36,7 +36,8 @@ std::string AttackerStateSeeking::checkConditions()
        WorldModel::nearstRobotTo(Global::ball) != _robot)
         return "waiting";
     
-    if(WorldModel::isAlignedWithWall(_robot->getPosition(), _robot->getOrientation()))
+    if(WorldModel::isAlignedWithWall(_robot->getPosition(), _robot->getOrientation())&&
+        !WorldModel::isInAttackArea(_robot->getPosition()))
         return "backoff";
 
     if(WorldModel::isInsideDeffenseArea(_robot->getPosition()) && WorldModel::isFacingArea(_robot->getOrientation(), Global::areaToDeffend))
@@ -52,8 +53,8 @@ void AttackerStateSeeking::entryActions()
 {
     Vector2D dist = Global::ball - _robot->getPosition();
     _robot->setPD(15, 70);
-    _robot->setBasePwmValue(40);
-    _robot->setMaxPwm(80);
+    _robot->setBasePwmValue(50);
+    _robot->setMaxPwm(90);
     _robot->lastPos = _robot->getPosition();
     _robot->lastOri = _robot->getOrientation();
 }
