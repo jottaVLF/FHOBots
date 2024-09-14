@@ -17,7 +17,7 @@ void DefenderStateSeeking::doActions()
     else{
         _robot->calculatePwm(destination);
     }
-    Global::communication->writeMessage(_robot->getPosMessage(), _robot->getPwmLeft(), _robot->getPwmRight());
+    Global::communication->writeMessage(_robot->getPosMessage(), _robot->getPwmLeft()*5, _robot->getPwmRight()*5);
 
 }
 
@@ -60,7 +60,7 @@ std::string DefenderStateSeeking::checkConditions()
 void DefenderStateSeeking::entryActions()
 {
     _robot->setPD(50, 60);
-    _robot->setBasePwmValue(70);
+    _robot->setBasePwmValue(90);
     _robot->setMaxPwm(100);
     atkLastX = Global::attacker.getPosition().x;
 }

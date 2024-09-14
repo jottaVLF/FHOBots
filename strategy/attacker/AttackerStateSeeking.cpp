@@ -63,8 +63,8 @@ void AttackerStateSeeking::entryActions()
 {
     Vector2D dist = Global::ball - _robot->getPosition();
     _robot->setPD(10,0);
-    _robot->setBasePwmValue(45);
-    _robot->setMaxPwm(50);
+    _robot->setBasePwmValue(65);
+    _robot->setMaxPwm(70);
     _robot->lastPos = _robot->getPosition();
     _robot->lastOri = _robot->getOrientation();
 }
