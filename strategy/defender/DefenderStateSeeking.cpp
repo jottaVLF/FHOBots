@@ -59,7 +59,7 @@ std::string DefenderStateSeeking::checkConditions()
 
 void DefenderStateSeeking::entryActions()
 {
-    _robot->setPD(50, 60);
+    _robot->setPD(30, 20);
     _robot->setBasePwmValue(90);
     _robot->setMaxPwm(100);
     atkLastX = Global::attacker.getPosition().x;

@@ -9,6 +9,7 @@ AttackerStateSeeking::~AttackerStateSeeking()
 void AttackerStateSeeking::doActions()
 {   
     Vector2D destination = Global::ball;
+    Global::attacker.setObjective(destination);
     _robot->calculatePwm(destination);
     Global::communication->writeMessage(_robot->getPosMessage(), _robot->getPwmLeft(), _robot->getPwmRight());
 }

@@ -1,7 +1,7 @@
 #include "WorldModel.hpp"
 
 int WorldModel::_offset = 50;
-int WorldModel::_precision = 26;
+int WorldModel::_precision = 30;
 
 bool WorldModel::isInsideDeffenseArea(Vector2D position){
     return Global::areaToDeffend.isInside(position);

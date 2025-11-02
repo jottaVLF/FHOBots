@@ -1,6 +1,8 @@
 #ifndef FHOBOTS_CONFIG_HPP
 #define FHOBOTS_CONFIG_HPP
 
+#include <string>
+
 class PwmConfig{
 public:
     int max;

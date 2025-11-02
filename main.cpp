@@ -1,16 +1,16 @@
 #include <iostream>
 #include "config/ConfigParser.hpp"
-#include "config/Config.hpp"
 #include "opencv2/opencv.hpp"
 #include "Global.hpp"
 #include "vision/CustomTrackbar.hpp"
 #include <thread>
 #include <cstring>
 #include "vision/Vision.hpp"
-#include "vision/FakeVision.hpp"
+#include "vision/SimVision.hpp"
+#include "communication/SimCommunication.hpp"
 #include "model/Robot.hpp"
 #include "model/Robot.hpp"
-#include "FakePhysics.hpp"
+#include "debug/Debug.hpp"
 
 void initializeModelAndStates(Config configuration){
     Global::attacker.createMachineStates();
@@ -28,20 +28,28 @@ void initializeModelAndStates(Config configuration){
     Global::attacker.setPD(configuration.r2.control.frontLeft.kp, configuration.r2.control.frontLeft.kd);
 
     Global::communication->stopAll();
+    std::cout << "Model and states initialized" << std::endl;
 }
 
 int main(int argc, char* argv[])
 { 
+    Debug * debug = nullptr;
+    bool isSimulation = false;
+    
+    if(argc > 1 && strcmp(argv[1], "sim") == 0){
+        isSimulation = true;
+    }
+
     ConfigParser configParser;
 
     Config configuration = configParser.createConfiguration();
 
     std::cout << "Configuration file successfully read!" << std::endl;
     
-    IVision * vision = new Vision(configuration.camera, &configuration);
-    Global::communication = new Communication(configuration.communication);
-    //Global::communication->configureRobots(configuration);
-    
+    IVision * vision =  isSimulation ? (IVision *) new SimVision(&configuration, "224.0.0.1", 10002) : (IVision *) new Vision(configuration.camera, &configuration);
+    Global::communication = isSimulation ? (ICommunication * ) new SimCommunication(&configuration, "127.0.0.1", 20011, 60) : (ICommunication * ) new Communication(configuration.communication);
+     
+    std::cout << "Vision initialized " <<std::endl;
     initializeModelAndStates(configuration);
 
     vision->adjustFieldPosition();
@@ -61,8 +69,14 @@ int main(int argc, char* argv[])
         Global::countFrameAttacker++;
         Global::countFrameDefender++;
         Global::bufferKeyboard = cv::waitKey(1);
-        Vision * realVision = dynamic_cast<Vision * >(vision);
-        realVision->show();
+        if(isSimulation){
+            if(debug == nullptr)
+                debug = new Debug(true);
+            debug->show();
+        }else{
+            Vision * realVision = dynamic_cast<Vision * >(vision);
+            realVision->show();
+        }
         std::this_thread::sleep_for(std::chrono::microseconds(500));
         Global::communication->sendMessage();
     } while(Global::bufferKeyboard != 27);
@@ -73,5 +87,6 @@ int main(int argc, char* argv[])
 
     Global::communication->stopAll();
     Global::communication->sendMessage();
+ 
     return 0;
 }
