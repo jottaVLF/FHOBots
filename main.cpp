@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
         Global::bufferKeyboard = cv::waitKey(1);
         if(isSimulation){
             if(debug == nullptr)
-                debug = new Debug(true);
+                debug = new Debug(configuration.teamColor == "yellow");
             debug->show();
         }else{
             Vision * realVision = dynamic_cast<Vision * >(vision);

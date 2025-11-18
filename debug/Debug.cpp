@@ -1,9 +1,10 @@
 #include "Debug.hpp"
 
-Debug::Debug(bool is3v3){
+Debug::Debug(bool isFhobotsYellow, bool is3v3){
     this->debug = cv::Mat::zeros(Global::fieldRect.height, Global::fieldRect.width, CV_8UC4);
     cv::namedWindow("Debug");
     this->is3v3 = is3v3;
+    this->_isFhobotsYellow = isFhobotsYellow;
 }
 
 
@@ -11,10 +12,10 @@ void Debug::show(){
     this->debug = cv::Scalar(0, 0, 0);
     drawField3v3();
     cv::circle(this->debug, toPixel(Global::ball.x, Global::ball.y), 2, cv::Scalar(0, 60, 255), 5);
-    drawRobot(&Global::attacker, false);
-    drawRobot(&Global::deffender, false);
-    drawRobot(&Global::goalkeeper, false);
-    drawAdversary(true);
+    drawRobot(&Global::attacker,  _isFhobotsYellow);
+    drawRobot(&Global::deffender, _isFhobotsYellow);
+    drawRobot(&Global::goalkeeper, _isFhobotsYellow);
+    drawAdversary(_isFhobotsYellow);
     cv::imshow("Debug", this->debug);
     cv::waitKey(10);
 }
@@ -39,7 +40,7 @@ cv::Point Debug::toPixel(double x, double y){
 }
 
 void Debug::drawAdversary(bool isFhobotsYellow){
-    cv::Scalar cor = isFhobotsYellow ? cv::Scalar(0, 255, 255) : cv::Scalar(255, 0, 0);
+    cv::Scalar cor = !isFhobotsYellow ? cv::Scalar(0, 255, 255) : cv::Scalar(255, 0, 0);
     for(int i = 0; i< 3; i++){
                 cv::circle(this->debug, cv::Point(Global::enemyTeam[i].x, Global::enemyTeam[i].y), 2, cor, 5);
     }
