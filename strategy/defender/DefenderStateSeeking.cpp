@@ -59,9 +59,16 @@ std::string DefenderStateSeeking::checkConditions()
 
 void DefenderStateSeeking::entryActions()
 {
-    _robot->setPD(30, 20);
-    _robot->setBasePwmValue(90);
-    _robot->setMaxPwm(100);
+    if(Global::isSim){
+        // Calibrações para o simulador
+        _robot->setPD(1, 2);
+        _robot->setBasePwmValue(30);
+        _robot->setMaxPwm(150);
+    }else{
+        _robot->setPD(30, 20);
+        _robot->setBasePwmValue(90);
+        _robot->setMaxPwm(100);
+    }
     atkLastX = Global::attacker.getPosition().x;
 }
 

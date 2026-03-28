@@ -41,9 +41,16 @@ std::string AttackerStateWaiting::checkConditions()
 
 void AttackerStateWaiting::entryActions()
 {
-    _robot->setPD(110, 200.85);
-    _robot->setBasePwmValue(180);
-    _robot->setMaxPwm(255);
+    if(Global::isSim){
+        // Calibrações para o simulador
+        _robot->setPD(110, 200.85);
+        _robot->setBasePwmValue(180);
+        _robot->setMaxPwm(255);
+    }else{
+        _robot->setPD(110, 200.85);
+        _robot->setBasePwmValue(180);
+        _robot->setMaxPwm(255);
+    }
     _robot->lastPos = _robot->getPosition();
     _robot->lastOri = _robot->getOrientation();
 }

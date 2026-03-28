@@ -44,7 +44,12 @@ std::string GoalkeeperMoveForward::checkConditions() {
 }
 
 void GoalkeeperMoveForward::entryActions() {
-    _robot->setPD(10, 290);
+    if(Global::isSim){
+    // Calibrações para o simulador
+        _robot->setPD(10, 290);
+    }else{
+        _robot->setPD(10, 290);
+    }
 }
 
 void GoalkeeperMoveForward::exitActions() {

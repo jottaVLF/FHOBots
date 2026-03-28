@@ -5,269 +5,344 @@
 
 #include <algorithm>
 
+#include <google/protobuf/stubs/common.h>
+#include <google/protobuf/stubs/port.h>
 #include <google/protobuf/io/coded_stream.h>
-#include <google/protobuf/extension_set.h>
-#include <google/protobuf/wire_format_lite.h>
+#include <google/protobuf/wire_format_lite_inl.h>
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/generated_message_reflection.h>
 #include <google/protobuf/reflection_ops.h>
 #include <google/protobuf/wire_format.h>
+// This is a temporary google only hack
+#ifdef GOOGLE_PROTOBUF_ENFORCE_UNIQUENESS
+#include "third_party/protobuf/version.h"
+#endif
 // @@protoc_insertion_point(includes)
-#include <google/protobuf/port_def.inc>
-
-PROTOBUF_PRAGMA_INIT_SEG
-
-namespace _pb = ::PROTOBUF_NAMESPACE_ID;
-namespace _pbi = _pb::internal;
 
 namespace VSSRef {
 namespace ref_to_team {
-PROTOBUF_CONSTEXPR VSSRef_Command::VSSRef_Command(
-    ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.foul_)*/0
-  , /*decltype(_impl_.teamcolor_)*/0
-  , /*decltype(_impl_.timestamp_)*/0
-  , /*decltype(_impl_.foulquadrant_)*/0
-  , /*decltype(_impl_._cached_size_)*/{}} {}
-struct VSSRef_CommandDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR VSSRef_CommandDefaultTypeInternal()
-      : _instance(::_pbi::ConstantInitialized{}) {}
-  ~VSSRef_CommandDefaultTypeInternal() {}
-  union {
-    VSSRef_Command _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 VSSRef_CommandDefaultTypeInternal _VSSRef_Command_default_instance_;
+class VSSRef_CommandDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<VSSRef_Command>
+      _instance;
+} _VSSRef_Command_default_instance_;
 }  // namespace ref_to_team
 }  // namespace VSSRef
-static ::_pb::Metadata file_level_metadata_vssref_5fcommand_2eproto[1];
-static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_vssref_5fcommand_2eproto = nullptr;
-static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_vssref_5fcommand_2eproto = nullptr;
+namespace protobuf_vssref_5fcommand_2eproto {
+static void InitDefaultsVSSRef_Command() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-const uint32_t TableStruct_vssref_5fcommand_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
+  {
+    void* ptr = &::VSSRef::ref_to_team::_VSSRef_Command_default_instance_;
+    new (ptr) ::VSSRef::ref_to_team::VSSRef_Command();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::VSSRef::ref_to_team::VSSRef_Command::InitAsDefaultInstance();
+}
+
+::google::protobuf::internal::SCCInfo<0> scc_info_VSSRef_Command =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsVSSRef_Command}, {}};
+
+void InitDefaults() {
+  ::google::protobuf::internal::InitSCC(&scc_info_VSSRef_Command.base);
+}
+
+::google::protobuf::Metadata file_level_metadata[1];
+
+const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::VSSRef::ref_to_team::VSSRef_Command, _internal_metadata_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::VSSRef::ref_to_team::VSSRef_Command, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::VSSRef::ref_to_team::VSSRef_Command, _impl_.foul_),
-  PROTOBUF_FIELD_OFFSET(::VSSRef::ref_to_team::VSSRef_Command, _impl_.teamcolor_),
-  PROTOBUF_FIELD_OFFSET(::VSSRef::ref_to_team::VSSRef_Command, _impl_.foulquadrant_),
-  PROTOBUF_FIELD_OFFSET(::VSSRef::ref_to_team::VSSRef_Command, _impl_.timestamp_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::VSSRef::ref_to_team::VSSRef_Command, foul_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::VSSRef::ref_to_team::VSSRef_Command, teamcolor_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::VSSRef::ref_to_team::VSSRef_Command, foulquadrant_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::VSSRef::ref_to_team::VSSRef_Command, timestamp_),
 };
-static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, -1, -1, sizeof(::VSSRef::ref_to_team::VSSRef_Command)},
-};
-
-static const ::_pb::Message* const file_default_instances[] = {
-  &::VSSRef::ref_to_team::_VSSRef_Command_default_instance_._instance,
+static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
+  { 0, -1, sizeof(::VSSRef::ref_to_team::VSSRef_Command)},
 };
 
-const char descriptor_table_protodef_vssref_5fcommand_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\024vssref_command.proto\022\022VSSRef.ref_to_te"
-  "am\032\023vssref_common.proto\"\211\001\n\016VSSRef_Comma"
-  "nd\022\032\n\004foul\030\001 \001(\0162\014.VSSRef.Foul\022 \n\tteamco"
-  "lor\030\002 \001(\0162\r.VSSRef.Color\022&\n\014foulQuadrant"
-  "\030\003 \001(\0162\020.VSSRef.Quadrant\022\021\n\ttimestamp\030\004 "
-  "\001(\001b\006proto3"
-  ;
-static const ::_pbi::DescriptorTable* const descriptor_table_vssref_5fcommand_2eproto_deps[1] = {
-  &::descriptor_table_vssref_5fcommon_2eproto,
+static ::google::protobuf::Message const * const file_default_instances[] = {
+  reinterpret_cast<const ::google::protobuf::Message*>(&::VSSRef::ref_to_team::_VSSRef_Command_default_instance_),
 };
-static ::_pbi::once_flag descriptor_table_vssref_5fcommand_2eproto_once;
-const ::_pbi::DescriptorTable descriptor_table_vssref_5fcommand_2eproto = {
-    false, false, 211, descriptor_table_protodef_vssref_5fcommand_2eproto,
-    "vssref_command.proto",
-    &descriptor_table_vssref_5fcommand_2eproto_once, descriptor_table_vssref_5fcommand_2eproto_deps, 1, 1,
-    schemas, file_default_instances, TableStruct_vssref_5fcommand_2eproto::offsets,
-    file_level_metadata_vssref_5fcommand_2eproto, file_level_enum_descriptors_vssref_5fcommand_2eproto,
-    file_level_service_descriptors_vssref_5fcommand_2eproto,
-};
-PROTOBUF_ATTRIBUTE_WEAK const ::_pbi::DescriptorTable* descriptor_table_vssref_5fcommand_2eproto_getter() {
-  return &descriptor_table_vssref_5fcommand_2eproto;
+
+void protobuf_AssignDescriptors() {
+  AddDescriptors();
+  AssignDescriptors(
+      "vssref_command.proto", schemas, file_default_instances, TableStruct::offsets,
+      file_level_metadata, NULL, NULL);
 }
 
-// Force running AddDescriptors() at dynamic initialization time.
-PROTOBUF_ATTRIBUTE_INIT_PRIORITY2 static ::_pbi::AddDescriptorsRunner dynamic_init_dummy_vssref_5fcommand_2eproto(&descriptor_table_vssref_5fcommand_2eproto);
+void protobuf_AssignDescriptorsOnce() {
+  static ::google::protobuf::internal::once_flag once;
+  ::google::protobuf::internal::call_once(once, protobuf_AssignDescriptors);
+}
+
+void protobuf_RegisterTypes(const ::std::string&) GOOGLE_PROTOBUF_ATTRIBUTE_COLD;
+void protobuf_RegisterTypes(const ::std::string&) {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 1);
+}
+
+void AddDescriptorsImpl() {
+  InitDefaults();
+  static const char descriptor[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
+      "\n\024vssref_command.proto\022\022VSSRef.ref_to_te"
+      "am\032\023vssref_common.proto\"\211\001\n\016VSSRef_Comma"
+      "nd\022\032\n\004foul\030\001 \001(\0162\014.VSSRef.Foul\022 \n\tteamco"
+      "lor\030\002 \001(\0162\r.VSSRef.Color\022&\n\014foulQuadrant"
+      "\030\003 \001(\0162\020.VSSRef.Quadrant\022\021\n\ttimestamp\030\004 "
+      "\001(\001b\006proto3"
+  };
+  ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
+      descriptor, 211);
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
+    "vssref_command.proto", &protobuf_RegisterTypes);
+  ::protobuf_vssref_5fcommon_2eproto::AddDescriptors();
+}
+
+void AddDescriptors() {
+  static ::google::protobuf::internal::once_flag once;
+  ::google::protobuf::internal::call_once(once, AddDescriptorsImpl);
+}
+// Force AddDescriptors() to be called at dynamic initialization time.
+struct StaticDescriptorInitializer {
+  StaticDescriptorInitializer() {
+    AddDescriptors();
+  }
+} static_descriptor_initializer;
+}  // namespace protobuf_vssref_5fcommand_2eproto
 namespace VSSRef {
 namespace ref_to_team {
 
 // ===================================================================
 
-class VSSRef_Command::_Internal {
- public:
-};
+void VSSRef_Command::InitAsDefaultInstance() {
+}
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int VSSRef_Command::kFoulFieldNumber;
+const int VSSRef_Command::kTeamcolorFieldNumber;
+const int VSSRef_Command::kFoulQuadrantFieldNumber;
+const int VSSRef_Command::kTimestampFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
-VSSRef_Command::VSSRef_Command(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                         bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
-  SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:VSSRef.ref_to_team.VSSRef_Command)
+VSSRef_Command::VSSRef_Command()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  ::google::protobuf::internal::InitSCC(
+      &protobuf_vssref_5fcommand_2eproto::scc_info_VSSRef_Command.base);
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:VSSRef.ref_to_team.VSSRef_Command)
 }
 VSSRef_Command::VSSRef_Command(const VSSRef_Command& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  VSSRef_Command* const _this = this; (void)_this;
-  new (&_impl_) Impl_{
-      decltype(_impl_.foul_){}
-    , decltype(_impl_.teamcolor_){}
-    , decltype(_impl_.timestamp_){}
-    , decltype(_impl_.foulquadrant_){}
-    , /*decltype(_impl_._cached_size_)*/{}};
-
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::memcpy(&_impl_.foul_, &from._impl_.foul_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.foulquadrant_) -
-    reinterpret_cast<char*>(&_impl_.foul_)) + sizeof(_impl_.foulquadrant_));
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::memcpy(&foul_, &from.foul_,
+    static_cast<size_t>(reinterpret_cast<char*>(&foulquadrant_) -
+    reinterpret_cast<char*>(&foul_)) + sizeof(foulquadrant_));
   // @@protoc_insertion_point(copy_constructor:VSSRef.ref_to_team.VSSRef_Command)
 }
 
-inline void VSSRef_Command::SharedCtor(
-    ::_pb::Arena* arena, bool is_message_owned) {
-  (void)arena;
-  (void)is_message_owned;
-  new (&_impl_) Impl_{
-      decltype(_impl_.foul_){0}
-    , decltype(_impl_.teamcolor_){0}
-    , decltype(_impl_.timestamp_){0}
-    , decltype(_impl_.foulquadrant_){0}
-    , /*decltype(_impl_._cached_size_)*/{}
-  };
+void VSSRef_Command::SharedCtor() {
+  ::memset(&foul_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&foulquadrant_) -
+      reinterpret_cast<char*>(&foul_)) + sizeof(foulquadrant_));
 }
 
 VSSRef_Command::~VSSRef_Command() {
   // @@protoc_insertion_point(destructor:VSSRef.ref_to_team.VSSRef_Command)
-  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
-  (void)arena;
-    return;
-  }
   SharedDtor();
 }
 
-inline void VSSRef_Command::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+void VSSRef_Command::SharedDtor() {
 }
 
 void VSSRef_Command::SetCachedSize(int size) const {
-  _impl_._cached_size_.Set(size);
+  _cached_size_.Set(size);
 }
+const ::google::protobuf::Descriptor* VSSRef_Command::descriptor() {
+  ::protobuf_vssref_5fcommand_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_vssref_5fcommand_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
+}
+
+const VSSRef_Command& VSSRef_Command::default_instance() {
+  ::google::protobuf::internal::InitSCC(&protobuf_vssref_5fcommand_2eproto::scc_info_VSSRef_Command.base);
+  return *internal_default_instance();
+}
+
 
 void VSSRef_Command::Clear() {
 // @@protoc_insertion_point(message_clear_start:VSSRef.ref_to_team.VSSRef_Command)
-  uint32_t cached_has_bits = 0;
+  ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  ::memset(&_impl_.foul_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.foulquadrant_) -
-      reinterpret_cast<char*>(&_impl_.foul_)) + sizeof(_impl_.foulquadrant_));
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  ::memset(&foul_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&foulquadrant_) -
+      reinterpret_cast<char*>(&foul_)) + sizeof(foulquadrant_));
+  _internal_metadata_.Clear();
 }
 
-const char* VSSRef_Command::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  while (!ctx->Done(&ptr)) {
-    uint32_t tag;
-    ptr = ::_pbi::ReadTag(ptr, &tag);
-    switch (tag >> 3) {
+bool VSSRef_Command::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:VSSRef.ref_to_team.VSSRef_Command)
+  for (;;) {
+    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // .VSSRef.Foul foul = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
-          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-          _internal_set_foul(static_cast<::VSSRef::Foul>(val));
-        } else
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(8u /* 8 & 0xFF */)) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          set_foul(static_cast< ::VSSRef::Foul >(value));
+        } else {
           goto handle_unusual;
-        continue;
+        }
+        break;
+      }
+
       // .VSSRef.Color teamcolor = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
-          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-          _internal_set_teamcolor(static_cast<::VSSRef::Color>(val));
-        } else
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          set_teamcolor(static_cast< ::VSSRef::Color >(value));
+        } else {
           goto handle_unusual;
-        continue;
+        }
+        break;
+      }
+
       // .VSSRef.Quadrant foulQuadrant = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
-          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-          _internal_set_foulquadrant(static_cast<::VSSRef::Quadrant>(val));
-        } else
+      case 3: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(24u /* 24 & 0xFF */)) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          set_foulquadrant(static_cast< ::VSSRef::Quadrant >(value));
+        } else {
           goto handle_unusual;
-        continue;
+        }
+        break;
+      }
+
       // double timestamp = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 33)) {
-          _impl_.timestamp_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr);
-          ptr += sizeof(double);
-        } else
+      case 4: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(33u /* 33 & 0xFF */)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &timestamp_)));
+        } else {
           goto handle_unusual;
-        continue;
-      default:
-        goto handle_unusual;
-    }  // switch
-  handle_unusual:
-    if ((tag == 0) || ((tag & 7) == 4)) {
-      CHK_(ptr);
-      ctx->SetLastTag(tag);
-      goto message_done;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, _internal_metadata_.mutable_unknown_fields()));
+        break;
+      }
     }
-    ptr = UnknownFieldParse(
-        tag,
-        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-        ptr, ctx);
-    CHK_(ptr != nullptr);
-  }  // while
-message_done:
-  return ptr;
+  }
+success:
+  // @@protoc_insertion_point(parse_success:VSSRef.ref_to_team.VSSRef_Command)
+  return true;
 failure:
-  ptr = nullptr;
-  goto message_done;
-#undef CHK_
+  // @@protoc_insertion_point(parse_failure:VSSRef.ref_to_team.VSSRef_Command)
+  return false;
+#undef DO_
 }
 
-uint8_t* VSSRef_Command::_InternalSerialize(
-    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:VSSRef.ref_to_team.VSSRef_Command)
-  uint32_t cached_has_bits = 0;
+void VSSRef_Command::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:VSSRef.ref_to_team.VSSRef_Command)
+  ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   // .VSSRef.Foul foul = 1;
-  if (this->_internal_foul() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteEnumToArray(
-      1, this->_internal_foul(), target);
+  if (this->foul() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      1, this->foul(), output);
   }
 
   // .VSSRef.Color teamcolor = 2;
-  if (this->_internal_teamcolor() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteEnumToArray(
-      2, this->_internal_teamcolor(), target);
+  if (this->teamcolor() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      2, this->teamcolor(), output);
   }
 
   // .VSSRef.Quadrant foulQuadrant = 3;
-  if (this->_internal_foulquadrant() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteEnumToArray(
-      3, this->_internal_foulquadrant(), target);
+  if (this->foulquadrant() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      3, this->foulquadrant(), output);
   }
 
   // double timestamp = 4;
-  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
-  double tmp_timestamp = this->_internal_timestamp();
-  uint64_t raw_timestamp;
-  memcpy(&raw_timestamp, &tmp_timestamp, sizeof(tmp_timestamp));
-  if (raw_timestamp != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteDoubleToArray(4, this->_internal_timestamp(), target);
+  if (this->timestamp() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(4, this->timestamp(), output);
   }
 
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  }
+  // @@protoc_insertion_point(serialize_end:VSSRef.ref_to_team.VSSRef_Command)
+}
+
+::google::protobuf::uint8* VSSRef_Command::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:VSSRef.ref_to_team.VSSRef_Command)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .VSSRef.Foul foul = 1;
+  if (this->foul() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      1, this->foul(), target);
+  }
+
+  // .VSSRef.Color teamcolor = 2;
+  if (this->teamcolor() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      2, this->teamcolor(), target);
+  }
+
+  // .VSSRef.Quadrant foulQuadrant = 3;
+  if (this->foulquadrant() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      3, this->foulquadrant(), target);
+  }
+
+  // double timestamp = 4;
+  if (this->timestamp() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(4, this->timestamp(), target);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:VSSRef.ref_to_team.VSSRef_Command)
   return target;
@@ -277,72 +352,80 @@ size_t VSSRef_Command::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:VSSRef.ref_to_team.VSSRef_Command)
   size_t total_size = 0;
 
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+  }
   // .VSSRef.Foul foul = 1;
-  if (this->_internal_foul() != 0) {
+  if (this->foul() != 0) {
     total_size += 1 +
-      ::_pbi::WireFormatLite::EnumSize(this->_internal_foul());
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->foul());
   }
 
   // .VSSRef.Color teamcolor = 2;
-  if (this->_internal_teamcolor() != 0) {
+  if (this->teamcolor() != 0) {
     total_size += 1 +
-      ::_pbi::WireFormatLite::EnumSize(this->_internal_teamcolor());
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->teamcolor());
   }
 
   // double timestamp = 4;
-  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
-  double tmp_timestamp = this->_internal_timestamp();
-  uint64_t raw_timestamp;
-  memcpy(&raw_timestamp, &tmp_timestamp, sizeof(tmp_timestamp));
-  if (raw_timestamp != 0) {
+  if (this->timestamp() != 0) {
     total_size += 1 + 8;
   }
 
   // .VSSRef.Quadrant foulQuadrant = 3;
-  if (this->_internal_foulquadrant() != 0) {
+  if (this->foulquadrant() != 0) {
     total_size += 1 +
-      ::_pbi::WireFormatLite::EnumSize(this->_internal_foulquadrant());
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->foulquadrant());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData VSSRef_Command::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    VSSRef_Command::MergeImpl
-};
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*VSSRef_Command::GetClassData() const { return &_class_data_; }
+void VSSRef_Command::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:VSSRef.ref_to_team.VSSRef_Command)
+  GOOGLE_DCHECK_NE(&from, this);
+  const VSSRef_Command* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const VSSRef_Command>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:VSSRef.ref_to_team.VSSRef_Command)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:VSSRef.ref_to_team.VSSRef_Command)
+    MergeFrom(*source);
+  }
+}
 
-
-void VSSRef_Command::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<VSSRef_Command*>(&to_msg);
-  auto& from = static_cast<const VSSRef_Command&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:VSSRef.ref_to_team.VSSRef_Command)
-  GOOGLE_DCHECK_NE(&from, _this);
-  uint32_t cached_has_bits = 0;
+void VSSRef_Command::MergeFrom(const VSSRef_Command& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:VSSRef.ref_to_team.VSSRef_Command)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from._internal_foul() != 0) {
-    _this->_internal_set_foul(from._internal_foul());
+  if (from.foul() != 0) {
+    set_foul(from.foul());
   }
-  if (from._internal_teamcolor() != 0) {
-    _this->_internal_set_teamcolor(from._internal_teamcolor());
+  if (from.teamcolor() != 0) {
+    set_teamcolor(from.teamcolor());
   }
-  static_assert(sizeof(uint64_t) == sizeof(double), "Code assumes uint64_t and double are the same size.");
-  double tmp_timestamp = from._internal_timestamp();
-  uint64_t raw_timestamp;
-  memcpy(&raw_timestamp, &tmp_timestamp, sizeof(tmp_timestamp));
-  if (raw_timestamp != 0) {
-    _this->_internal_set_timestamp(from._internal_timestamp());
+  if (from.timestamp() != 0) {
+    set_timestamp(from.timestamp());
   }
-  if (from._internal_foulquadrant() != 0) {
-    _this->_internal_set_foulquadrant(from._internal_foulquadrant());
+  if (from.foulquadrant() != 0) {
+    set_foulquadrant(from.foulquadrant());
   }
-  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void VSSRef_Command::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:VSSRef.ref_to_team.VSSRef_Command)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
 }
 
 void VSSRef_Command::CopyFrom(const VSSRef_Command& from) {
@@ -356,32 +439,34 @@ bool VSSRef_Command::IsInitialized() const {
   return true;
 }
 
+void VSSRef_Command::Swap(VSSRef_Command* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
 void VSSRef_Command::InternalSwap(VSSRef_Command* other) {
   using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(VSSRef_Command, _impl_.foulquadrant_)
-      + sizeof(VSSRef_Command::_impl_.foulquadrant_)
-      - PROTOBUF_FIELD_OFFSET(VSSRef_Command, _impl_.foul_)>(
-          reinterpret_cast<char*>(&_impl_.foul_),
-          reinterpret_cast<char*>(&other->_impl_.foul_));
+  swap(foul_, other->foul_);
+  swap(teamcolor_, other->teamcolor_);
+  swap(timestamp_, other->timestamp_);
+  swap(foulquadrant_, other->foulquadrant_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata VSSRef_Command::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_vssref_5fcommand_2eproto_getter, &descriptor_table_vssref_5fcommand_2eproto_once,
-      file_level_metadata_vssref_5fcommand_2eproto[0]);
+::google::protobuf::Metadata VSSRef_Command::GetMetadata() const {
+  protobuf_vssref_5fcommand_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_vssref_5fcommand_2eproto::file_level_metadata[kIndexInFileMessages];
 }
+
 
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace ref_to_team
 }  // namespace VSSRef
-PROTOBUF_NAMESPACE_OPEN
-template<> PROTOBUF_NOINLINE ::VSSRef::ref_to_team::VSSRef_Command*
-Arena::CreateMaybeMessage< ::VSSRef::ref_to_team::VSSRef_Command >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::VSSRef::ref_to_team::VSSRef_Command >(arena);
+namespace google {
+namespace protobuf {
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::VSSRef::ref_to_team::VSSRef_Command* Arena::CreateMaybeMessage< ::VSSRef::ref_to_team::VSSRef_Command >(Arena* arena) {
+  return Arena::CreateInternal< ::VSSRef::ref_to_team::VSSRef_Command >(arena);
 }
-PROTOBUF_NAMESPACE_CLOSE
+}  // namespace protobuf
+}  // namespace google
 
 // @@protoc_insertion_point(global_scope)
-#include <google/protobuf/port_undef.inc>

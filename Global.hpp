@@ -86,6 +86,7 @@ class Global {
         static Vector2D centerAreaToAttack;
         static Vector2D centerAreaToDeffend;
         static bool hasJoystick;
+        static bool isSim;
 };
 
 

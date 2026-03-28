@@ -144,3 +144,5 @@ PositionArea Global::eAreaDeffend;
 
 Vector2D Global::centerAreaToAttack;
 Vector2D Global::centerAreaToDeffend;
+
+bool Global::isSim = false;

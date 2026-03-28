@@ -28,8 +28,14 @@ std::string AttackerStateAttacking::checkConditions()
 
 void AttackerStateAttacking::entryActions()
 {
-    _robot->setPD(120, 160);
-    _robot->setBasePwmValue(70);
+    if(Global::isSim){
+        // Calibrações para o simulador
+        _robot->setPD(120, 160);
+        _robot->setBasePwmValue(70);
+    }else{
+        _robot->setPD(120, 160);
+        _robot->setBasePwmValue(70);
+    }
     Vector2D robotToDestiny = Global::ball - _robot->getPosition();
     _robot->setLastError((_robot->getOrientation()||robotToDestiny));
 }

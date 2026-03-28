@@ -57,9 +57,16 @@ std::string GoalkeeperStateSeeking::checkConditions()
 void GoalkeeperStateSeeking::entryActions()
 {
     _stopped = true;
-    _robot->setPD(10, 260);
-    _robot->setBasePwmValue(45);
-    _robot->setMaxPwm(70);
+    if(Global::isSim){
+        // Calibrações para o simulador
+        _robot->setPD(10, 260);
+        _robot->setBasePwmValue(45);
+        _robot->setMaxPwm(70);
+    }else{
+        _robot->setPD(10, 260);
+        _robot->setBasePwmValue(45);
+        _robot->setMaxPwm(70);
+    }
 }
 
 void GoalkeeperStateSeeking::exitActions()

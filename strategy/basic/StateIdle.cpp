@@ -20,8 +20,14 @@ std::string StateIdle::checkConditions()
 
 void StateIdle::entryActions()
 {
-    _robot->setPwmLeft(0);
-    _robot->setPwmRight(0);
+    if(Global::isSim){
+        // Calibrações para o simulador
+        _robot->setPwmLeft(0);
+        _robot->setPwmRight(0);
+    }else{
+        _robot->setPwmLeft(0);
+        _robot->setPwmRight(0);
+    }
     Global::communication->writeMessage(_robot->getPosMessage(), _robot->getPwmLeft(), _robot->getPwmRight());
     Global::attacker.setPosition(0, 0);
     Global::deffender.setPosition(0, 0);
