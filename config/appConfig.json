@@ -1,0 +1,113 @@
+{
+    "camera" : 0,
+    "communication" : "/dev/ttyUSB0",
+    "team-color": "blue",
+    "r0" : {
+        "role" : "attacker",
+        "color": "purple",
+        "active": "true",
+        "pwm": {
+            "max": 255,
+            "min": 0,
+            "base": 100
+        },
+        "hardware": {
+            "id": 0,
+            "chassis": "R3",
+            "pinMotorEsqA": 9,
+            "pinMotorEsqB": 10,
+            "pinMotorDirA": 5,
+            "pinMotorDirB": 6 
+        },
+        "control": {
+            "front-left": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "front-right": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "back-left": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "back-right": {
+                "kp" : 1,
+                "kd" : 0.5
+            }
+        }
+    },
+    "r1" : {
+        "role" : "deffender",
+        "color": "green",  
+        "active": "true",
+        "pwm": {
+            "max": 255,
+            "min": 0,
+            "base": 100
+        },
+        "hardware": {
+            "id": 1,
+            "chassis": "R2",
+            "pinMotorEsqA": 9,
+            "pinMotorEsqB": 10,
+            "pinMotorDirA": 5,
+            "pinMotorDirB": 6 
+        },
+        "control": {
+            "front-left": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "front-right": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "back-left": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "back-right": {
+                "kp" : 1,
+                "kd" : 0.5
+            }
+        }
+    },
+    "r2" : {
+        "role" : "goalkeeper",
+        "color": "red",
+        "active": "true",
+        "pwm": {
+            "max": 255,
+            "min": 0,
+            "base": 100
+        },
+        "hardware": {
+            "id": 2,
+            "chassis": "R5",
+            "pinMotorEsqA": 9,
+            "pinMotorEsqB": 10,
+            "pinMotorDirA": 5,
+            "pinMotorDirB": 6 
+        },
+        "control": { 
+            "front-left": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "front-right": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "back-left": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "back-right": {
+                "kp" : 1, 
+                "kd" : 0.5
+            }
+        }
+    }
+}

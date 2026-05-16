@@ -1,0 +1,88 @@
+#ifndef FHOBOTS_ROBOT_HPP
+#define FHOBOTS_ROBOT_HPP
+
+#include <chrono>
+#include "../model/Vector2D.hpp"
+#include "../control/Control.hpp"
+#include "../strategy/MachineState.hpp"
+
+class Robot {
+
+    public:
+        Vector2D objPos;
+        Vector2D lastPos;
+        Vector2D lastOri;
+        Robot(const double kp, const double kd, const double basePwmValue);
+        virtual ~Robot();
+
+        void calculatePwm(Vector2D& destination);
+        void calculatePwmR(Vector2D &destination);
+
+        void setOrientationRobot(const double x, const double y);
+        void setOrientationRobot(const Vector2D v);
+
+        void setPosition(const double x, const double y);
+        void setPosition(const Vector2D v);
+        void setLastPosition(const double x, const double y);
+
+
+        Vector2D& getPosition();
+        Vector2D& getOrientation();
+        Vector2D& getLastPosition();
+        Vector2D& getVelocity();
+        Vector2D& getObjective();
+
+        void setBasePwmValue(const double pwm);
+        void setPwmLeft(const int pwm);
+        void setPwmRight(const int pwm);
+        void setVelocity(const Vector2D v);
+        void setPD(const double kp, const double kd);
+        void setLastError(const double lError);
+        void setMaxPwm(const int maxPwm = 160);
+        void setObjective(Vector2D v);
+        void setObjective(double x, double y);
+
+        int getBasePwmValue();
+        int getPwmLeft();
+        int getPwmRight();
+
+        int getPosMessage();
+        virtual std::string getMessage();
+
+        void updateRobot();
+        void think();
+        void spinClockWise(int pwm);
+        void spinCounterClockWise(int pwm);
+        void spinOverRightWheel(int pwm);
+        void spinOverLeftWheel(int pwm);
+        void moveForward(int pwm);
+        void moveBackward(int pwm);
+        double getError();
+        double getPD();
+
+        int unchangedPosCounter;
+        bool forceSeeking;
+        bool reverseLeft, reverseRight;
+
+        double getErrorAngleTo(Vector2D objective);
+
+        double calculateError(Vector2D& robotToDestiny, double angleRobot);
+
+    protected:
+
+        int _posMessage;
+        MachineState _machineState;
+
+        virtual void createMachineStates() = 0;
+
+    private:
+
+        Vector2D _Orientation;
+        Vector2D _position;
+        Vector2D _velocity;
+        Control _control;
+        Vector2D _lastPosition;
+};
+
+
+#endif //FHOBOTS_ROBOT_HPP

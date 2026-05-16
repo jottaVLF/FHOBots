@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(make sim *)",
+      "Bash(DISPLAY=:0 timeout 5 ./fhobotsTeam_sim)"
+    ]
+  }
+}
