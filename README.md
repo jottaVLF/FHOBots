@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # VSSS Robotics System
 
 Sistema de robótica para **VSSS (Very Small Size Soccer)**, desenvolvido em C++ com OpenCV e modernizado incrementalmente a partir de uma base legada iniciada em 2017.
@@ -273,3 +274,7 @@ vision/          Visão computacional, HSV, tracking e Kalman
 Projeto VSSS legado modernizado incrementalmente.
 
 Autor/equipe: **a definir**.
+=======
+# FHOBots
+Código principal
+>>>>>>> 3afa3af09ef1385b043146e76921f63412a14007
