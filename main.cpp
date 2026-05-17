@@ -10,6 +10,16 @@
 #include "communication/SimCommunication.hpp"
 #include "model/Robot.hpp"
 #include "debug/Debug.hpp"
+#include "strategy/dsl/VssScript.hpp"
+
+namespace {
+
+bool isStrategyCheckArg(const std::string& arg)
+{
+    return arg == "--check-strategy" || arg == "--print-strategy";
+}
+
+}
 
 void initializeModelAndStates(Config configuration){
     Global::attacker.createMachineStates();
@@ -34,15 +44,32 @@ int main(int argc, char* argv[])
 { 
     Debug * debug = nullptr;
     bool isSimulation = false;
+    bool checkStrategy = false;
     std::string configPath = "config/appConfig.json";
+    std::string strategyPath = "strategy/scripts/default.vss";
 
     for(int i = 1; i < argc; i++){
-        if(strcmp(argv[i], "sim") == 0){
+        std::string arg = argv[i];
+        if(arg == "sim"){
             isSimulation = true;
             Global::isSim = true;
+        }else if(isStrategyCheckArg(arg)){
+            checkStrategy = true;
+        }else if(arg.find(".vss") != std::string::npos){
+            strategyPath = arg;
         }else{
-            configPath = argv[i];
+            configPath = arg;
         }
+    }
+
+    if(checkStrategy){
+        vssscript::VssScript strategy;
+        if(!strategy.loadFromFile(strategyPath)){
+            std::cerr << "DSL strategy invalid: " << strategy.error() << std::endl;
+            return 1;
+        }
+        std::cout << strategy.describe();
+        return 0;
     }
 
     ConfigParser configParser(configPath);
@@ -56,6 +83,13 @@ int main(int argc, char* argv[])
      
     std::cout << "Vision initialized " <<std::endl;
     initializeModelAndStates(configuration);
+
+    vssscript::VssScript strategy;
+    if(strategy.loadFromFile(strategyPath)){
+        std::cout << "DSL strategy loaded: " << strategy.name() << " (" << strategyPath << ")" << std::endl;
+    }else{
+        std::cout << "DSL strategy disabled: " << strategy.error() << std::endl;
+    }
 
     vision->adjustFieldPosition();
     vision->calibration(); 
@@ -72,6 +106,7 @@ int main(int argc, char* argv[])
         {
             std::lock_guard<std::recursive_mutex> lock(Global::worldMutex);
             vision->detectionColors();
+            strategy.execute();
         }
         
         Global::countFrameAttacker++;

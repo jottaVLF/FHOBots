@@ -1,3 +1,6 @@
 bin/**/*.o
 bin/*.o
 fhobotsTeam
+strategy/dsl/VssParser.cpp
+strategy/dsl/VssParser.hpp
+strategy/dsl/VssLexer.cpp

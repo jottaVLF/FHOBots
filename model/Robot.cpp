@@ -120,6 +120,16 @@ std::string Robot::getMessage()
     return _machineState.currentState();
 }
 
+bool Robot::setState(const std::string& stateName)
+{
+    return _machineState.setState(stateName);
+}
+
+std::string Robot::currentState()
+{
+    return _machineState.currentState();
+}
+
 void Robot::updateRobot()
 {
     do

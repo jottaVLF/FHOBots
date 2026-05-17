@@ -1,0 +1,1155 @@
+%PDF-1.4
+%âãÏÓ
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R 7 0 R 9 0 R 11 0 R 13 0 R 15 0 R 17 0 R 19 0 R 21 0 R 23 0 R 25 0 R 27 0 R 29 0 R 31 0 R 33 0 R 35 0 R 37 0 R 39 0 R 41 0 R 43 0 R 45 0 R 47 0 R 49 0 R] /Count 23 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 3737 >>
+stream
+BT /F1 18 Tf 54.00 778.00 Td (Relatório Técnico: Implementação da DSL VSSScript no) Tj ET
+BT /F1 18 Tf 54.00 754.00 Td (Projeto FHOBots) Tj ET
+BT /F1 14 Tf 54.00 711.00 Td (1. Objetivo do Documento) Tj ET
+BT /F1 10 Tf 54.00 682.00 Td (Este documento descreve, passo a passo e em alto nível de detalhe, todas as alterações realizadas no) Tj ET
+BT /F1 10 Tf 54.00 668.00 Td (projeto para implementar uma DSL \(Domain Specific Language, ou Linguagem de Domínio Específico\) voltada) Tj ET
+BT /F1 10 Tf 54.00 654.00 Td (à simplificação da definição de estratégias e regras táticas da máquina de estados dos robôs da VSSLeague.) Tj ET
+BT /F1 10 Tf 54.00 633.00 Td (A implementação foi baseada no documento "DSL - FHOBots.pdf", que propunha a criação de uma linguagem) Tj ET
+BT /F1 10 Tf 54.00 619.00 Td (chamada VSSScript com suporte a:) Tj ET
+BT /F1 10 Tf 54.00 598.00 Td (- definição de estratégias com STRATEGY;) Tj ET
+BT /F1 10 Tf 54.00 584.00 Td (- condições usando IF ... THEN ... END;) Tj ET
+BT /F1 10 Tf 54.00 570.00 Td (- condições baseadas em bola, robôs e áreas do campo;) Tj ET
+BT /F1 10 Tf 54.00 556.00 Td (- ações como GO_TO, KICK, DEFEND, SUPPORT, HOLD e MARK;) Tj ET
+BT /F1 10 Tf 54.00 542.00 Td (- análise léxica;) Tj ET
+BT /F1 10 Tf 54.00 528.00 Td (- análise sintática;) Tj ET
+BT /F1 10 Tf 54.00 514.00 Td (- análise semântica;) Tj ET
+BT /F1 10 Tf 54.00 500.00 Td (- interpretação da estratégia.) Tj ET
+BT /F1 10 Tf 54.00 479.00 Td (O resultado final é uma DSL integrada ao projeto C++ existente, usando Flex para o analisador léxico e) Tj ET
+BT /F1 10 Tf 54.00 465.00 Td (Bison/Yacc para o analisador sintático.) Tj ET
+BT /F1 14 Tf 54.00 436.00 Td (2. Situação Inicial do Projeto) Tj ET
+BT /F1 10 Tf 54.00 407.00 Td (Antes das alterações, o projeto já possuía uma arquitetura de estados implementada em C++.) Tj ET
+BT /F1 10 Tf 54.00 386.00 Td (Os principais elementos existentes eram:) Tj ET
+BT /F1 10 Tf 54.00 365.00 Td (- Robot: classe base dos robôs;) Tj ET
+BT /F1 10 Tf 54.00 351.00 Td (- MachineState: máquina de estados responsável por armazenar e trocar estados;) Tj ET
+BT /F1 10 Tf 54.00 337.00 Td (- State: interface base para cada estado concreto;) Tj ET
+BT /F1 10 Tf 54.00 323.00 Td (- estados específicos para atacante, defensor e goleiro;) Tj ET
+BT /F1 10 Tf 54.00 309.00 Td (- WorldModel: funções de consulta do mundo, como bola em área de ataque, robô perto da bola, etc.;) Tj ET
+BT /F1 10 Tf 54.00 295.00 Td (- Global: armazenamento global de robôs, bola, áreas e comunicação.) Tj ET
+BT /F1 10 Tf 54.00 274.00 Td (O fluxo original era:) Tj ET
+BT /F2 8.5 Tf 62.00 249.00 Td (Robot::updateRobot\(\)) Tj ET
+BT /F2 8.5 Tf 62.00 238.00 Td (  -> MachineState::think\(\)) Tj ET
+BT /F2 8.5 Tf 62.00 227.00 Td (    -> State::doActions\(\)) Tj ET
+BT /F2 8.5 Tf 62.00 216.00 Td (    -> State::checkConditions\(\)) Tj ET
+BT /F2 8.5 Tf 62.00 205.00 Td (    -> MachineState::setState\(...\)) Tj ET
+BT /F1 10 Tf 54.00 183.00 Td (Cada estado definia suas próprias transições dentro de checkConditions\(\). Isso funcionava, mas as regras) Tj ET
+BT /F1 10 Tf 54.00 169.00 Td (táticas ficavam espalhadas por vários arquivos .cpp.) Tj ET
+BT /F1 10 Tf 54.00 148.00 Td (Exemplo do problema:) Tj ET
+BT /F1 10 Tf 54.00 127.00 Td (- para alterar uma regra do atacante, era necessário editar arquivos em strategy/attacker/;) Tj ET
+BT /F1 10 Tf 54.00 113.00 Td (- para alterar uma regra do defensor, arquivos em strategy/defender/;) Tj ET
+BT /F1 10 Tf 54.00 99.00 Td (- para alterar uma regra do goleiro, arquivos em strategy/goalkeeper/.) Tj ET
+BT /F1 10 Tf 54.00 78.00 Td (A DSL foi criada para permitir que uma estratégia pudesse ser escrita em um arquivo texto, mais próximo da) Tj ET
+BT /F1 10 Tf 277.50 28.00 Td (1 / 23) Tj ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 8 0 R >>
+endobj
+8 0 obj
+<< /Length 2902 >>
+stream
+BT /F1 10 Tf 54.00 788.00 Td (linguagem do domínio:) Tj ET
+BT /F2 8.5 Tf 62.00 763.00 Td (IF BALL IN ATTACK_AREA THEN) Tj ET
+BT /F2 8.5 Tf 62.00 752.00 Td (  ATTACKER KICK GOAL) Tj ET
+BT /F2 8.5 Tf 62.00 741.00 Td (  DEFENDER HOLD DEFENSE) Tj ET
+BT /F2 8.5 Tf 62.00 730.00 Td (  GOALKEEPER DEFEND GOAL) Tj ET
+BT /F2 8.5 Tf 62.00 719.00 Td (END) Tj ET
+BT /F1 14 Tf 54.00 689.00 Td (3. Decisão de Arquitetura) Tj ET
+BT /F1 10 Tf 54.00 660.00 Td (Foram consideradas três possibilidades:) Tj ET
+BT /F1 10 Tf 54.00 639.00 Td (1. Criar uma DSL que controlasse diretamente PWM e motores.) Tj ET
+BT /F1 10 Tf 54.00 625.00 Td (2. Criar uma DSL que gerasse código C++.) Tj ET
+BT /F1 10 Tf 54.00 611.00 Td (3. Criar uma DSL tática que selecionasse estados e ações de alto nível.) Tj ET
+BT /F1 10 Tf 54.00 590.00 Td (A opção escolhida foi a terceira.) Tj ET
+BT /F1 10 Tf 54.00 569.00 Td (Motivo:) Tj ET
+BT /F1 10 Tf 54.00 548.00 Td (- o projeto já possuía estados calibrados;) Tj ET
+BT /F1 10 Tf 54.00 534.00 Td (- os estados já conheciam controle, movimento e comunicação;) Tj ET
+BT /F1 10 Tf 54.00 520.00 Td (- a DSL deveria simplificar a estratégia, não substituir o controle físico;) Tj ET
+BT /F1 10 Tf 54.00 506.00 Td (- a proposta do documento explicitamente deixava PID, hardware real e simulação física detalhada fora do) Tj ET
+BT /F1 10 Tf 66.00 492.00 Td (escopo.) Tj ET
+BT /F1 10 Tf 54.00 471.00 Td (Assim, a DSL foi implementada como uma camada acima da máquina de estados.) Tj ET
+BT /F1 10 Tf 54.00 450.00 Td (Ela interpreta comandos como:) Tj ET
+BT /F2 8.5 Tf 62.00 425.00 Td (ATTACKER GO_TO BALL) Tj ET
+BT /F1 10 Tf 54.00 403.00 Td (e converte para comportamentos já existentes, por exemplo:) Tj ET
+BT /F2 8.5 Tf 62.00 378.00 Td (ATTACKER -> estado "seeking") Tj ET
+BT /F1 14 Tf 54.00 348.00 Td (4. Novos Arquivos Criados) Tj ET
+BT /F1 10 Tf 54.00 319.00 Td (Foram criados os seguintes arquivos:) Tj ET
+BT /F2 8.5 Tf 62.00 294.00 Td (strategy/dsl/VssScript.hpp) Tj ET
+BT /F2 8.5 Tf 62.00 283.00 Td (strategy/dsl/VssScript.cpp) Tj ET
+BT /F2 8.5 Tf 62.00 272.00 Td (strategy/dsl/VssParser.y) Tj ET
+BT /F2 8.5 Tf 62.00 261.00 Td (strategy/dsl/VssLexer.l) Tj ET
+BT /F2 8.5 Tf 62.00 250.00 Td (strategy/dsl/README.md) Tj ET
+BT /F2 8.5 Tf 62.00 239.00 Td (strategy/scripts/default.vss) Tj ET
+BT /F2 8.5 Tf 62.00 228.00 Td (docs/dsl_implementation_report.md) Tj ET
+BT /F1 10 Tf 54.00 206.00 Td (Também são gerados automaticamente durante a build:) Tj ET
+BT /F2 8.5 Tf 62.00 181.00 Td (strategy/dsl/VssParser.cpp) Tj ET
+BT /F2 8.5 Tf 62.00 170.00 Td (strategy/dsl/VssParser.hpp) Tj ET
+BT /F2 8.5 Tf 62.00 159.00 Td (strategy/dsl/VssLexer.cpp) Tj ET
+BT /F1 10 Tf 54.00 137.00 Td (Esses arquivos gerados não devem ser editados manualmente.) Tj ET
+BT /F1 14 Tf 54.00 108.00 Td (5. Alterações no .gitignore) Tj ET
+BT /F1 10 Tf 54.00 79.00 Td (Arquivo alterado:) Tj ET
+BT /F1 10 Tf 277.50 28.00 Td (2 / 23) Tj ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 10 0 R >>
+endobj
+10 0 obj
+<< /Length 2955 >>
+stream
+BT /F2 8.5 Tf 62.00 788.00 Td (.gitignore) Tj ET
+BT /F1 10 Tf 54.00 766.00 Td (Antes, o .gitignore ignorava apenas objetos compilados e o binário:) Tj ET
+BT /F2 8.5 Tf 62.00 741.00 Td (bin/**/*.o) Tj ET
+BT /F2 8.5 Tf 62.00 730.00 Td (bin/*.o) Tj ET
+BT /F2 8.5 Tf 62.00 719.00 Td (fhobotsTeam) Tj ET
+BT /F1 10 Tf 54.00 697.00 Td (Depois, foram adicionados os arquivos gerados por Bison e Flex:) Tj ET
+BT /F2 8.5 Tf 62.00 672.00 Td (strategy/dsl/VssParser.cpp) Tj ET
+BT /F2 8.5 Tf 62.00 661.00 Td (strategy/dsl/VssParser.hpp) Tj ET
+BT /F2 8.5 Tf 62.00 650.00 Td (strategy/dsl/VssLexer.cpp) Tj ET
+BT /F1 10 Tf 54.00 628.00 Td (Motivo:) Tj ET
+BT /F1 10 Tf 54.00 607.00 Td (- VssParser.cpp e VssParser.hpp são gerados a partir de VssParser.y;) Tj ET
+BT /F1 10 Tf 54.00 593.00 Td (- VssLexer.cpp é gerado a partir de VssLexer.l;) Tj ET
+BT /F1 10 Tf 54.00 579.00 Td (- versionar arquivos gerados aumenta ruído no repositório;) Tj ET
+BT /F1 10 Tf 54.00 565.00 Td (- a fonte real da gramática é o .y;) Tj ET
+BT /F1 10 Tf 54.00 551.00 Td (- a fonte real do lexer é o .l.) Tj ET
+BT /F1 14 Tf 54.00 522.00 Td (6. Alterações no Makefile) Tj ET
+BT /F1 10 Tf 54.00 493.00 Td (Arquivo alterado:) Tj ET
+BT /F2 8.5 Tf 62.00 468.00 Td (Makefile) Tj ET
+BT /F1 12 Tf 54.00 440.00 Td (6.1 Inclusão de fontes geradas) Tj ET
+BT /F1 10 Tf 54.00 416.00 Td (Foi adicionada a variável:) Tj ET
+BT /F2 8.5 Tf 62.00 391.00 Td (DSL_GENERATED=strategy/dsl/VssParser.cpp strategy/dsl/VssLexer.cpp) Tj ET
+BT /F1 10 Tf 54.00 369.00 Td (Depois, a lista de fontes C++ passou a incluir explicitamente esses arquivos gerados:) Tj ET
+BT /F2 8.5 Tf 62.00 344.00 Td (CPP_SRC=$\(filter-out $\(DSL_GENERATED\),$\(wildcard *.cpp\) $\(wildcard */*.cpp\) $\(wildcard */*/*.cp) Tj ET
+BT /F2 8.5 Tf 62.00 333.00 Td (p\)\) $\(DSL_GENERATED\)) Tj ET
+BT /F1 10 Tf 54.00 311.00 Td (Motivo:) Tj ET
+BT /F1 10 Tf 54.00 290.00 Td (- os arquivos VssParser.cpp e VssLexer.cpp não existem antes da build;) Tj ET
+BT /F1 10 Tf 54.00 276.00 Td (- se o Makefile dependesse apenas de wildcard, eles poderiam ficar fora da compilação;) Tj ET
+BT /F1 10 Tf 54.00 262.00 Td (- incluindo explicitamente DSL_GENERATED, garantimos que o Makefile sabe que eles fazem parte do projeto.) Tj ET
+BT /F1 12 Tf 54.00 235.00 Td (6.2 Regra para gerar parser com Bison) Tj ET
+BT /F1 10 Tf 54.00 211.00 Td (Foi adicionada a regra:) Tj ET
+BT /F2 8.5 Tf 62.00 186.00 Td (strategy/dsl/VssParser.cpp strategy/dsl/VssParser.hpp: strategy/dsl/VssParser.y) Tj ET
+BT /F2 8.5 Tf 62.00 175.00 Td (	bison -d -o strategy/dsl/VssParser.cpp strategy/dsl/VssParser.y) Tj ET
+BT /F1 10 Tf 54.00 153.00 Td (Essa regra diz:) Tj ET
+BT /F1 10 Tf 54.00 132.00 Td (- entrada: VssParser.y;) Tj ET
+BT /F1 10 Tf 54.00 118.00 Td (- saída: VssParser.cpp e VssParser.hpp;) Tj ET
+BT /F1 10 Tf 54.00 104.00 Td (- ferramenta: bison;) Tj ET
+BT /F1 10 Tf 54.00 90.00 Td (- flag -d: gera também o header com tokens e tipos.) Tj ET
+BT /F1 10 Tf 277.50 28.00 Td (3 / 23) Tj ET
+endstream
+endobj
+11 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 12 0 R >>
+endobj
+12 0 obj
+<< /Length 2626 >>
+stream
+BT /F1 12 Tf 54.00 788.00 Td (6.3 Regra para gerar lexer com Flex) Tj ET
+BT /F1 10 Tf 54.00 764.00 Td (Foi adicionada a regra:) Tj ET
+BT /F2 8.5 Tf 62.00 739.00 Td (strategy/dsl/VssLexer.cpp: strategy/dsl/VssLexer.l strategy/dsl/VssParser.hpp) Tj ET
+BT /F2 8.5 Tf 62.00 728.00 Td (	flex -o strategy/dsl/VssLexer.cpp strategy/dsl/VssLexer.l) Tj ET
+BT /F1 10 Tf 54.00 706.00 Td (Essa regra diz:) Tj ET
+BT /F1 10 Tf 54.00 685.00 Td (- entrada: VssLexer.l;) Tj ET
+BT /F1 10 Tf 54.00 671.00 Td (- dependência adicional: VssParser.hpp;) Tj ET
+BT /F1 10 Tf 54.00 657.00 Td (- saída: VssLexer.cpp;) Tj ET
+BT /F1 10 Tf 54.00 643.00 Td (- ferramenta: flex.) Tj ET
+BT /F1 10 Tf 54.00 622.00 Td (O lexer depende do header do parser porque precisa conhecer os tokens gerados pelo Bison.) Tj ET
+BT /F1 12 Tf 54.00 595.00 Td (6.4 Limpeza de arquivos gerados) Tj ET
+BT /F1 10 Tf 54.00 571.00 Td (No alvo clean, foram adicionados:) Tj ET
+BT /F2 8.5 Tf 62.00 546.00 Td (rm -f strategy/dsl/VssParser.cpp strategy/dsl/VssParser.hpp strategy/dsl/VssLexer.cpp) Tj ET
+BT /F1 10 Tf 54.00 524.00 Td (Isso permite uma build limpa do zero.) Tj ET
+BT /F1 12 Tf 54.00 497.00 Td (6.5 Diretório de objetos da DSL) Tj ET
+BT /F1 10 Tf 54.00 473.00 Td (No alvo bin_dir, foi adicionado:) Tj ET
+BT /F2 8.5 Tf 62.00 448.00 Td (bin/strategy/dsl) Tj ET
+BT /F1 10 Tf 54.00 426.00 Td (Sem isso, a compilação falhava ao tentar criar:) Tj ET
+BT /F2 8.5 Tf 62.00 401.00 Td (bin/strategy/dsl/VssScript.o) Tj ET
+BT /F2 8.5 Tf 62.00 390.00 Td (bin/strategy/dsl/VssParser.o) Tj ET
+BT /F2 8.5 Tf 62.00 379.00 Td (bin/strategy/dsl/VssLexer.o) Tj ET
+BT /F1 14 Tf 54.00 349.00 Td (7. Alterações em MachineState) Tj ET
+BT /F1 10 Tf 54.00 320.00 Td (Arquivos alterados:) Tj ET
+BT /F2 8.5 Tf 62.00 295.00 Td (strategy/MachineState.hpp) Tj ET
+BT /F2 8.5 Tf 62.00 284.00 Td (strategy/MachineState.cpp) Tj ET
+BT /F1 12 Tf 54.00 256.00 Td (7.1 Antes) Tj ET
+BT /F1 10 Tf 54.00 232.00 Td (Antes, MachineState::setState tinha retorno void:) Tj ET
+BT /F2 8.5 Tf 62.00 207.00 Td (void setState\(const std::string nameState\);) Tj ET
+BT /F1 10 Tf 54.00 185.00 Td (E a implementação usava diretamente:) Tj ET
+BT /F2 8.5 Tf 62.00 160.00 Td (_activeState = _states[nameState];) Tj ET
+BT /F1 10 Tf 54.00 138.00 Td (Isso tinha dois problemas:) Tj ET
+BT /F1 10 Tf 54.00 117.00 Td (1. se o estado não existisse, o operador [] criaria uma entrada nula no mapa;) Tj ET
+BT /F1 10 Tf 54.00 103.00 Td (2. trocar para o mesmo estado repetidamente chamava exitActions\(\) e entryActions\(\) sem necessidade.) Tj ET
+BT /F1 12 Tf 54.00 76.00 Td (7.2 Depois) Tj ET
+BT /F1 10 Tf 277.50 28.00 Td (4 / 23) Tj ET
+endstream
+endobj
+13 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 14 0 R >>
+endobj
+14 0 obj
+<< /Length 2805 >>
+stream
+BT /F1 10 Tf 54.00 781.00 Td (O método passou a retornar bool:) Tj ET
+BT /F2 8.5 Tf 62.00 756.00 Td (bool setState\(const std::string nameState\);) Tj ET
+BT /F1 10 Tf 54.00 734.00 Td (Agora ele:) Tj ET
+BT /F1 10 Tf 54.00 713.00 Td (1. procura o estado com find;) Tj ET
+BT /F1 10 Tf 54.00 699.00 Td (2. retorna false se o estado não existir;) Tj ET
+BT /F1 10 Tf 54.00 685.00 Td (3. evita reentrar no mesmo estado;) Tj ET
+BT /F1 10 Tf 54.00 671.00 Td (4. retorna true quando a troca é válida.) Tj ET
+BT /F1 10 Tf 54.00 650.00 Td (Fluxo atual:) Tj ET
+BT /F2 8.5 Tf 62.00 625.00 Td (setState\("seeking"\)) Tj ET
+BT /F2 8.5 Tf 62.00 614.00 Td (  -> procura "seeking" no mapa) Tj ET
+BT /F2 8.5 Tf 62.00 603.00 Td (  -> se não existir, imprime erro e retorna false) Tj ET
+BT /F2 8.5 Tf 62.00 592.00 Td (  -> se já for o estado atual, retorna true) Tj ET
+BT /F2 8.5 Tf 62.00 581.00 Td (  -> executa exitActions do estado antigo) Tj ET
+BT /F2 8.5 Tf 62.00 570.00 Td (  -> troca o ponteiro ativo) Tj ET
+BT /F2 8.5 Tf 62.00 559.00 Td (  -> executa entryActions do novo estado) Tj ET
+BT /F2 8.5 Tf 62.00 548.00 Td (  -> retorna true) Tj ET
+BT /F1 12 Tf 54.00 520.00 Td (7.3 Por que isso foi necessário?) Tj ET
+BT /F1 10 Tf 54.00 496.00 Td (A DSL permite escrever:) Tj ET
+BT /F2 8.5 Tf 62.00 471.00 Td (ATTACKER USE seeking) Tj ET
+BT /F1 10 Tf 54.00 449.00 Td (Se o usuário escrever:) Tj ET
+BT /F2 8.5 Tf 62.00 424.00 Td (ATTACKER USE estado_inexistente) Tj ET
+BT /F1 10 Tf 54.00 402.00 Td (o sistema não deve quebrar silenciosamente.) Tj ET
+BT /F1 10 Tf 54.00 381.00 Td (Além disso, a DSL é executada em loop. Se a bola continuar na área de ataque, a regra pode ser verdadeira por) Tj ET
+BT /F1 10 Tf 54.00 367.00 Td (vários frames consecutivos. Sem a proteção contra reentrada, o robô chamaria entryActions\(\)) Tj ET
+BT /F1 10 Tf 54.00 353.00 Td (repetidamente no mesmo estado, o que poderia reinicializar variáveis internas e gerar comportamento) Tj ET
+BT /F1 10 Tf 54.00 339.00 Td (instável.) Tj ET
+BT /F1 12 Tf 54.00 312.00 Td (7.4 Ajuste em currentState) Tj ET
+BT /F1 10 Tf 54.00 288.00 Td (Também foi adicionada proteção em:) Tj ET
+BT /F2 8.5 Tf 62.00 263.00 Td (const std::string MachineState::currentState\(\)) Tj ET
+BT /F1 10 Tf 54.00 241.00 Td (Agora, se _activeState for nulo, retorna string vazia.) Tj ET
+BT /F1 10 Tf 54.00 220.00 Td (Isso evita acesso inválido caso o estado ainda não tenha sido inicializado.) Tj ET
+BT /F1 14 Tf 54.00 191.00 Td (8. Alterações em Robot) Tj ET
+BT /F1 10 Tf 54.00 162.00 Td (Arquivos alterados:) Tj ET
+BT /F2 8.5 Tf 62.00 137.00 Td (model/Robot.hpp) Tj ET
+BT /F2 8.5 Tf 62.00 126.00 Td (model/Robot.cpp) Tj ET
+BT /F1 12 Tf 54.00 98.00 Td (8.1 Novos métodos públicos) Tj ET
+BT /F1 10 Tf 54.00 74.00 Td (Foram adicionados:) Tj ET
+BT /F1 10 Tf 277.50 28.00 Td (5 / 23) Tj ET
+endstream
+endobj
+15 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 16 0 R >>
+endobj
+16 0 obj
+<< /Length 2512 >>
+stream
+BT /F2 8.5 Tf 62.00 777.00 Td (bool setState\(const std::string& stateName\);) Tj ET
+BT /F2 8.5 Tf 62.00 766.00 Td (std::string currentState\(\);) Tj ET
+BT /F1 12 Tf 54.00 738.00 Td (8.2 Objetivo) Tj ET
+BT /F1 10 Tf 54.00 714.00 Td (Antes, _machineState era protegido dentro de Robot, então apenas classes derivadas ou a própria classe) Tj ET
+BT /F1 10 Tf 54.00 700.00 Td (podiam trocar estados.) Tj ET
+BT /F1 10 Tf 54.00 679.00 Td (A DSL precisava aplicar ações em robôs globais:) Tj ET
+BT /F2 8.5 Tf 62.00 654.00 Td (Global::attacker) Tj ET
+BT /F2 8.5 Tf 62.00 643.00 Td (Global::deffender) Tj ET
+BT /F2 8.5 Tf 62.00 632.00 Td (Global::goalkeeper) Tj ET
+BT /F1 10 Tf 54.00 610.00 Td (Para isso, era necessário expor uma API controlada:) Tj ET
+BT /F2 8.5 Tf 62.00 585.00 Td (robot.setState\("seeking"\);) Tj ET
+BT /F1 10 Tf 54.00 563.00 Td (Essa API encapsula a máquina de estados e mantém o restante do código sem acesso direto ao) Tj ET
+BT /F1 10 Tf 54.00 549.00 Td (_machineState.) Tj ET
+BT /F1 14 Tf 54.00 520.00 Td (9. Novo Arquivo: VssScript.hpp) Tj ET
+BT /F1 10 Tf 54.00 491.00 Td (Arquivo criado:) Tj ET
+BT /F2 8.5 Tf 62.00 466.00 Td (strategy/dsl/VssScript.hpp) Tj ET
+BT /F1 10 Tf 54.00 444.00 Td (Esse arquivo define a AST da DSL e a interface pública do interpretador.) Tj ET
+BT /F1 14 Tf 54.00 415.00 Td (10. AST: Árvore Sintática Abstrata) Tj ET
+BT /F1 10 Tf 54.00 386.00 Td (A AST é a representação em memória da estratégia depois do parsing.) Tj ET
+BT /F1 10 Tf 54.00 365.00 Td (Texto da DSL:) Tj ET
+BT /F2 8.5 Tf 62.00 340.00 Td (IF BALL IN ATTACK_AREA THEN) Tj ET
+BT /F2 8.5 Tf 62.00 329.00 Td (  ATTACKER KICK GOAL) Tj ET
+BT /F2 8.5 Tf 62.00 318.00 Td (END) Tj ET
+BT /F1 10 Tf 54.00 296.00 Td (Representação conceitual:) Tj ET
+BT /F2 8.5 Tf 62.00 271.00 Td (Statement) Tj ET
+BT /F2 8.5 Tf 62.00 260.00 Td (  Condition: BallInArea\(Attack\)) Tj ET
+BT /F2 8.5 Tf 62.00 249.00 Td (  Actions:) Tj ET
+BT /F2 8.5 Tf 62.00 238.00 Td (    Action: Attacker KickGoal) Tj ET
+BT /F1 12 Tf 54.00 210.00 Td (10.1 RobotRole) Tj ET
+BT /F2 8.5 Tf 62.00 182.00 Td (enum class RobotRole {) Tj ET
+BT /F2 8.5 Tf 62.00 171.00 Td (    Attacker,) Tj ET
+BT /F2 8.5 Tf 62.00 160.00 Td (    Defender,) Tj ET
+BT /F2 8.5 Tf 62.00 149.00 Td (    Goalkeeper) Tj ET
+BT /F2 8.5 Tf 62.00 138.00 Td (};) Tj ET
+BT /F1 10 Tf 54.00 116.00 Td (Representa o papel do robô na estratégia.) Tj ET
+BT /F1 10 Tf 54.00 95.00 Td (A DSL aceita:) Tj ET
+BT /F2 8.5 Tf 62.00 70.00 Td (ATTACKER) Tj ET
+BT /F1 10 Tf 277.50 28.00 Td (6 / 23) Tj ET
+endstream
+endobj
+17 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 18 0 R >>
+endobj
+18 0 obj
+<< /Length 2744 >>
+stream
+BT /F2 8.5 Tf 62.00 788.00 Td (DEFENDER) Tj ET
+BT /F2 8.5 Tf 62.00 777.00 Td (GOALKEEPER) Tj ET
+BT /F2 8.5 Tf 62.00 766.00 Td (ROBOT 1) Tj ET
+BT /F2 8.5 Tf 62.00 755.00 Td (ROBOT 2) Tj ET
+BT /F2 8.5 Tf 62.00 744.00 Td (ROBOT 3) Tj ET
+BT /F1 10 Tf 54.00 722.00 Td (Mapeamento:) Tj ET
+BT /F2 8.5 Tf 62.00 697.00 Td (ROBOT 1 -> GOALKEEPER) Tj ET
+BT /F2 8.5 Tf 62.00 686.00 Td (ROBOT 2 -> DEFENDER) Tj ET
+BT /F2 8.5 Tf 62.00 675.00 Td (ROBOT 3 -> ATTACKER) Tj ET
+BT /F1 10 Tf 54.00 653.00 Td (Esse mapeamento segue a configuração do projeto, em que:) Tj ET
+BT /F1 10 Tf 54.00 632.00 Td (- goleiro usa posição de mensagem 0;) Tj ET
+BT /F1 10 Tf 54.00 618.00 Td (- defensor usa posição de mensagem 1;) Tj ET
+BT /F1 10 Tf 54.00 604.00 Td (- atacante usa posição de mensagem 2.) Tj ET
+BT /F1 10 Tf 54.00 583.00 Td (Como a linguagem do documento usa ROBOT 1, ROBOT 2 e ROBOT 3, a DSL aceita essa forma, mas também aceita) Tj ET
+BT /F1 10 Tf 54.00 569.00 Td (nomes mais claros.) Tj ET
+BT /F1 12 Tf 54.00 542.00 Td (10.2 FieldArea) Tj ET
+BT /F2 8.5 Tf 62.00 514.00 Td (enum class FieldArea {) Tj ET
+BT /F2 8.5 Tf 62.00 503.00 Td (    Attack,) Tj ET
+BT /F2 8.5 Tf 62.00 492.00 Td (    Defense,) Tj ET
+BT /F2 8.5 Tf 62.00 481.00 Td (    Center) Tj ET
+BT /F2 8.5 Tf 62.00 470.00 Td (};) Tj ET
+BT /F1 10 Tf 54.00 448.00 Td (Representa as áreas:) Tj ET
+BT /F2 8.5 Tf 62.00 423.00 Td (ATTACK_AREA) Tj ET
+BT /F2 8.5 Tf 62.00 412.00 Td (DEFENSE_AREA) Tj ET
+BT /F2 8.5 Tf 62.00 401.00 Td (CENTER_AREA) Tj ET
+BT /F1 12 Tf 54.00 373.00 Td (10.3 ConditionType) Tj ET
+BT /F2 8.5 Tf 62.00 345.00 Td (enum class ConditionType {) Tj ET
+BT /F2 8.5 Tf 62.00 334.00 Td (    Always,) Tj ET
+BT /F2 8.5 Tf 62.00 323.00 Td (    KeySpace,) Tj ET
+BT /F2 8.5 Tf 62.00 312.00 Td (    BallInArea,) Tj ET
+BT /F2 8.5 Tf 62.00 301.00 Td (    RobotHasBall,) Tj ET
+BT /F2 8.5 Tf 62.00 290.00 Td (    RobotNearBall,) Tj ET
+BT /F2 8.5 Tf 62.00 279.00 Td (    RobotInArea) Tj ET
+BT /F2 8.5 Tf 62.00 268.00 Td (};) Tj ET
+BT /F1 10 Tf 54.00 246.00 Td (Condições suportadas:) Tj ET
+BT /F2 8.5 Tf 62.00 221.00 Td (KEY SPACE) Tj ET
+BT /F2 8.5 Tf 62.00 210.00 Td (BALL IN ATTACK_AREA) Tj ET
+BT /F2 8.5 Tf 62.00 199.00 Td (BALL IN DEFENSE_AREA) Tj ET
+BT /F2 8.5 Tf 62.00 188.00 Td (BALL IN CENTER_AREA) Tj ET
+BT /F2 8.5 Tf 62.00 177.00 Td (ATTACKER HAS_BALL) Tj ET
+BT /F2 8.5 Tf 62.00 166.00 Td (ATTACKER NEAR BALL) Tj ET
+BT /F2 8.5 Tf 62.00 155.00 Td (ATTACKER IN ATTACK_AREA) Tj ET
+BT /F1 12 Tf 54.00 127.00 Td (10.4 ActionType) Tj ET
+BT /F2 8.5 Tf 62.00 99.00 Td (enum class ActionType {) Tj ET
+BT /F2 8.5 Tf 62.00 88.00 Td (    UseState,) Tj ET
+BT /F2 8.5 Tf 62.00 77.00 Td (    GoToBall,) Tj ET
+BT /F2 8.5 Tf 62.00 66.00 Td (    GoToPosition,) Tj ET
+BT /F1 10 Tf 277.50 28.00 Td (7 / 23) Tj ET
+endstream
+endobj
+19 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 20 0 R >>
+endobj
+20 0 obj
+<< /Length 2798 >>
+stream
+BT /F2 8.5 Tf 62.00 788.00 Td (    KickGoal,) Tj ET
+BT /F2 8.5 Tf 62.00 777.00 Td (    KickCenter,) Tj ET
+BT /F2 8.5 Tf 62.00 766.00 Td (    DefendGoal,) Tj ET
+BT /F2 8.5 Tf 62.00 755.00 Td (    HoldDefense,) Tj ET
+BT /F2 8.5 Tf 62.00 744.00 Td (    MarkBall,) Tj ET
+BT /F2 8.5 Tf 62.00 733.00 Td (    Support) Tj ET
+BT /F2 8.5 Tf 62.00 722.00 Td (};) Tj ET
+BT /F1 10 Tf 54.00 700.00 Td (Ações suportadas:) Tj ET
+BT /F2 8.5 Tf 62.00 675.00 Td (ATTACKER USE seeking) Tj ET
+BT /F2 8.5 Tf 62.00 664.00 Td (ATTACKER GO_TO BALL) Tj ET
+BT /F2 8.5 Tf 62.00 653.00 Td (ATTACKER GO_TO \(320, 240\)) Tj ET
+BT /F2 8.5 Tf 62.00 642.00 Td (ATTACKER KICK GOAL) Tj ET
+BT /F2 8.5 Tf 62.00 631.00 Td (ATTACKER KICK CENTER) Tj ET
+BT /F2 8.5 Tf 62.00 620.00 Td (GOALKEEPER DEFEND GOAL) Tj ET
+BT /F2 8.5 Tf 62.00 609.00 Td (DEFENDER HOLD DEFENSE) Tj ET
+BT /F2 8.5 Tf 62.00 598.00 Td (DEFENDER MARK BALL) Tj ET
+BT /F2 8.5 Tf 62.00 587.00 Td (DEFENDER SUPPORT CENTER) Tj ET
+BT /F1 12 Tf 54.00 559.00 Td (10.5 SourceLocation) Tj ET
+BT /F2 8.5 Tf 62.00 531.00 Td (struct SourceLocation {) Tj ET
+BT /F2 8.5 Tf 62.00 520.00 Td (    int line = 1;) Tj ET
+BT /F2 8.5 Tf 62.00 509.00 Td (    int column = 1;) Tj ET
+BT /F2 8.5 Tf 62.00 498.00 Td (};) Tj ET
+BT /F1 10 Tf 54.00 476.00 Td (Guarda linha e coluna do comando no arquivo .vss.) Tj ET
+BT /F1 10 Tf 54.00 455.00 Td (Isso permite mensagens como:) Tj ET
+BT /F2 8.5 Tf 62.00 430.00 Td (line 3, column 12: ATTACKER does not have state 'nonexistent') Tj ET
+BT /F1 12 Tf 54.00 402.00 Td (10.6 Condition) Tj ET
+BT /F2 8.5 Tf 62.00 374.00 Td (struct Condition {) Tj ET
+BT /F2 8.5 Tf 62.00 363.00 Td (    ConditionType type = ConditionType::Always;) Tj ET
+BT /F2 8.5 Tf 62.00 352.00 Td (    RobotRole robot = RobotRole::Attacker;) Tj ET
+BT /F2 8.5 Tf 62.00 341.00 Td (    FieldArea area = FieldArea::Center;) Tj ET
+BT /F2 8.5 Tf 62.00 330.00 Td (    SourceLocation location;) Tj ET
+BT /F2 8.5 Tf 62.00 319.00 Td (};) Tj ET
+BT /F1 10 Tf 54.00 297.00 Td (Representa uma condição.) Tj ET
+BT /F1 10 Tf 54.00 276.00 Td (Exemplo:) Tj ET
+BT /F2 8.5 Tf 62.00 251.00 Td (BALL IN ATTACK_AREA) Tj ET
+BT /F1 10 Tf 54.00 229.00 Td (vira:) Tj ET
+BT /F2 8.5 Tf 62.00 204.00 Td (type = BallInArea) Tj ET
+BT /F2 8.5 Tf 62.00 193.00 Td (area = Attack) Tj ET
+BT /F1 12 Tf 54.00 165.00 Td (10.7 Action) Tj ET
+BT /F2 8.5 Tf 62.00 137.00 Td (struct Action {) Tj ET
+BT /F2 8.5 Tf 62.00 126.00 Td (    RobotRole robot = RobotRole::Attacker;) Tj ET
+BT /F2 8.5 Tf 62.00 115.00 Td (    ActionType type = ActionType::UseState;) Tj ET
+BT /F2 8.5 Tf 62.00 104.00 Td (    std::string value;) Tj ET
+BT /F2 8.5 Tf 62.00 93.00 Td (    int x = 0;) Tj ET
+BT /F2 8.5 Tf 62.00 82.00 Td (    int y = 0;) Tj ET
+BT /F2 8.5 Tf 62.00 71.00 Td (    SourceLocation location;) Tj ET
+BT /F1 10 Tf 277.50 28.00 Td (8 / 23) Tj ET
+endstream
+endobj
+21 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 22 0 R >>
+endobj
+22 0 obj
+<< /Length 2132 >>
+stream
+BT /F2 8.5 Tf 62.00 788.00 Td (};) Tj ET
+BT /F1 10 Tf 54.00 766.00 Td (Representa uma ação.) Tj ET
+BT /F1 10 Tf 54.00 745.00 Td (Exemplo:) Tj ET
+BT /F2 8.5 Tf 62.00 720.00 Td (ATTACKER GO_TO \(320, 240\)) Tj ET
+BT /F1 10 Tf 54.00 698.00 Td (vira:) Tj ET
+BT /F2 8.5 Tf 62.00 673.00 Td (robot = Attacker) Tj ET
+BT /F2 8.5 Tf 62.00 662.00 Td (type = GoToPosition) Tj ET
+BT /F2 8.5 Tf 62.00 651.00 Td (x = 320) Tj ET
+BT /F2 8.5 Tf 62.00 640.00 Td (y = 240) Tj ET
+BT /F1 12 Tf 54.00 612.00 Td (10.8 Statement) Tj ET
+BT /F2 8.5 Tf 62.00 584.00 Td (struct Statement {) Tj ET
+BT /F2 8.5 Tf 62.00 573.00 Td (    Condition condition;) Tj ET
+BT /F2 8.5 Tf 62.00 562.00 Td (    std::vector<Action> actions;) Tj ET
+BT /F2 8.5 Tf 62.00 551.00 Td (};) Tj ET
+BT /F1 10 Tf 54.00 529.00 Td (Representa uma regra.) Tj ET
+BT /F1 10 Tf 54.00 508.00 Td (Cada regra possui:) Tj ET
+BT /F1 10 Tf 54.00 487.00 Td (- uma condição;) Tj ET
+BT /F1 10 Tf 54.00 473.00 Td (- uma ou mais ações.) Tj ET
+BT /F1 12 Tf 54.00 446.00 Td (10.9 Strategy) Tj ET
+BT /F2 8.5 Tf 62.00 418.00 Td (struct Strategy {) Tj ET
+BT /F2 8.5 Tf 62.00 407.00 Td (    std::string name;) Tj ET
+BT /F2 8.5 Tf 62.00 396.00 Td (    std::vector<Statement> statements;) Tj ET
+BT /F2 8.5 Tf 62.00 385.00 Td (};) Tj ET
+BT /F1 10 Tf 54.00 363.00 Td (Representa o programa completo.) Tj ET
+BT /F1 14 Tf 54.00 334.00 Td (11. Novo Lexer com Flex) Tj ET
+BT /F1 10 Tf 54.00 305.00 Td (Arquivo criado:) Tj ET
+BT /F2 8.5 Tf 62.00 280.00 Td (strategy/dsl/VssLexer.l) Tj ET
+BT /F1 10 Tf 54.00 258.00 Td (O lexer transforma texto em tokens.) Tj ET
+BT /F1 10 Tf 54.00 237.00 Td (Exemplo:) Tj ET
+BT /F2 8.5 Tf 62.00 212.00 Td (IF BALL IN ATTACK_AREA THEN) Tj ET
+BT /F1 10 Tf 54.00 190.00 Td (vira:) Tj ET
+BT /F2 8.5 Tf 62.00 165.00 Td (IF) Tj ET
+BT /F2 8.5 Tf 62.00 154.00 Td (BALL) Tj ET
+BT /F2 8.5 Tf 62.00 143.00 Td (IN) Tj ET
+BT /F2 8.5 Tf 62.00 132.00 Td (ATTACK_AREA) Tj ET
+BT /F2 8.5 Tf 62.00 121.00 Td (THEN) Tj ET
+BT /F1 12 Tf 54.00 93.00 Td (11.1 Opções do Flex) Tj ET
+BT /F2 8.5 Tf 62.00 65.00 Td (%option noyywrap nounput noinput caseless yylineno) Tj ET
+BT /F1 10 Tf 277.50 28.00 Td (9 / 23) Tj ET
+endstream
+endobj
+23 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 24 0 R >>
+endobj
+24 0 obj
+<< /Length 2506 >>
+stream
+BT /F1 10 Tf 54.00 777.00 Td (Significado:) Tj ET
+BT /F1 10 Tf 54.00 756.00 Td (- noyywrap: evita necessidade de implementar yywrap;) Tj ET
+BT /F1 10 Tf 54.00 742.00 Td (- nounput: não gera função unput, que não é usada;) Tj ET
+BT /F1 10 Tf 54.00 728.00 Td (- noinput: não gera função input, que não é usada;) Tj ET
+BT /F1 10 Tf 54.00 714.00 Td (- caseless: aceita palavras-chave sem diferenciar maiúsculas/minúsculas;) Tj ET
+BT /F1 10 Tf 54.00 700.00 Td (- yylineno: ativa contagem de linhas.) Tj ET
+BT /F1 12 Tf 54.00 673.00 Td (11.2 Tracking de coluna) Tj ET
+BT /F1 10 Tf 54.00 649.00 Td (Flex já rastreia linha com yylineno, mas não coluna automaticamente.) Tj ET
+BT /F1 10 Tf 54.00 628.00 Td (Por isso foi criada a variável:) Tj ET
+BT /F2 8.5 Tf 62.00 603.00 Td (int vss_yycolumn = 1;) Tj ET
+BT /F1 10 Tf 54.00 581.00 Td (E o macro:) Tj ET
+BT /F2 8.5 Tf 62.00 556.00 Td (#define YY_USER_ACTION ...) Tj ET
+BT /F1 10 Tf 54.00 534.00 Td (Esse macro roda a cada token reconhecido e atualiza:) Tj ET
+BT /F1 10 Tf 54.00 513.00 Td (- yylloc.first_line;) Tj ET
+BT /F1 10 Tf 54.00 499.00 Td (- yylloc.first_column;) Tj ET
+BT /F1 10 Tf 54.00 485.00 Td (- yylloc.last_line;) Tj ET
+BT /F1 10 Tf 54.00 471.00 Td (- yylloc.last_column.) Tj ET
+BT /F1 10 Tf 54.00 450.00 Td (Esses dados são usados pelo Bison para erros com localização.) Tj ET
+BT /F1 12 Tf 54.00 423.00 Td (11.3 Comentários) Tj ET
+BT /F1 10 Tf 54.00 399.00 Td (Comentários começam com #:) Tj ET
+BT /F2 8.5 Tf 62.00 374.00 Td (# isto é um comentário) Tj ET
+BT /F1 10 Tf 54.00 352.00 Td (Regra:) Tj ET
+BT /F2 8.5 Tf 62.00 327.00 Td ("#".* ;) Tj ET
+BT /F1 12 Tf 54.00 299.00 Td (11.4 Tokens de palavras-chave) Tj ET
+BT /F1 10 Tf 54.00 275.00 Td (O lexer reconhece:) Tj ET
+BT /F2 8.5 Tf 62.00 250.00 Td (STRATEGY) Tj ET
+BT /F2 8.5 Tf 62.00 239.00 Td (IF) Tj ET
+BT /F2 8.5 Tf 62.00 228.00 Td (THEN) Tj ET
+BT /F2 8.5 Tf 62.00 217.00 Td (END) Tj ET
+BT /F2 8.5 Tf 62.00 206.00 Td (BALL) Tj ET
+BT /F2 8.5 Tf 62.00 195.00 Td (ROBOT) Tj ET
+BT /F2 8.5 Tf 62.00 184.00 Td (GOAL) Tj ET
+BT /F2 8.5 Tf 62.00 173.00 Td (KEY) Tj ET
+BT /F2 8.5 Tf 62.00 162.00 Td (SPACE) Tj ET
+BT /F2 8.5 Tf 62.00 151.00 Td (IN) Tj ET
+BT /F2 8.5 Tf 62.00 140.00 Td (HAS_BALL) Tj ET
+BT /F2 8.5 Tf 62.00 129.00 Td (NEAR) Tj ET
+BT /F2 8.5 Tf 62.00 118.00 Td (USE) Tj ET
+BT /F2 8.5 Tf 62.00 107.00 Td (GO_TO) Tj ET
+BT /F2 8.5 Tf 62.00 96.00 Td (KICK) Tj ET
+BT /F2 8.5 Tf 62.00 85.00 Td (DEFEND) Tj ET
+BT /F2 8.5 Tf 62.00 74.00 Td (SUPPORT) Tj ET
+BT /F1 10 Tf 277.50 28.00 Td (10 / 23) Tj ET
+endstream
+endobj
+25 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 26 0 R >>
+endobj
+26 0 obj
+<< /Length 2647 >>
+stream
+BT /F2 8.5 Tf 62.00 788.00 Td (HOLD) Tj ET
+BT /F2 8.5 Tf 62.00 777.00 Td (MARK) Tj ET
+BT /F2 8.5 Tf 62.00 766.00 Td (ATTACKER) Tj ET
+BT /F2 8.5 Tf 62.00 755.00 Td (DEFENDER) Tj ET
+BT /F2 8.5 Tf 62.00 744.00 Td (GOALKEEPER) Tj ET
+BT /F2 8.5 Tf 62.00 733.00 Td (ATTACK_AREA) Tj ET
+BT /F2 8.5 Tf 62.00 722.00 Td (DEFENSE_AREA) Tj ET
+BT /F2 8.5 Tf 62.00 711.00 Td (DEFENCE_AREA) Tj ET
+BT /F2 8.5 Tf 62.00 700.00 Td (CENTER_AREA) Tj ET
+BT /F2 8.5 Tf 62.00 689.00 Td (LEFT) Tj ET
+BT /F2 8.5 Tf 62.00 678.00 Td (RIGHT) Tj ET
+BT /F2 8.5 Tf 62.00 667.00 Td (CENTER) Tj ET
+BT /F1 10 Tf 54.00 645.00 Td (DEFENCE_AREA também foi aceito como alternativa a DEFENSE_AREA.) Tj ET
+BT /F1 12 Tf 54.00 618.00 Td (11.5 Identificadores) Tj ET
+BT /F1 10 Tf 54.00 594.00 Td (Regra:) Tj ET
+BT /F2 8.5 Tf 62.00 569.00 Td ([A-Za-z_][A-Za-z0-9_]*) Tj ET
+BT /F1 10 Tf 54.00 547.00 Td (Usada principalmente para:) Tj ET
+BT /F2 8.5 Tf 62.00 522.00 Td (STRATEGY default) Tj ET
+BT /F2 8.5 Tf 62.00 511.00 Td (ATTACKER USE seeking) Tj ET
+BT /F1 12 Tf 54.00 483.00 Td (11.6 Números) Tj ET
+BT /F1 10 Tf 54.00 459.00 Td (Regra:) Tj ET
+BT /F2 8.5 Tf 62.00 434.00 Td ([0-9]+) Tj ET
+BT /F1 10 Tf 54.00 412.00 Td (Usada para:) Tj ET
+BT /F2 8.5 Tf 62.00 387.00 Td (ROBOT 1) Tj ET
+BT /F2 8.5 Tf 62.00 376.00 Td (GO_TO \(320, 240\)) Tj ET
+BT /F1 14 Tf 54.00 346.00 Td (12. Novo Parser com Bison/Yacc) Tj ET
+BT /F1 10 Tf 54.00 317.00 Td (Arquivo criado:) Tj ET
+BT /F2 8.5 Tf 62.00 292.00 Td (strategy/dsl/VssParser.y) Tj ET
+BT /F1 10 Tf 54.00 270.00 Td (O parser valida a estrutura da linguagem e monta a AST.) Tj ET
+BT /F1 14 Tf 54.00 241.00 Td (13. Gramática Implementada) Tj ET
+BT /F1 10 Tf 54.00 212.00 Td (Resumo em EBNF:) Tj ET
+BT /F2 8.5 Tf 62.00 187.00 Td (program          ::= "STRATEGY" identifier statement_list) Tj ET
+BT /F2 8.5 Tf 62.00 176.00 Td (statement_list   ::= statement | statement_list statement) Tj ET
+BT /F2 8.5 Tf 62.00 165.00 Td (statement        ::= if_statement | action_statement) Tj ET
+BT /F2 8.5 Tf 62.00 154.00 Td (if_statement     ::= "IF" condition "THEN" action_list "END") Tj ET
+BT /F2 8.5 Tf 62.00 143.00 Td (action_statement ::= action) Tj ET
+BT /F2 8.5 Tf 62.00 132.00 Td () Tj ET
+BT /F2 8.5 Tf 62.00 121.00 Td (condition        ::= "KEY" "SPACE") Tj ET
+BT /F2 8.5 Tf 62.00 110.00 Td (                   | "BALL" "IN" field_area) Tj ET
+BT /F2 8.5 Tf 62.00 99.00 Td (                   | robot "HAS_BALL") Tj ET
+BT /F2 8.5 Tf 62.00 88.00 Td (                   | robot "NEAR" "BALL") Tj ET
+BT /F2 8.5 Tf 62.00 77.00 Td (                   | robot "IN" field_area) Tj ET
+BT /F2 8.5 Tf 62.00 66.00 Td () Tj ET
+BT /F1 10 Tf 277.50 28.00 Td (11 / 23) Tj ET
+endstream
+endobj
+27 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 28 0 R >>
+endobj
+28 0 obj
+<< /Length 3153 >>
+stream
+BT /F2 8.5 Tf 62.00 788.00 Td (action           ::= robot "USE" identifier) Tj ET
+BT /F2 8.5 Tf 62.00 777.00 Td (                   | robot "GO_TO" "BALL") Tj ET
+BT /F2 8.5 Tf 62.00 766.00 Td (                   | robot "GO_TO" "\(" number "," number "\)") Tj ET
+BT /F2 8.5 Tf 62.00 755.00 Td (                   | robot "KICK" "GOAL") Tj ET
+BT /F2 8.5 Tf 62.00 744.00 Td (                   | robot "KICK" "CENTER") Tj ET
+BT /F2 8.5 Tf 62.00 733.00 Td (                   | robot "DEFEND" "GOAL") Tj ET
+BT /F2 8.5 Tf 62.00 722.00 Td (                   | robot "HOLD" "DEFENSE") Tj ET
+BT /F2 8.5 Tf 62.00 711.00 Td (                   | robot "MARK" "BALL") Tj ET
+BT /F2 8.5 Tf 62.00 700.00 Td (                   | robot "SUPPORT" support_area) Tj ET
+BT /F2 8.5 Tf 62.00 689.00 Td () Tj ET
+BT /F2 8.5 Tf 62.00 678.00 Td (robot            ::= "ATTACKER" | "DEFENDER" | "GOALKEEPER" | "ROBOT" number) Tj ET
+BT /F2 8.5 Tf 62.00 667.00 Td (field_area       ::= "ATTACK_AREA" | "DEFENSE_AREA" | "CENTER_AREA") Tj ET
+BT /F2 8.5 Tf 62.00 656.00 Td (support_area     ::= "LEFT" | "RIGHT" | "CENTER") Tj ET
+BT /F1 14 Tf 54.00 626.00 Td (14. Como o Parser Monta a AST) Tj ET
+BT /F1 10 Tf 54.00 597.00 Td (Exemplo de regra:) Tj ET
+BT /F2 8.5 Tf 62.00 572.00 Td (condition:) Tj ET
+BT /F2 8.5 Tf 62.00 561.00 Td (    BALL IN field_area) Tj ET
+BT /F2 8.5 Tf 62.00 550.00 Td (    {) Tj ET
+BT /F2 8.5 Tf 62.00 539.00 Td (        $$ = new vssscript::Condition\(\);) Tj ET
+BT /F2 8.5 Tf 62.00 528.00 Td (        $$->type = vssscript::ConditionType::BallInArea;) Tj ET
+BT /F2 8.5 Tf 62.00 517.00 Td (        $$->area = $3;) Tj ET
+BT /F2 8.5 Tf 62.00 506.00 Td (        $$->location = { @1.first_line, @1.first_column };) Tj ET
+BT /F2 8.5 Tf 62.00 495.00 Td (    }) Tj ET
+BT /F2 8.5 Tf 62.00 484.00 Td (;) Tj ET
+BT /F1 10 Tf 54.00 462.00 Td (Interpretação:) Tj ET
+BT /F1 10 Tf 54.00 441.00 Td (- quando o parser encontra BALL IN <area>;) Tj ET
+BT /F1 10 Tf 54.00 427.00 Td (- cria um Condition;) Tj ET
+BT /F1 10 Tf 54.00 413.00 Td (- define o tipo como BallInArea;) Tj ET
+BT /F1 10 Tf 54.00 399.00 Td (- salva a área;) Tj ET
+BT /F1 10 Tf 54.00 385.00 Td (- salva linha/coluna do token BALL.) Tj ET
+BT /F1 10 Tf 54.00 364.00 Td (Exemplo para ação:) Tj ET
+BT /F2 8.5 Tf 62.00 339.00 Td (robot GO_TO '\(' NUMBER ',' NUMBER '\)') Tj ET
+BT /F1 10 Tf 54.00 317.00 Td (Essa regra cria:) Tj ET
+BT /F2 8.5 Tf 62.00 292.00 Td (Action {) Tj ET
+BT /F2 8.5 Tf 62.00 281.00 Td (    robot = <robot escolhido>;) Tj ET
+BT /F2 8.5 Tf 62.00 270.00 Td (    type = GoToPosition;) Tj ET
+BT /F2 8.5 Tf 62.00 259.00 Td (    x = numero_1;) Tj ET
+BT /F2 8.5 Tf 62.00 248.00 Td (    y = numero_2;) Tj ET
+BT /F2 8.5 Tf 62.00 237.00 Td (}) Tj ET
+BT /F1 14 Tf 54.00 207.00 Td (15. Tratamento de ROBOT 1, 2 e 3) Tj ET
+BT /F1 10 Tf 54.00 178.00 Td (No parser:) Tj ET
+BT /F2 8.5 Tf 62.00 153.00 Td (ROBOT 1 -> Goalkeeper) Tj ET
+BT /F2 8.5 Tf 62.00 142.00 Td (ROBOT 2 -> Defender) Tj ET
+BT /F2 8.5 Tf 62.00 131.00 Td (ROBOT 3 -> Attacker) Tj ET
+BT /F1 10 Tf 54.00 109.00 Td (Se o usuário escrever:) Tj ET
+BT /F2 8.5 Tf 62.00 84.00 Td (ROBOT 4 GO_TO BALL) Tj ET
+BT /F1 10 Tf 277.50 28.00 Td (12 / 23) Tj ET
+endstream
+endobj
+29 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 30 0 R >>
+endobj
+30 0 obj
+<< /Length 2284 >>
+stream
+BT /F1 10 Tf 54.00 788.00 Td (o parser chama erro:) Tj ET
+BT /F2 8.5 Tf 62.00 763.00 Td (invalid robot number: use ROBOT 1, ROBOT 2 or ROBOT 3) Tj ET
+BT /F1 14 Tf 54.00 733.00 Td (16. Erros com Linha e Coluna) Tj ET
+BT /F1 10 Tf 54.00 704.00 Td (O Bison usa %locations.) Tj ET
+BT /F1 10 Tf 54.00 683.00 Td (Isso habilita variáveis como:) Tj ET
+BT /F2 8.5 Tf 62.00 658.00 Td (@1.first_line) Tj ET
+BT /F2 8.5 Tf 62.00 647.00 Td (@1.first_column) Tj ET
+BT /F2 8.5 Tf 62.00 636.00 Td (yylloc.first_line) Tj ET
+BT /F2 8.5 Tf 62.00 625.00 Td (yylloc.first_column) Tj ET
+BT /F1 10 Tf 54.00 603.00 Td (A função:) Tj ET
+BT /F2 8.5 Tf 62.00 578.00 Td (void yyerror\(const char* message\)) Tj ET
+BT /F1 10 Tf 54.00 556.00 Td (foi implementada para montar mensagens assim:) Tj ET
+BT /F2 8.5 Tf 62.00 531.00 Td (line 3, column 12: syntax error) Tj ET
+BT /F1 10 Tf 54.00 509.00 Td (Na análise semântica, o mesmo padrão foi usado:) Tj ET
+BT /F2 8.5 Tf 62.00 484.00 Td (line 3, column 12: ATTACKER does not have state 'nonexistent') Tj ET
+BT /F1 14 Tf 54.00 454.00 Td (17. Novo Interpretador: VssScript.cpp) Tj ET
+BT /F1 10 Tf 54.00 425.00 Td (Arquivo criado:) Tj ET
+BT /F2 8.5 Tf 62.00 400.00 Td (strategy/dsl/VssScript.cpp) Tj ET
+BT /F1 10 Tf 54.00 378.00 Td (Esse arquivo faz:) Tj ET
+BT /F1 10 Tf 54.00 357.00 Td (1. carregamento do arquivo .vss;) Tj ET
+BT /F1 10 Tf 54.00 343.00 Td (2. chamada do parser;) Tj ET
+BT /F1 10 Tf 54.00 329.00 Td (3. chamada da análise semântica;) Tj ET
+BT /F1 10 Tf 54.00 315.00 Td (4. descrição textual da estratégia;) Tj ET
+BT /F1 10 Tf 54.00 301.00 Td (5. execução das regras no loop principal.) Tj ET
+BT /F1 14 Tf 54.00 272.00 Td (18. Carregamento da Estratégia) Tj ET
+BT /F1 10 Tf 54.00 243.00 Td (Método:) Tj ET
+BT /F2 8.5 Tf 62.00 218.00 Td (bool VssScript::loadFromFile\(const std::string& path\)) Tj ET
+BT /F1 10 Tf 54.00 196.00 Td (Fluxo:) Tj ET
+BT /F2 8.5 Tf 62.00 171.00 Td (abre arquivo) Tj ET
+BT /F2 8.5 Tf 62.00 160.00 Td (  -> lê conteúdo para string) Tj ET
+BT /F2 8.5 Tf 62.00 149.00 Td (  -> chama loadSource\(...\)) Tj ET
+BT /F1 10 Tf 54.00 127.00 Td (Método:) Tj ET
+BT /F2 8.5 Tf 62.00 102.00 Td (bool VssScript::loadSource\(const std::string& source\)) Tj ET
+BT /F1 10 Tf 54.00 80.00 Td (Fluxo:) Tj ET
+BT /F1 10 Tf 277.50 28.00 Td (13 / 23) Tj ET
+endstream
+endobj
+31 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 32 0 R >>
+endobj
+32 0 obj
+<< /Length 2460 >>
+stream
+BT /F2 8.5 Tf 62.00 788.00 Td (limpa estado anterior) Tj ET
+BT /F2 8.5 Tf 62.00 777.00 Td (  -> parseSource\(...\)) Tj ET
+BT /F2 8.5 Tf 62.00 766.00 Td (  -> validateStrategy\(...\)) Tj ET
+BT /F2 8.5 Tf 62.00 755.00 Td (  -> marca _loaded = true) Tj ET
+BT /F1 10 Tf 54.00 733.00 Td (Se parsing ou validação falharem, _loaded permanece falso.) Tj ET
+BT /F1 14 Tf 54.00 704.00 Td (19. Análise Semântica) Tj ET
+BT /F1 10 Tf 54.00 675.00 Td (Função:) Tj ET
+BT /F2 8.5 Tf 62.00 650.00 Td (bool validateStrategy\(const Strategy& strategy, std::string& error\)) Tj ET
+BT /F1 12 Tf 54.00 622.00 Td (19.1 Validação do nome da estratégia) Tj ET
+BT /F1 10 Tf 54.00 598.00 Td (Se o nome estiver vazio:) Tj ET
+BT /F2 8.5 Tf 62.00 573.00 Td (strategy name cannot be empty) Tj ET
+BT /F1 12 Tf 54.00 545.00 Td (19.2 Validação de estados por robô) Tj ET
+BT /F1 10 Tf 54.00 521.00 Td (Foram definidos os estados válidos por papel.) Tj ET
+BT /F1 10 Tf 54.00 500.00 Td (Atacante:) Tj ET
+BT /F2 8.5 Tf 62.00 475.00 Td (idle) Tj ET
+BT /F2 8.5 Tf 62.00 464.00 Td (backoff) Tj ET
+BT /F2 8.5 Tf 62.00 453.00 Td (attacking) Tj ET
+BT /F2 8.5 Tf 62.00 442.00 Td (seeking) Tj ET
+BT /F2 8.5 Tf 62.00 431.00 Td (waiting) Tj ET
+BT /F2 8.5 Tf 62.00 420.00 Td (spinning) Tj ET
+BT /F2 8.5 Tf 62.00 409.00 Td (align) Tj ET
+BT /F2 8.5 Tf 62.00 398.00 Td (exit) Tj ET
+BT /F1 10 Tf 54.00 376.00 Td (Defensor:) Tj ET
+BT /F2 8.5 Tf 62.00 351.00 Td (idle) Tj ET
+BT /F2 8.5 Tf 62.00 340.00 Td (backoff) Tj ET
+BT /F2 8.5 Tf 62.00 329.00 Td (seeking) Tj ET
+BT /F2 8.5 Tf 62.00 318.00 Td (waiting) Tj ET
+BT /F2 8.5 Tf 62.00 307.00 Td (kicking) Tj ET
+BT /F2 8.5 Tf 62.00 296.00 Td (spinning) Tj ET
+BT /F2 8.5 Tf 62.00 285.00 Td (align) Tj ET
+BT /F2 8.5 Tf 62.00 274.00 Td (exit) Tj ET
+BT /F1 10 Tf 54.00 252.00 Td (Goleiro:) Tj ET
+BT /F2 8.5 Tf 62.00 227.00 Td (idle) Tj ET
+BT /F2 8.5 Tf 62.00 216.00 Td (seeking) Tj ET
+BT /F2 8.5 Tf 62.00 205.00 Td (kicking) Tj ET
+BT /F2 8.5 Tf 62.00 194.00 Td (backoff) Tj ET
+BT /F2 8.5 Tf 62.00 183.00 Td (moveback) Tj ET
+BT /F2 8.5 Tf 62.00 172.00 Td (moveforward) Tj ET
+BT /F2 8.5 Tf 62.00 161.00 Td (spinning) Tj ET
+BT /F2 8.5 Tf 62.00 150.00 Td (align) Tj ET
+BT /F2 8.5 Tf 62.00 139.00 Td (waiting) Tj ET
+BT /F2 8.5 Tf 62.00 128.00 Td (return) Tj ET
+BT /F2 8.5 Tf 62.00 117.00 Td (exit) Tj ET
+BT /F2 8.5 Tf 62.00 106.00 Td (retreating) Tj ET
+BT /F1 10 Tf 54.00 84.00 Td (Se a DSL tentar usar um estado inexistente:) Tj ET
+BT /F1 10 Tf 277.50 28.00 Td (14 / 23) Tj ET
+endstream
+endobj
+33 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 34 0 R >>
+endobj
+34 0 obj
+<< /Length 2208 >>
+stream
+BT /F2 8.5 Tf 62.00 788.00 Td (ATTACKER USE nonexistent) Tj ET
+BT /F1 10 Tf 54.00 766.00 Td (o erro será:) Tj ET
+BT /F2 8.5 Tf 62.00 741.00 Td (line 3, column 12: ATTACKER does not have state 'nonexistent') Tj ET
+BT /F1 12 Tf 54.00 713.00 Td (19.3 Validação de ação incoerente) Tj ET
+BT /F1 10 Tf 54.00 689.00 Td (Foi adicionada uma regra semântica:) Tj ET
+BT /F2 8.5 Tf 62.00 664.00 Td (GOALKEEPER KICK CENTER) Tj ET
+BT /F1 10 Tf 54.00 642.00 Td (é rejeitado.) Tj ET
+BT /F1 10 Tf 54.00 621.00 Td (Motivo:) Tj ET
+BT /F1 10 Tf 54.00 600.00 Td (- o goleiro já possui lógica específica para defesa e chute;) Tj ET
+BT /F1 10 Tf 54.00 586.00 Td (- KICK CENTER é mais coerente para atacante/defensor;) Tj ET
+BT /F1 10 Tf 54.00 572.00 Td (- isso demonstra a etapa semântica pedida no documento.) Tj ET
+BT /F1 10 Tf 54.00 551.00 Td (Erro:) Tj ET
+BT /F2 8.5 Tf 62.00 526.00 Td (GOALKEEPER cannot KICK CENTER in current semantic rules) Tj ET
+BT /F1 14 Tf 54.00 496.00 Td (20. Avaliação de Condições) Tj ET
+BT /F1 10 Tf 54.00 467.00 Td (Função:) Tj ET
+BT /F2 8.5 Tf 62.00 442.00 Td (bool evaluate\(const Condition& condition\)) Tj ET
+BT /F1 12 Tf 54.00 414.00 Td (20.1 KEY SPACE) Tj ET
+BT /F2 8.5 Tf 62.00 386.00 Td (Global::bufferKeyboard == 32) Tj ET
+BT /F1 10 Tf 54.00 364.00 Td (Permite iniciar comportamento ao pressionar espaço.) Tj ET
+BT /F1 12 Tf 54.00 337.00 Td (20.2 BALL IN ATTACK_AREA) Tj ET
+BT /F1 10 Tf 54.00 313.00 Td (Usa:) Tj ET
+BT /F2 8.5 Tf 62.00 288.00 Td (WorldModel::isInAttackArea\(Global::ball\)) Tj ET
+BT /F1 12 Tf 54.00 260.00 Td (20.3 BALL IN DEFENSE_AREA) Tj ET
+BT /F1 10 Tf 54.00 236.00 Td (Usa:) Tj ET
+BT /F2 8.5 Tf 62.00 211.00 Td (WorldModel::isInDeffenseArea\(Global::ball\)) Tj ET
+BT /F1 12 Tf 54.00 183.00 Td (20.4 BALL IN CENTER_AREA) Tj ET
+BT /F1 10 Tf 54.00 159.00 Td (Como não havia área central explícita no projeto, foi definida como faixa central do campo:) Tj ET
+BT /F2 8.5 Tf 62.00 134.00 Td (position.x >= 3 * Global::fieldRect.width / 8 &&) Tj ET
+BT /F2 8.5 Tf 62.00 123.00 Td (position.x <= 5 * Global::fieldRect.width / 8) Tj ET
+BT /F1 12 Tf 54.00 95.00 Td (20.5 ROBOT NEAR BALL) Tj ET
+BT /F1 10 Tf 54.00 71.00 Td (Usa:) Tj ET
+BT /F1 10 Tf 277.50 28.00 Td (15 / 23) Tj ET
+endstream
+endobj
+35 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 36 0 R >>
+endobj
+36 0 obj
+<< /Length 2685 >>
+stream
+BT /F2 8.5 Tf 62.00 777.00 Td (WorldModel::isNearOf\(robot.getPosition\(\), Global::ball\)) Tj ET
+BT /F1 12 Tf 54.00 749.00 Td (20.6 ROBOT HAS_BALL) Tj ET
+BT /F1 10 Tf 54.00 725.00 Td (Considera que o robô tem a bola se:) Tj ET
+BT /F1 10 Tf 54.00 704.00 Td (1. está perto da bola;) Tj ET
+BT /F1 10 Tf 54.00 690.00 Td (2. está alinhado com a bola.) Tj ET
+BT /F1 10 Tf 54.00 669.00 Td (Código conceitual:) Tj ET
+BT /F2 8.5 Tf 62.00 644.00 Td (WorldModel::isNearOf\(robot.getPosition\(\), Global::ball\) &&) Tj ET
+BT /F2 8.5 Tf 62.00 633.00 Td (WorldModel::isAlignedWith\(robot.getOrientation\(\), robotToBall\)) Tj ET
+BT /F1 14 Tf 54.00 603.00 Td (21. Mapeamento de Ações para Comportamento) Tj ET
+BT /F1 10 Tf 54.00 574.00 Td (Função:) Tj ET
+BT /F2 8.5 Tf 62.00 549.00 Td (std::string mappedState\(const Action& action\)) Tj ET
+BT /F1 10 Tf 54.00 527.00 Td (Mapeamentos principais:) Tj ET
+BT /F2 8.5 Tf 62.00 502.00 Td (GO_TO BALL      -> seeking) Tj ET
+BT /F2 8.5 Tf 62.00 491.00 Td (MARK BALL       -> seeking) Tj ET
+BT /F2 8.5 Tf 62.00 480.00 Td (KICK GOAL       -> attacking para atacante, kicking para outros) Tj ET
+BT /F2 8.5 Tf 62.00 469.00 Td (KICK CENTER     -> attacking para atacante, kicking para outros) Tj ET
+BT /F2 8.5 Tf 62.00 458.00 Td (DEFEND GOAL     -> waiting) Tj ET
+BT /F2 8.5 Tf 62.00 447.00 Td (HOLD DEFENSE    -> waiting) Tj ET
+BT /F2 8.5 Tf 62.00 436.00 Td (SUPPORT         -> waiting) Tj ET
+BT /F2 8.5 Tf 62.00 425.00 Td (USE <estado>    -> <estado>) Tj ET
+BT /F1 14 Tf 54.00 395.00 Td (22. Execução de Ações) Tj ET
+BT /F1 10 Tf 54.00 366.00 Td (Função:) Tj ET
+BT /F2 8.5 Tf 62.00 341.00 Td (void executeAction\(const Action& action\)) Tj ET
+BT /F1 12 Tf 54.00 313.00 Td (22.1 Ações baseadas em estado) Tj ET
+BT /F1 10 Tf 54.00 289.00 Td (Para a maioria das ações:) Tj ET
+BT /F2 8.5 Tf 62.00 264.00 Td (robotFor\(action.robot\).setState\(state\);) Tj ET
+BT /F1 10 Tf 54.00 242.00 Td (Isso reaproveita a máquina de estados existente.) Tj ET
+BT /F1 12 Tf 54.00 215.00 Td (22.2 GO_TO \(x,y\)) Tj ET
+BT /F1 10 Tf 54.00 191.00 Td (Para posição explícita:) Tj ET
+BT /F2 8.5 Tf 62.00 166.00 Td (Vector2D destination\(action.x, action.y\);) Tj ET
+BT /F2 8.5 Tf 62.00 155.00 Td (Robot& robot = robotFor\(action.robot\);) Tj ET
+BT /F2 8.5 Tf 62.00 144.00 Td (robot.calculatePwmUnivector\(destination\);) Tj ET
+BT /F2 8.5 Tf 62.00 133.00 Td (Global::communication->writeMessage\(robot.getPosMessage\(\), robot.getPwmLeft\(\), robot.getPwmRigh) Tj ET
+BT /F2 8.5 Tf 62.00 122.00 Td (t\(\)\);) Tj ET
+BT /F1 10 Tf 54.00 100.00 Td (Isso permite comandos como:) Tj ET
+BT /F2 8.5 Tf 62.00 75.00 Td (ROBOT 3 GO_TO \(320, 240\)) Tj ET
+BT /F1 10 Tf 277.50 28.00 Td (16 / 23) Tj ET
+endstream
+endobj
+37 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 38 0 R >>
+endobj
+38 0 obj
+<< /Length 2520 >>
+stream
+BT /F1 10 Tf 54.00 781.00 Td (Essa ação é executada diretamente, pois os estados existentes não tinham um estado genérico) Tj ET
+BT /F1 10 Tf 54.00 767.00 Td (parametrizado por coordenada.) Tj ET
+BT /F1 14 Tf 54.00 738.00 Td (23. Alterações em main.cpp) Tj ET
+BT /F1 10 Tf 54.00 709.00 Td (Arquivo alterado:) Tj ET
+BT /F2 8.5 Tf 62.00 684.00 Td (main.cpp) Tj ET
+BT /F1 12 Tf 54.00 656.00 Td (23.1 Inclusão da DSL) Tj ET
+BT /F1 10 Tf 54.00 632.00 Td (Foi incluído:) Tj ET
+BT /F2 8.5 Tf 62.00 607.00 Td (#include "strategy/dsl/VssScript.hpp") Tj ET
+BT /F1 12 Tf 54.00 579.00 Td (23.2 Novo argumento de estratégia) Tj ET
+BT /F1 10 Tf 54.00 555.00 Td (Foi criado:) Tj ET
+BT /F2 8.5 Tf 62.00 530.00 Td (std::string strategyPath = "strategy/scripts/default.vss";) Tj ET
+BT /F1 10 Tf 54.00 508.00 Td (Se o usuário passar um arquivo .vss, ele substitui o padrão:) Tj ET
+BT /F2 8.5 Tf 62.00 483.00 Td (./fhobotsTeam sim minha_estrategia.vss) Tj ET
+BT /F1 12 Tf 54.00 455.00 Td (23.3 Modo de checagem) Tj ET
+BT /F1 10 Tf 54.00 431.00 Td (Foram adicionados:) Tj ET
+BT /F2 8.5 Tf 62.00 406.00 Td (--check-strategy) Tj ET
+BT /F2 8.5 Tf 62.00 395.00 Td (--print-strategy) Tj ET
+BT /F1 10 Tf 54.00 373.00 Td (Uso:) Tj ET
+BT /F2 8.5 Tf 62.00 348.00 Td (./fhobotsTeam --check-strategy strategy/scripts/default.vss) Tj ET
+BT /F1 10 Tf 54.00 326.00 Td (Esse modo:) Tj ET
+BT /F1 10 Tf 54.00 305.00 Td (1. carrega o arquivo;) Tj ET
+BT /F1 10 Tf 54.00 291.00 Td (2. faz parsing;) Tj ET
+BT /F1 10 Tf 54.00 277.00 Td (3. faz análise semântica;) Tj ET
+BT /F1 10 Tf 54.00 263.00 Td (4. imprime uma descrição;) Tj ET
+BT /F1 10 Tf 54.00 249.00 Td (5. encerra sem abrir visão, comunicação ou simulador.) Tj ET
+BT /F1 10 Tf 54.00 228.00 Td (Isso é útil para testar a DSL sem depender do ambiente de simulação.) Tj ET
+BT /F1 12 Tf 54.00 201.00 Td (23.4 Carregamento durante execução normal) Tj ET
+BT /F1 10 Tf 54.00 177.00 Td (Após inicializar modelo e estados:) Tj ET
+BT /F2 8.5 Tf 62.00 152.00 Td (vssscript::VssScript strategy;) Tj ET
+BT /F2 8.5 Tf 62.00 141.00 Td (if\(strategy.loadFromFile\(strategyPath\)\){) Tj ET
+BT /F2 8.5 Tf 62.00 130.00 Td (    std::cout << "DSL strategy loaded: " << strategy.name\(\) << " \(" << strategyPath << "\)" << s) Tj ET
+BT /F2 8.5 Tf 62.00 119.00 Td (td::endl;) Tj ET
+BT /F2 8.5 Tf 62.00 108.00 Td (}else{) Tj ET
+BT /F2 8.5 Tf 62.00 97.00 Td (    std::cout << "DSL strategy disabled: " << strategy.error\(\) << std::endl;) Tj ET
+BT /F2 8.5 Tf 62.00 86.00 Td (}) Tj ET
+BT /F1 10 Tf 277.50 28.00 Td (17 / 23) Tj ET
+endstream
+endobj
+39 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 40 0 R >>
+endobj
+40 0 obj
+<< /Length 2828 >>
+stream
+BT /F1 10 Tf 54.00 788.00 Td (Se a estratégia falhar, o programa continua sem DSL.) Tj ET
+BT /F1 10 Tf 54.00 767.00 Td (Isso evita que um erro no arquivo .vss derrube o sistema inteiro durante testes.) Tj ET
+BT /F1 12 Tf 54.00 740.00 Td (23.5 Execução da DSL no loop principal) Tj ET
+BT /F1 10 Tf 54.00 716.00 Td (Depois da visão atualizar o mundo:) Tj ET
+BT /F2 8.5 Tf 62.00 691.00 Td (vision->detectionColors\(\);) Tj ET
+BT /F2 8.5 Tf 62.00 680.00 Td (strategy.execute\(\);) Tj ET
+BT /F1 10 Tf 54.00 658.00 Td (Isso garante que a DSL avalie a posição atual da bola e dos robôs.) Tj ET
+BT /F1 14 Tf 54.00 629.00 Td (24. Script Padrão Criado) Tj ET
+BT /F1 10 Tf 54.00 600.00 Td (Arquivo criado:) Tj ET
+BT /F2 8.5 Tf 62.00 575.00 Td (strategy/scripts/default.vss) Tj ET
+BT /F1 10 Tf 54.00 553.00 Td (Conteúdo:) Tj ET
+BT /F2 8.5 Tf 62.00 528.00 Td (STRATEGY default) Tj ET
+BT /F2 8.5 Tf 62.00 517.00 Td () Tj ET
+BT /F2 8.5 Tf 62.00 506.00 Td (IF KEY SPACE THEN) Tj ET
+BT /F2 8.5 Tf 62.00 495.00 Td (  ATTACKER USE seeking) Tj ET
+BT /F2 8.5 Tf 62.00 484.00 Td (  DEFENDER USE waiting) Tj ET
+BT /F2 8.5 Tf 62.00 473.00 Td (  GOALKEEPER USE waiting) Tj ET
+BT /F2 8.5 Tf 62.00 462.00 Td (END) Tj ET
+BT /F2 8.5 Tf 62.00 451.00 Td () Tj ET
+BT /F2 8.5 Tf 62.00 440.00 Td (IF BALL IN ATTACK_AREA THEN) Tj ET
+BT /F2 8.5 Tf 62.00 429.00 Td (  ATTACKER KICK GOAL) Tj ET
+BT /F2 8.5 Tf 62.00 418.00 Td (  DEFENDER HOLD DEFENSE) Tj ET
+BT /F2 8.5 Tf 62.00 407.00 Td (  GOALKEEPER DEFEND GOAL) Tj ET
+BT /F2 8.5 Tf 62.00 396.00 Td (END) Tj ET
+BT /F2 8.5 Tf 62.00 385.00 Td () Tj ET
+BT /F2 8.5 Tf 62.00 374.00 Td (IF BALL IN DEFENSE_AREA THEN) Tj ET
+BT /F2 8.5 Tf 62.00 363.00 Td (  ATTACKER HOLD DEFENSE) Tj ET
+BT /F2 8.5 Tf 62.00 352.00 Td (  DEFENDER GO_TO BALL) Tj ET
+BT /F2 8.5 Tf 62.00 341.00 Td (  GOALKEEPER GO_TO BALL) Tj ET
+BT /F2 8.5 Tf 62.00 330.00 Td (END) Tj ET
+BT /F2 8.5 Tf 62.00 319.00 Td () Tj ET
+BT /F2 8.5 Tf 62.00 308.00 Td (IF BALL IN CENTER_AREA THEN) Tj ET
+BT /F2 8.5 Tf 62.00 297.00 Td (  ATTACKER GO_TO BALL) Tj ET
+BT /F2 8.5 Tf 62.00 286.00 Td (  DEFENDER SUPPORT CENTER) Tj ET
+BT /F2 8.5 Tf 62.00 275.00 Td (  GOALKEEPER DEFEND GOAL) Tj ET
+BT /F2 8.5 Tf 62.00 264.00 Td (END) Tj ET
+BT /F1 10 Tf 54.00 242.00 Td (Esse arquivo demonstra:) Tj ET
+BT /F1 10 Tf 54.00 221.00 Td (- início por tecla espaço;) Tj ET
+BT /F1 10 Tf 54.00 207.00 Td (- ataque;) Tj ET
+BT /F1 10 Tf 54.00 193.00 Td (- defesa;) Tj ET
+BT /F1 10 Tf 54.00 179.00 Td (- comportamento no centro;) Tj ET
+BT /F1 10 Tf 54.00 165.00 Td (- múltiplos robôs em uma mesma regra;) Tj ET
+BT /F1 10 Tf 54.00 151.00 Td (- comandos de alto nível.) Tj ET
+BT /F1 14 Tf 54.00 122.00 Td (25. Documentação da DSL) Tj ET
+BT /F1 10 Tf 54.00 93.00 Td (Arquivo criado:) Tj ET
+BT /F2 8.5 Tf 62.00 68.00 Td (strategy/dsl/README.md) Tj ET
+BT /F1 10 Tf 277.50 28.00 Td (18 / 23) Tj ET
+endstream
+endobj
+41 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 42 0 R >>
+endobj
+42 0 obj
+<< /Length 2683 >>
+stream
+BT /F1 10 Tf 54.00 777.00 Td (Esse README documenta:) Tj ET
+BT /F1 10 Tf 54.00 756.00 Td (- como compilar;) Tj ET
+BT /F1 10 Tf 54.00 742.00 Td (- como validar uma estratégia;) Tj ET
+BT /F1 10 Tf 54.00 728.00 Td (- como rodar com uma estratégia;) Tj ET
+BT /F1 10 Tf 54.00 714.00 Td (- gramática resumida;) Tj ET
+BT /F1 10 Tf 54.00 700.00 Td (- regras semânticas;) Tj ET
+BT /F1 10 Tf 54.00 686.00 Td (- exemplo de uso.) Tj ET
+BT /F1 14 Tf 54.00 657.00 Td (26. Fluxo Completo da DSL) Tj ET
+BT /F1 10 Tf 54.00 628.00 Td (O fluxo final é:) Tj ET
+BT /F2 8.5 Tf 62.00 603.00 Td (Arquivo .vss) Tj ET
+BT /F2 8.5 Tf 62.00 592.00 Td (  -> Flex \(VssLexer.l\)) Tj ET
+BT /F2 8.5 Tf 62.00 581.00 Td (  -> tokens) Tj ET
+BT /F2 8.5 Tf 62.00 570.00 Td (  -> Bison/Yacc \(VssParser.y\)) Tj ET
+BT /F2 8.5 Tf 62.00 559.00 Td (  -> AST \(Strategy, Statement, Condition, Action\)) Tj ET
+BT /F2 8.5 Tf 62.00 548.00 Td (  -> validateStrategy\(...\)) Tj ET
+BT /F2 8.5 Tf 62.00 537.00 Td (  -> VssScript::execute\(\)) Tj ET
+BT /F2 8.5 Tf 62.00 526.00 Td (  -> Robot::setState\(...\) ou movimento direto) Tj ET
+BT /F2 8.5 Tf 62.00 515.00 Td (  -> MachineState) Tj ET
+BT /F2 8.5 Tf 62.00 504.00 Td (  -> State::doActions\(\)) Tj ET
+BT /F2 8.5 Tf 62.00 493.00 Td (  -> Global::communication->writeMessage\(...\)) Tj ET
+BT /F1 14 Tf 54.00 463.00 Td (27. Exemplos de Uso) Tj ET
+BT /F1 12 Tf 54.00 428.00 Td (27.1 Validar estratégia) Tj ET
+BT /F2 8.5 Tf 62.00 400.00 Td (./fhobotsTeam --check-strategy strategy/scripts/default.vss) Tj ET
+BT /F1 10 Tf 54.00 378.00 Td (Saída esperada:) Tj ET
+BT /F2 8.5 Tf 62.00 353.00 Td ([OK] Strategy: default) Tj ET
+BT /F2 8.5 Tf 62.00 342.00 Td ([IF] KEY SPACE) Tj ET
+BT /F2 8.5 Tf 62.00 331.00 Td (  [ACTION] ATTACKER -> use state seeking) Tj ET
+BT /F2 8.5 Tf 62.00 320.00 Td (  [ACTION] DEFENDER -> use state waiting) Tj ET
+BT /F2 8.5 Tf 62.00 309.00 Td (  [ACTION] GOALKEEPER -> use state waiting) Tj ET
+BT /F2 8.5 Tf 62.00 298.00 Td (...) Tj ET
+BT /F1 12 Tf 54.00 270.00 Td (27.2 Rodar no simulador) Tj ET
+BT /F2 8.5 Tf 62.00 242.00 Td (./fhobotsTeam sim strategy/scripts/default.vss) Tj ET
+BT /F1 10 Tf 54.00 220.00 Td (Ou:) Tj ET
+BT /F2 8.5 Tf 62.00 195.00 Td (./fhobotsTeam sim) Tj ET
+BT /F1 10 Tf 54.00 173.00 Td (Nesse caso, strategy/scripts/default.vss é usado automaticamente.) Tj ET
+BT /F1 12 Tf 54.00 146.00 Td (27.3 Exemplo com posição explícita) Tj ET
+BT /F2 8.5 Tf 62.00 118.00 Td (STRATEGY posicao) Tj ET
+BT /F2 8.5 Tf 62.00 107.00 Td () Tj ET
+BT /F2 8.5 Tf 62.00 96.00 Td (IF BALL IN CENTER_AREA THEN) Tj ET
+BT /F2 8.5 Tf 62.00 85.00 Td (  ATTACKER GO_TO \(320, 240\)) Tj ET
+BT /F2 8.5 Tf 62.00 74.00 Td (END) Tj ET
+BT /F1 10 Tf 277.50 28.00 Td (19 / 23) Tj ET
+endstream
+endobj
+43 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 44 0 R >>
+endobj
+44 0 obj
+<< /Length 2185 >>
+stream
+BT /F1 12 Tf 54.00 775.00 Td (27.4 Exemplo com erro semântico) Tj ET
+BT /F2 8.5 Tf 62.00 747.00 Td (STRATEGY invalida) Tj ET
+BT /F2 8.5 Tf 62.00 736.00 Td () Tj ET
+BT /F2 8.5 Tf 62.00 725.00 Td (IF BALL IN ATTACK_AREA THEN) Tj ET
+BT /F2 8.5 Tf 62.00 714.00 Td (  ATTACKER USE nonexistent) Tj ET
+BT /F2 8.5 Tf 62.00 703.00 Td (END) Tj ET
+BT /F1 10 Tf 54.00 681.00 Td (Saída:) Tj ET
+BT /F2 8.5 Tf 62.00 656.00 Td (DSL strategy invalid: line 4, column 12: ATTACKER does not have state 'nonexistent') Tj ET
+BT /F1 14 Tf 54.00 626.00 Td (28. Testes Realizados) Tj ET
+BT /F1 10 Tf 54.00 597.00 Td (Foram executados:) Tj ET
+BT /F2 8.5 Tf 62.00 572.00 Td (make clean) Tj ET
+BT /F2 8.5 Tf 62.00 561.00 Td (make bin_dir) Tj ET
+BT /F2 8.5 Tf 62.00 550.00 Td (make) Tj ET
+BT /F1 10 Tf 54.00 528.00 Td (Resultado:) Tj ET
+BT /F2 8.5 Tf 62.00 503.00 Td (Build concluída com sucesso.) Tj ET
+BT /F1 10 Tf 54.00 481.00 Td (Também foi executado:) Tj ET
+BT /F2 8.5 Tf 62.00 456.00 Td (./fhobotsTeam --check-strategy strategy/scripts/default.vss) Tj ET
+BT /F1 10 Tf 54.00 434.00 Td (Resultado:) Tj ET
+BT /F2 8.5 Tf 62.00 409.00 Td (Estratégia carregada, validada e descrita corretamente.) Tj ET
+BT /F1 10 Tf 54.00 387.00 Td (Também foi testada uma estratégia inválida com estado inexistente.) Tj ET
+BT /F1 10 Tf 54.00 366.00 Td (Resultado:) Tj ET
+BT /F2 8.5 Tf 62.00 341.00 Td (Erro semântico identificado corretamente com linha e coluna.) Tj ET
+BT /F1 14 Tf 54.00 311.00 Td (29. Relação com o Documento Original) Tj ET
+BT /F1 12 Tf 54.00 276.00 Td (29.1 Definir domínio e elementos estratégicos) Tj ET
+BT /F1 10 Tf 54.00 252.00 Td (Atendido.) Tj ET
+BT /F1 10 Tf 54.00 231.00 Td (Foram definidos:) Tj ET
+BT /F1 10 Tf 54.00 210.00 Td (- robôs;) Tj ET
+BT /F1 10 Tf 54.00 196.00 Td (- bola;) Tj ET
+BT /F1 10 Tf 54.00 182.00 Td (- áreas;) Tj ET
+BT /F1 10 Tf 54.00 168.00 Td (- ações;) Tj ET
+BT /F1 10 Tf 54.00 154.00 Td (- condições;) Tj ET
+BT /F1 10 Tf 54.00 140.00 Td (- estratégia.) Tj ET
+BT /F1 12 Tf 54.00 113.00 Td (29.2 Especificar gramática formal) Tj ET
+BT /F1 10 Tf 54.00 89.00 Td (Atendido.) Tj ET
+BT /F1 10 Tf 54.00 68.00 Td (A gramática está em:) Tj ET
+BT /F1 10 Tf 277.50 28.00 Td (20 / 23) Tj ET
+endstream
+endobj
+45 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 46 0 R >>
+endobj
+46 0 obj
+<< /Length 2068 >>
+stream
+BT /F2 8.5 Tf 62.00 777.00 Td (strategy/dsl/VssParser.y) Tj ET
+BT /F2 8.5 Tf 62.00 766.00 Td (strategy/dsl/README.md) Tj ET
+BT /F1 12 Tf 54.00 738.00 Td (29.3 Implementar analisador léxico) Tj ET
+BT /F1 10 Tf 54.00 714.00 Td (Atendido.) Tj ET
+BT /F1 10 Tf 54.00 693.00 Td (Implementado com Flex em:) Tj ET
+BT /F2 8.5 Tf 62.00 668.00 Td (strategy/dsl/VssLexer.l) Tj ET
+BT /F1 12 Tf 54.00 640.00 Td (29.4 Implementar analisador sintático) Tj ET
+BT /F1 10 Tf 54.00 616.00 Td (Atendido.) Tj ET
+BT /F1 10 Tf 54.00 595.00 Td (Implementado com Bison/Yacc em:) Tj ET
+BT /F2 8.5 Tf 62.00 570.00 Td (strategy/dsl/VssParser.y) Tj ET
+BT /F1 12 Tf 54.00 542.00 Td (29.5 Implementar verificações semânticas básicas) Tj ET
+BT /F1 10 Tf 54.00 518.00 Td (Atendido.) Tj ET
+BT /F1 10 Tf 54.00 497.00 Td (Implementado em:) Tj ET
+BT /F2 8.5 Tf 62.00 472.00 Td (validateStrategy\(...\)) Tj ET
+BT /F1 10 Tf 54.00 450.00 Td (Valida:) Tj ET
+BT /F1 10 Tf 54.00 429.00 Td (- estados inexistentes;) Tj ET
+BT /F1 10 Tf 54.00 415.00 Td (- robôs válidos;) Tj ET
+BT /F1 10 Tf 54.00 401.00 Td (- ação incoerente do goleiro.) Tj ET
+BT /F1 12 Tf 54.00 374.00 Td (29.6 Desenvolver interpretador) Tj ET
+BT /F1 10 Tf 54.00 350.00 Td (Atendido.) Tj ET
+BT /F1 10 Tf 54.00 329.00 Td (Implementado em:) Tj ET
+BT /F2 8.5 Tf 62.00 304.00 Td (VssScript::execute\(\)) Tj ET
+BT /F2 8.5 Tf 62.00 293.00 Td (executeAction\(...\)) Tj ET
+BT /F2 8.5 Tf 62.00 282.00 Td (evaluate\(...\)) Tj ET
+BT /F1 12 Tf 54.00 254.00 Td (29.7 Demonstrar funcionamento com exemplos práticos) Tj ET
+BT /F1 10 Tf 54.00 230.00 Td (Atendido.) Tj ET
+BT /F1 10 Tf 54.00 209.00 Td (Exemplos em:) Tj ET
+BT /F2 8.5 Tf 62.00 184.00 Td (strategy/scripts/default.vss) Tj ET
+BT /F2 8.5 Tf 62.00 173.00 Td (strategy/dsl/README.md) Tj ET
+BT /F1 14 Tf 54.00 143.00 Td (30. Decisões Técnicas Importantes) Tj ET
+BT /F1 12 Tf 54.00 108.00 Td (30.1 Por que não controlar tudo pela DSL?) Tj ET
+BT /F1 10 Tf 54.00 84.00 Td (Porque o projeto já tinha lógica de movimentação calibrada nos estados existentes.) Tj ET
+BT /F1 10 Tf 277.50 28.00 Td (21 / 23) Tj ET
+endstream
+endobj
+47 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 48 0 R >>
+endobj
+48 0 obj
+<< /Length 3009 >>
+stream
+BT /F1 10 Tf 54.00 788.00 Td (A DSL deveria reduzir complexidade estratégica, não substituir controle de baixo nível.) Tj ET
+BT /F1 12 Tf 54.00 761.00 Td (30.2 Por que aceitar ATTACKER além de ROBOT 3?) Tj ET
+BT /F1 10 Tf 54.00 737.00 Td (Porque ATTACKER, DEFENDER e GOALKEEPER são mais legíveis.) Tj ET
+BT /F1 10 Tf 54.00 716.00 Td (Mas ROBOT 1, ROBOT 2, ROBOT 3 foram mantidos para compatibilidade com o documento.) Tj ET
+BT /F1 12 Tf 54.00 689.00 Td (30.3 Por que arquivos gerados são ignorados?) Tj ET
+BT /F1 10 Tf 54.00 665.00 Td (Porque a fonte real é:) Tj ET
+BT /F2 8.5 Tf 62.00 640.00 Td (VssParser.y) Tj ET
+BT /F2 8.5 Tf 62.00 629.00 Td (VssLexer.l) Tj ET
+BT /F1 10 Tf 54.00 607.00 Td (Os arquivos gerados podem ser recriados com:) Tj ET
+BT /F2 8.5 Tf 62.00 582.00 Td (make) Tj ET
+BT /F1 12 Tf 54.00 554.00 Td (30.4 Por que o programa continua se a DSL falhar no modo normal?) Tj ET
+BT /F1 10 Tf 54.00 530.00 Td (Para evitar que um erro de estratégia impeça testes com visão ou comunicação.) Tj ET
+BT /F1 10 Tf 54.00 509.00 Td (Em modo normal:) Tj ET
+BT /F2 8.5 Tf 62.00 484.00 Td (DSL inválida -> DSL desabilitada -> programa continua) Tj ET
+BT /F1 10 Tf 54.00 462.00 Td (Em modo check:) Tj ET
+BT /F2 8.5 Tf 62.00 437.00 Td (DSL inválida -> retorna código 1) Tj ET
+BT /F1 14 Tf 54.00 407.00 Td (31. Limitações Atuais) Tj ET
+BT /F1 10 Tf 54.00 378.00 Td (Apesar de atender ao documento, existem limitações naturais:) Tj ET
+BT /F1 10 Tf 54.00 357.00 Td (1. Não há operadores booleanos AND, OR, NOT.) Tj ET
+BT /F1 10 Tf 54.00 343.00 Td (2. Não há blocos ELSE.) Tj ET
+BT /F1 10 Tf 54.00 329.00 Td (3. GO_TO \(x,y\) executa movimento direto, enquanto outras ações usam estados.) Tj ET
+BT /F1 10 Tf 54.00 315.00 Td (4. SUPPORT LEFT/RIGHT/CENTER ainda mapeia genericamente para waiting.) Tj ET
+BT /F1 10 Tf 54.00 301.00 Td (5. A análise semântica é básica, não uma verificação tática completa.) Tj ET
+BT /F1 10 Tf 54.00 287.00 Td (6. Não há hot reload automático do arquivo .vss.) Tj ET
+BT /F1 14 Tf 54.00 258.00 Td (32. Próximas Melhorias Recomendadas) Tj ET
+BT /F1 10 Tf 54.00 229.00 Td (Para evoluir a DSL:) Tj ET
+BT /F1 10 Tf 54.00 208.00 Td (1. Adicionar AND, OR, NOT.) Tj ET
+BT /F1 10 Tf 54.00 194.00 Td (2. Adicionar ELSE.) Tj ET
+BT /F1 10 Tf 54.00 180.00 Td (3. Criar estado parametrizado para GO_TO \(x,y\).) Tj ET
+BT /F1 10 Tf 54.00 166.00 Td (4. Implementar suporte real para SUPPORT LEFT, SUPPORT RIGHT e SUPPORT CENTER.) Tj ET
+BT /F1 10 Tf 54.00 152.00 Td (5. Adicionar modo de recarregar estratégia durante simulação.) Tj ET
+BT /F1 10 Tf 54.00 138.00 Td (6. Criar testes unitários para parser e semântica.) Tj ET
+BT /F1 10 Tf 54.00 124.00 Td (7. Separar SemanticAnalyzer em arquivo próprio caso cresça.) Tj ET
+BT /F1 10 Tf 54.00 110.00 Td (8. Adicionar saída de debug opcional durante execução:) Tj ET
+BT /F2 8.5 Tf 62.00 85.00 Td ([DSL] BALL IN ATTACK_AREA -> true) Tj ET
+BT /F2 8.5 Tf 62.00 74.00 Td ([DSL] ATTACKER KICK GOAL -> attacking) Tj ET
+BT /F1 10 Tf 277.50 28.00 Td (22 / 23) Tj ET
+endstream
+endobj
+49 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 50 0 R >>
+endobj
+50 0 obj
+<< /Length 1453 >>
+stream
+BT /F1 14 Tf 54.00 773.00 Td (33. Conclusão) Tj ET
+BT /F1 10 Tf 54.00 744.00 Td (A implementação atual transforma a proposta conceitual do documento em um recurso funcional dentro do) Tj ET
+BT /F1 10 Tf 54.00 730.00 Td (projeto.) Tj ET
+BT /F1 10 Tf 54.00 709.00 Td (Agora o FHOBots possui:) Tj ET
+BT /F1 10 Tf 54.00 688.00 Td (- uma DSL textual;) Tj ET
+BT /F1 10 Tf 54.00 674.00 Td (- lexer com Flex;) Tj ET
+BT /F1 10 Tf 54.00 660.00 Td (- parser com Bison/Yacc;) Tj ET
+BT /F1 10 Tf 54.00 646.00 Td (- AST;) Tj ET
+BT /F1 10 Tf 54.00 632.00 Td (- análise semântica;) Tj ET
+BT /F1 10 Tf 54.00 618.00 Td (- interpretação;) Tj ET
+BT /F1 10 Tf 54.00 604.00 Td (- integração com a máquina de estados existente;) Tj ET
+BT /F1 10 Tf 54.00 590.00 Td (- script padrão;) Tj ET
+BT /F1 10 Tf 54.00 576.00 Td (- documentação;) Tj ET
+BT /F1 10 Tf 54.00 562.00 Td (- modo de validação sem abrir simulador.) Tj ET
+BT /F1 10 Tf 54.00 541.00 Td (Com isso, estratégias básicas podem ser alteradas em arquivos .vss, sem recompilar lógica tática em C++) Tj ET
+BT /F1 10 Tf 54.00 527.00 Td (para cada variação simples.) Tj ET
+BT /F1 10 Tf 54.00 506.00 Td (O projeto passa a seguir o fluxo clássico:) Tj ET
+BT /F2 8.5 Tf 62.00 481.00 Td (Entrada -> Lexer -> Parser -> AST -> Análise Semântica -> Interpretação) Tj ET
+BT /F1 10 Tf 54.00 459.00 Td (Esse fluxo corresponde diretamente ao objetivo descrito no documento original.) Tj ET
+BT /F1 10 Tf 277.50 28.00 Td (23 / 23) Tj ET
+endstream
+endobj
+xref
+0 51
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000274 00000 n 
+0000000344 00000 n 
+0000000412 00000 n 
+0000000548 00000 n 
+0000004337 00000 n 
+0000004473 00000 n 
+0000007427 00000 n 
+0000007564 00000 n 
+0000010572 00000 n 
+0000010710 00000 n 
+0000013389 00000 n 
+0000013527 00000 n 
+0000016385 00000 n 
+0000016523 00000 n 
+0000019088 00000 n 
+0000019226 00000 n 
+0000022023 00000 n 
+0000022161 00000 n 
+0000025012 00000 n 
+0000025150 00000 n 
+0000027335 00000 n 
+0000027473 00000 n 
+0000030032 00000 n 
+0000030170 00000 n 
+0000032870 00000 n 
+0000033008 00000 n 
+0000036214 00000 n 
+0000036352 00000 n 
+0000038689 00000 n 
+0000038827 00000 n 
+0000041340 00000 n 
+0000041478 00000 n 
+0000043739 00000 n 
+0000043877 00000 n 
+0000046615 00000 n 
+0000046753 00000 n 
+0000049326 00000 n 
+0000049464 00000 n 
+0000052345 00000 n 
+0000052483 00000 n 
+0000055219 00000 n 
+0000055357 00000 n 
+0000057595 00000 n 
+0000057733 00000 n 
+0000059854 00000 n 
+0000059992 00000 n 
+0000063054 00000 n 
+0000063192 00000 n 
+trailer
+<< /Size 51 /Root 1 0 R >>
+startxref
+64698
+%%EOF

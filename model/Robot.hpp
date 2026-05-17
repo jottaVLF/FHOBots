@@ -47,6 +47,8 @@ class Robot {
 
         int getPosMessage();
         virtual std::string getMessage();
+        bool setState(const std::string& stateName);
+        std::string currentState();
 
         void updateRobot();
         void spinClockWise(int pwm);

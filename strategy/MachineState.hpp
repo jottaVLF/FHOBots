@@ -20,7 +20,7 @@ class MachineState {
         /**
          * Define um novo estado atual
          * */
-        void setState(const std::string nameState);
+        bool setState(const std::string nameState);
 
         /**
          * Executa as ações do estado e verifica se deve haver mudança de estado

@@ -21,13 +21,23 @@ void MachineState::addState(State *state)
     _states[state->getName()] = state;
 }
 
-void MachineState::setState(const std::string nameState)
+bool MachineState::setState(const std::string nameState)
 {
+    auto state = _states.find(nameState);
+    if(state == _states.end()){
+        std::cerr << "State not found: " << nameState << std::endl;
+        return false;
+    }
+
+    if(_activeState != nullptr && _activeState->getName() == nameState)
+        return true;
+
     if(_activeState != nullptr)
         _activeState->exitActions();
 
-    _activeState = _states[nameState];
+    _activeState = state->second;
     _activeState->entryActions();
+    return true;
 }
 
 void MachineState::think()
@@ -44,5 +54,8 @@ void MachineState::think()
 
 const std::string MachineState::currentState()
 {
+    if(_activeState == nullptr)
+        return "";
+
     return _activeState->getName();
 }
