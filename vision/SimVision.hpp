@@ -12,10 +12,8 @@
 #include <cmath>
 #include "../config/Config.hpp"
 #include "opencv2/opencv.hpp"
-// Importação referente ao protobuf
 #include "../pb/packet.pb.h"
 #include "../pb/common.pb.h"
-
 
 class SimVision : public IVision{
 private:
@@ -31,7 +29,7 @@ private:
 public:
     SimVision(Config * config, std::string ip, int port);
     ~SimVision();
-    void detectionColors(); 
+    void detectionColors();
     void adjustFieldPosition();
     void calibration();
 };

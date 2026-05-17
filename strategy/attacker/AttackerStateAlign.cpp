@@ -39,16 +39,9 @@ std::string AttackerStateAlign::checkConditions()
 
 void AttackerStateAlign::entryActions()
 {
-    if(Global::isSim){
-        // Calibrações para o simulador
         _robot->setPD(100.55, 425);
         _robot->setMaxPwm(255);
         _robot->setBasePwmValue(100);
-    }else{
-        _robot->setPD(100.55, 425);
-        _robot->setMaxPwm(255);
-        _robot->setBasePwmValue(100);
-    }
 }
 
 void AttackerStateAlign::exitActions()

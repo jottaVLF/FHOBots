@@ -2,7 +2,6 @@
 
 SimCommunication::SimCommunication(Config * config, std::string ip, int port, double maxSpeed){
     this->socketFd = socket(AF_INET, SOCK_DGRAM, 0);
-    // Configurar o endereço IP do servidor
     this->server.sin_family = AF_INET;
     this->server.sin_port = htons(port);
     inet_aton(ip.c_str(), &this->server.sin_addr);
@@ -16,10 +15,10 @@ SimCommunication::~SimCommunication(){
     close(this->socketFd);
 }
 
-void SimCommunication::writeMessage(const int index, const unsigned char pwmLeft, const unsigned char pwmRight, const bool reverseLeft = false, const bool reverseRight = false){
+void SimCommunication::writeMessage(const int index, const unsigned char pwmLeft, const unsigned char pwmRight, const bool reverseLeft, const bool reverseRight){
     double leftVelocity  = toSimSpeed(pwmLeft);
     double rightVelocity = toSimSpeed(pwmRight);
-    
+
     this->velocities[2*index]     = reverseLeft  ? -leftVelocity  : leftVelocity;
     this->velocities[2*index + 1] = reverseRight ? -rightVelocity : rightVelocity;
 }
@@ -44,9 +43,9 @@ void SimCommunication::sendCommandToRobot(double leftWheel, double rightWheel, b
     fira_message::sim_to_ref::Command * command = packet.mutable_cmd()->add_robot_commands();
     command->set_yellowteam(isYellowTeam);
     command->set_id(id);
-    command->set_wheel_left (leftWheel);  
-    command->set_wheel_right(rightWheel);  
-    packet.SerializeToArray(this->buffer, 4096); 
+    command->set_wheel_left(leftWheel);
+    command->set_wheel_right(rightWheel);
+    packet.SerializeToArray(this->buffer, 4096);
     sendto(this->socketFd, this->buffer, 4096, 0, (sockaddr *) &this->server, this->sizeSocket);
 }
 

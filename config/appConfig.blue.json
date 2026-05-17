@@ -1,7 +1,7 @@
 {
     "camera" : 2,
     "communication" : "/dev/ttyUSB0",
-    "team-color": "yellow",
+    "team-color": "blue",
     "r0" : {
         "role" : "goalkeeper",
         "color": "purple",
@@ -18,7 +18,7 @@
             "pinMotorEsqA": 9,
             "pinMotorEsqB": 10,
             "pinMotorDirA": 5,
-            "pinMotorDirB": 6 
+            "pinMotorDirB": 6
         },
         "control": {
             "front-left": {
@@ -55,7 +55,7 @@
             "pinMotorEsqA": 9,
             "pinMotorEsqB": 10,
             "pinMotorDirA": 5,
-            "pinMotorDirB": 6 
+            "pinMotorDirB": 6
         },
         "control": {
             "front-left": {
@@ -92,9 +92,9 @@
             "pinMotorEsqA": 9,
             "pinMotorEsqB": 10,
             "pinMotorDirA": 5,
-            "pinMotorDirB": 6 
+            "pinMotorDirB": 6
         },
-        "control": { 
+        "control": {
             "front-left": {
                 "kp" : 1,
                 "kd" : 0.5
@@ -108,7 +108,7 @@
                 "kd" : 0.5
             },
             "back-right": {
-                "kp" : 1, 
+                "kp" : 1,
                 "kd" : 0.5
             }
         }

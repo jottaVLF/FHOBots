@@ -10,6 +10,7 @@
 class ConfigParser{
 public:
     ConfigParser();
+    ConfigParser(const std::string pathConfig);
     ~ConfigParser();
     Config createConfiguration();
 

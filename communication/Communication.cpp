@@ -20,6 +20,7 @@ Communication::~Communication()
 
 void Communication::writeMessage(const int index, const unsigned char pwmLeft, const unsigned char pwmRight, const bool reverseLeft, const bool reverseRight)
 {
+    std::lock_guard<std::mutex> lock(_writeMutex);
     _writeBuffer[0] = 0x5B;
     int id_mask = index + 1;
     unsigned char maskLeft  = reverseLeft  ? (1 << (2*id_mask + 1)) : ~(1 << (id_mask*2 + 1)); 
@@ -32,12 +33,14 @@ void Communication::writeMessage(const int index, const unsigned char pwmLeft, c
 
 void Communication::sendMessage()
 {
+    std::lock_guard<std::mutex> lock(_writeMutex);
     _writeBuffer[8] = 1;
     _serial.write(_writeBuffer, 9);
 }
 
 void Communication::getMessage()
 {
+    std::lock_guard<std::mutex> lock(_writeMutex);
     for(int i = 0; i < 16; i++)
         std::cout << std::hex << (unsigned short) _writeBuffer[i] << std::endl;
     std::cout << std::dec << std::endl << std::endl;
@@ -50,7 +53,7 @@ void Communication::stopAll(){
 
 void Communication::configureRobots(Config config){
 
-    std::thread tread(&Communication::readMessage);
+    std::thread tread(&Communication::readMessage, this);
     std::unordered_map<std::string, std::pair<HardwareConfig *, bool>> map;    
     if(config.r0.active)
         map[config.r0.hardware.xbee] = std::make_pair<HardwareConfig * , bool>(&config.r0.hardware, false);
@@ -152,21 +155,20 @@ void Communication::sendConfigurationToRobot(std::string xbee, HardwareConfig * 
 }
 
 void Communication::readMessage(){
-    Communication * communication = dynamic_cast<Communication *>(Global::communication);
-    LibSerial::SerialStream * stream = communication->getSerial();
-    char * buffer = communication->getBuffer();
+    LibSerial::SerialStream * stream = getSerial();
+    char * buffer = getBuffer();
     memset(buffer, 0, 16);
     char nextChar;
-    std::cout << communication->gotInput << std::endl << std::flush;
+    std::cout << gotInput << std::endl << std::flush;
     int s = 0;
-    while(!communication->_robotsConfigured){
+    while(!_robotsConfigured){
         *stream >> std::noskipws >> nextChar;
-        if(nextChar != 0x01 && !communication->gotInput)
+        if(nextChar != 0x01 && !gotInput)
             buffer[s++] = (unsigned char) nextChar;
-        else if(!communication->gotInput){
+        else if(!gotInput){
             buffer[s] = 0x01;
             s = 0;
-            communication->gotInput = true;
+            gotInput = true;
         }
         std::this_thread::sleep_for(std::chrono::microseconds(5000));
     }
@@ -181,9 +183,11 @@ char * Communication::getBuffer(){
 }
 
 int Communication::getLeftPwm(int id){
+    std::lock_guard<std::mutex> lock(_writeMutex);
     return _writeBuffer[2*id + 2];
 }
 
 int Communication::getRightPwm(int id){
+    std::lock_guard<std::mutex> lock(_writeMutex);
     return _writeBuffer[2*id + 3];
 }

@@ -27,14 +27,8 @@ std::string GoalkeeperStateKicking::checkConditions()
 
 void GoalkeeperStateKicking::entryActions()
 {
-    if(Global::isSim){
-        // Calibrações para o simulador
         _robot->setBasePwmValue(95);
         _robot->setPD(40., 80.);
-    }else{
-        _robot->setBasePwmValue(95);
-        _robot->setPD(40., 80.);
-    }
 }
 
 void GoalkeeperStateKicking::exitActions()

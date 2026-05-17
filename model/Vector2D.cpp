@@ -1,6 +1,19 @@
 #include "Vector2D.hpp"
+#include <algorithm>
 #include <cmath>
 #include <iostream>
+
+namespace {
+double safeAcosRatio(double numerator, double denominator)
+{
+    if(denominator == 0)
+        return 0;
+
+    double ratio = numerator / denominator;
+    ratio = std::max(-1.0, std::min(1.0, ratio));
+    return acos(ratio);
+}
+}
 
 Vector2D::Vector2D()
 {}
@@ -109,7 +122,7 @@ double Vector2D::operator||(Vector2D& other)
     /// Utilizo produto vetorial para saber se é negativo ou positivo a diferença de angulo
     double vetorial_product = x * other.y - other.x * y;
    /// Utilizo produto escalar pra achar a direfença de angulo
-    double scalar_product = acos(((*this) * other) / (magnitude() * other.magnitude()));
+    double scalar_product = safeAcosRatio((*this) * other, magnitude() * other.magnitude());
     return vetorial_product >= 0 ? scalar_product : -1 * scalar_product;
 }
 
@@ -136,7 +149,9 @@ double Vector2D::angle()
 
 void Vector2D::normalize()
 {
-    (*this) /= magnitude();
+    double mag = magnitude();
+    if(mag != 0)
+        (*this) /= mag;
 }
 
 
@@ -147,5 +162,5 @@ void Vector2D::set(double _x, double _y)
 }
 
 double Vector2D::angleBetween(Vector2D other) {
-    return acos((this->x * other.x + this->y * other.y)/(this->magnitude() * other.magnitude()));
+    return safeAcosRatio(this->x * other.x + this->y * other.y, this->magnitude() * other.magnitude());
 }

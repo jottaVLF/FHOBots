@@ -215,6 +215,7 @@ void Vision::detectionColors()
 
    std::vector<Coordinates<double >> enemyColor = _colorItens[adversaryColor]->getPositionsColor();
    Vector2D enemyPosition;
+   Global::enemyTeam.clear();
    if(teamColor.size() > 0)
    {
        for(int i=0; i < enemyColor.size(); i++)

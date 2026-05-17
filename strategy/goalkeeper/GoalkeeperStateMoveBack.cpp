@@ -57,12 +57,7 @@ std::string GoalkeeperStateMoveBack::checkConditions() {
 }
 
 void GoalkeeperStateMoveBack::entryActions() {
-     if(Global::isSim){
-        // Calibrações para o simulador
         _robot->setPD(10, 250);
-     }else{
-        _robot->setPD(10, 250);
-     }
 }
 
 void GoalkeeperStateMoveBack::exitActions() {

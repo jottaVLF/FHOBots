@@ -6,7 +6,6 @@
 #include "../strategy/basic/StateBackOff.hpp"
 #include "../strategy/attacker/AttackerStateSpinning.hpp"
 #include "../strategy/attacker/AttackerStateAlign.hpp"
-#include "../strategy/attacker/AttackerJoystickControl.hpp"
 #include "../strategy/basic/StateExitArea.hpp"
 #include "../Global.hpp"
 
@@ -25,13 +24,8 @@ void AttackerRobot::createMachineStates(){
     this->_machineState.addState(new AttackerStateSpinning(this));
     this->_machineState.addState(new AttackerStateAlign(this));
     this->_machineState.addState(new StateExitArea(this));
-    this->_machineState.addState(new AttackerJoystickControl(this));
 
     this->_machineState.setState("idle");
-}
-
-void AttackerRobot::setJoystickState(){
-    this->_machineState.setState("joystick");
 }
 
 AttackerRobot::~AttackerRobot()

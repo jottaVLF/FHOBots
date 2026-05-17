@@ -8,6 +8,7 @@
 #include <sstream>
 #include <cstring>
 #include <iostream>
+#include <mutex>
 #include <unordered_map>
 #include <utility>
 #include <cstring>
@@ -39,10 +40,11 @@ class Communication : public ICommunication
         LibSerial::SerialStream _serial;
         char _writeBuffer[16];
         char _readBuffer[16];
+        std::mutex _writeMutex;
         bool allRobotsConfigured(std::unordered_map<std::string, std::pair<HardwareConfig *, bool>> map);
         void printRobotsConfigured(std::unordered_map<std::string, std::pair<HardwareConfig *, bool>> map);
         void sendConfigurationToRobot(std::string xbee, HardwareConfig * configuration);
-        static void readMessage();
+        void readMessage();
 };
 
 

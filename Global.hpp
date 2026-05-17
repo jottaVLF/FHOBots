@@ -52,8 +52,6 @@ class Global {
         static Vector2D ballVel;
         static Vector2D ball; /// Vetor de Posição da bola
         static Vector2D centerGoalAttack; /// Centro do Gol de Ataque
-        static Vector2D joystickDestination;
-
         static AttackerRobot attacker;
         static DefenderRobot deffender;
         static GoalkeeperRobot goalkeeper;
@@ -85,7 +83,6 @@ class Global {
         static PositionArea eAreaDeffend;
         static Vector2D centerAreaToAttack;
         static Vector2D centerAreaToDeffend;
-        static bool hasJoystick;
         static bool isSim;
 };
 

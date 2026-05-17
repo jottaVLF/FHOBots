@@ -34,15 +34,9 @@ std::string GoalkeeperStateReturnToArea::checkConditions() {
 }
 
 void GoalkeeperStateReturnToArea::entryActions() {
-    if(Global::isSim){
         _robot->setPD(10, 0);
         _robot->setBasePwmValue(35);
         _robot->setMaxPwm(60);
-    }else{
-        _robot->setPD(10, 0);
-        _robot->setBasePwmValue(35);
-        _robot->setMaxPwm(60);
-    }
 }
 
 void GoalkeeperStateReturnToArea::exitActions() {

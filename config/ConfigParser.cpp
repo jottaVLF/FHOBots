@@ -1,9 +1,16 @@
 #include "ConfigParser.hpp"
+#include <cstdlib>
 
-ConfigParser::ConfigParser(){
-    this->inputConfig.open("config/appConfig.json");
+ConfigParser::ConfigParser() : ConfigParser("config/appConfig.json")
+{}
+
+ConfigParser::ConfigParser(const std::string pathConfig){
+    this->inputConfig.open(pathConfig);
     if(!this->inputConfig.is_open())
-        std::cout << "Error on openning appConfig.json!" <<std::endl;
+    {
+        std::cout << "Error on opening config file: " << pathConfig << std::endl;
+        exit(1);
+    }
 
     this->lookAhead = this->getToken();
 }

@@ -29,14 +29,8 @@ std::string DefenderStateKicking::checkConditions()
 
 void DefenderStateKicking::entryActions()
 {
-    if(Global::isSim){
-        // Calibrações para o simulador
         _robot->setPD(90, 50);
         _robot->setBasePwmValue(190);
-    }else{
-        _robot->setPD(90, 50);
-        _robot->setBasePwmValue(190);
-    }
 }
 
 void DefenderStateKicking::exitActions()

@@ -38,16 +38,9 @@ std::string DefenderStateAlign::checkConditions()
 
 void DefenderStateAlign::entryActions()
 {
-    if(Global::isSim){
-        // Calibrações para o simulador
         _robot->setPD(100, 400.5);
         _robot->setBasePwmValue(70);
         _robot->setMaxPwm(255);
-    }else{
-        _robot->setPD(100, 400.5);
-        _robot->setBasePwmValue(70);
-        _robot->setMaxPwm(255);
-    }
     align = false;
 }
 

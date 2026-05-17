@@ -14,8 +14,6 @@ class AttackerRobot : public Robot {
 
         void createMachineStates();
 
-        void setJoystickState();
-
 };
 
 

@@ -26,15 +26,8 @@ std::string StateBackOff::checkConditions()
 
 void StateBackOff::entryActions()
 {    
-    if(Global::isSim){
-        // Calibrações para o simulador
         _robot->setPwmRight(0);
         _robot->setPwmLeft(0);
-
-    }else{
-        _robot->setPwmRight(0);
-        _robot->setPwmLeft(0);
-    }
     newAngle = _robot->getOrientation().angle();
     alinhado = false;
 }

@@ -33,5 +33,4 @@ public:
     void configureRobots(Config config);
 };
 
-
 #endif

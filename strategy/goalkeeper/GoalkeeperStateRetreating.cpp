@@ -98,14 +98,8 @@ std::string GoalkeeperStateRetreating::checkConditions()
 
 void GoalkeeperStateRetreating::entryActions()
 {
-    if(Global::isSim){
-        // Calibrações para o simulador
         _robot->setBasePwmValue(50);
         _robot->setPD(32., 120.);
-    }else{
-        _robot->setBasePwmValue(50);
-        _robot->setPD(32., 120.);
-    }
 }
 
 void GoalkeeperStateRetreating::exitActions()

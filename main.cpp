@@ -9,7 +9,6 @@
 #include "vision/SimVision.hpp"
 #include "communication/SimCommunication.hpp"
 #include "model/Robot.hpp"
-#include "model/Robot.hpp"
 #include "debug/Debug.hpp"
 
 void initializeModelAndStates(Config configuration){
@@ -35,20 +34,25 @@ int main(int argc, char* argv[])
 { 
     Debug * debug = nullptr;
     bool isSimulation = false;
-    
-    if(argc > 1 && strcmp(argv[1], "sim") == 0){
-        isSimulation = true;
-        Global::isSim = true;
+    std::string configPath = "config/appConfig.json";
+
+    for(int i = 1; i < argc; i++){
+        if(strcmp(argv[i], "sim") == 0){
+            isSimulation = true;
+            Global::isSim = true;
+        }else{
+            configPath = argv[i];
+        }
     }
 
-    ConfigParser configParser;
+    ConfigParser configParser(configPath);
 
     Config configuration = configParser.createConfiguration();
 
-    std::cout << "Configuration file successfully read!" << std::endl;
+    std::cout << "Configuration file successfully read: " << configPath << std::endl;
     
-    IVision * vision =  isSimulation ? (IVision *) new SimVision(&configuration, "224.0.0.1", 10002) : (IVision *) new Vision(configuration.camera, &configuration);
-    Global::communication = isSimulation ? (ICommunication * ) new SimCommunication(&configuration, "127.0.0.1", 20011, 60) : (ICommunication * ) new Communication(configuration.communication);
+    IVision * vision = isSimulation ? (IVision *) new SimVision(&configuration, "224.0.0.1", 10002) : (IVision *) new Vision(configuration.camera, &configuration);
+    Global::communication = isSimulation ? (ICommunication *) new SimCommunication(&configuration, "127.0.0.1", 20011, 60) : (ICommunication *) new Communication(configuration.communication);
      
     std::cout << "Vision initialized " <<std::endl;
     initializeModelAndStates(configuration);
@@ -69,7 +73,6 @@ int main(int argc, char* argv[])
         
         Global::countFrameAttacker++;
         Global::countFrameDefender++;
-        Global::bufferKeyboard = cv::waitKey(1);
         if(isSimulation){
             if(debug == nullptr)
                 debug = new Debug(configuration.teamColor == "yellow");
@@ -78,6 +81,7 @@ int main(int argc, char* argv[])
             Vision * realVision = dynamic_cast<Vision * >(vision);
             realVision->show();
         }
+        Global::bufferKeyboard = cv::waitKey(1);
         std::this_thread::sleep_for(std::chrono::microseconds(500));
         Global::communication->sendMessage();
     } while(Global::bufferKeyboard != 27);

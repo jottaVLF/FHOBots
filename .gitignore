@@ -1,13 +1,3 @@
+bin/**/*.o
 bin/*.o
-bin/communication/*.o
-bin/config/*.o
-bin/control/*.o
-bin/logging/*.o
-bin/model/*.o
-bin/strategy/*.o
-bin/strategy/attacker/*.o
-bin/strategy/defender/*.o
-bin/strategy/basic/*.o
-bin/strategy/goalkeeper/*.o
-bin/vision/*.o
 fhobotsTeam

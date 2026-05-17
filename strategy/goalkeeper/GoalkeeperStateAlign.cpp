@@ -56,26 +56,13 @@ std::string GoalkeeperStateAlign::checkConditions()
 
 void GoalkeeperStateAlign::entryActions()
 {
-    if(Global::isSim){
-        // Calibrações para o simulador
         _robot->setPD(100.55, 425);
         _robot->setMaxPwm(255);
         _robot->setBasePwmValue(100);
-    }else{
-        _robot->setPD(100.55, 425);
-        _robot->setMaxPwm(255);
-        _robot->setBasePwmValue(100);
-    }
 }
 
 void GoalkeeperStateAlign::exitActions()
 {
-    if(Global::isSim){
-        // Calibrações para o simulador
-        _robot->moveForward(0);
-        _robot->setMaxPwm(160);
-    }else{
         _robot->moveForward(0);
         _robot->setMaxPwm(160);        
-    }
 }

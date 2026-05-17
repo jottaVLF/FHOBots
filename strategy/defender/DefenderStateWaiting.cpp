@@ -35,16 +35,9 @@ std::string DefenderStateWaiting::checkConditions()
 
 void DefenderStateWaiting::entryActions()
 {
-    if(Global::isSim){
-        // Calibrações para o simulador
         _robot->setPD(105, 45);
         _robot->setBasePwmValue(45);
         _robot->setMaxPwm(75);
-    }else{
-        _robot->setPD(105, 45);
-        _robot->setBasePwmValue(45);
-        _robot->setMaxPwm(75);
-    }
     contador = 0;
 }
 

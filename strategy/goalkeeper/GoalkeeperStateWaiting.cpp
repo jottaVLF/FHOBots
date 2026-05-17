@@ -65,19 +65,9 @@ void GoalkeeperStateWaiting::entryActions() {
     double halfboardY = (Global::fieldRect.y + Global::fieldRect.y + Global::fieldRect.height) / 2.0;
 
     if(_robot->getPosition().y <= halfboardY){
-        if(Global::isSim){
-            // Calibrações para o simulador
-            _robot->setPD(30, 2.5); //left side
-        }else{
             _robot->setPD(30, 2.5);
-        }
     }else{
-        if(Global::isSim){
-            // Calibrações para o simulador
-            _robot->setPD(50, 2.5); //right side
-        }else{
             _robot->setPD(50, 2.5);
-        }
     }
 }
 

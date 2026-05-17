@@ -130,15 +130,12 @@ double Global::frameCentimetersConstant = 0;
 int Global::countFrameAttacker;
 int Global::countFrameDefender;
 int Global::ballInAreaCounter = 0;
-bool Global::hasJoystick = false;
 
 std::vector<Vector2D> Global::enemyTeam;
 
 Vector2D Global::posPointAttack(0,0);
 Vector2D Global::posPointDeffend(0,0);
 Vector2D Global::posPointGoalkeep(0,0);
-Vector2D Global::joystickDestination(0,0);
-
 PositionArea Global::eAreaAttack;
 PositionArea Global::eAreaDeffend;
 

@@ -6,6 +6,7 @@
 #include <vector>
 #include <cmath>
 #include <cstring>
+
 class Debug{
 private:
     bool is3v3;
@@ -18,9 +19,8 @@ private:
     double toPixelX(double x);
     bool _isFhobotsYellow;
 public:
-    Debug( bool isFhobotsYellow, bool is3v3 = true);
+    Debug(bool isFhobotsYellow, bool is3v3 = true);
     void show();
 };
-
 
 #endif
