@@ -43,7 +43,7 @@ void GoalkeeperStateExitGoal::doActions() {
     else if(WorldModel::isAlignedWith(_robot->getOrientation(),robotToGoalCenter)||
     checkGoalWalls()){
         _robot->moveForward(0);
-        _robot->calculatePwm(destination);
+        _robot->calculatePwmUnivector(destination);
         Global::communication->writeMessage(_robot->getPosMessage(),  _robot->getPwmLeft(), _robot->getPwmRight());
     }
     
@@ -73,4 +73,3 @@ void GoalkeeperStateExitGoal::entryActions() {
 void GoalkeeperStateExitGoal::exitActions() {
 
 }
-

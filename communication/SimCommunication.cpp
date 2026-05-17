@@ -1,4 +1,8 @@
 #include "SimCommunication.hpp"
+#include <cmath>
+
+SimCommunication::SimCommunication(Config * config, std::string ip, int port) : SimCommunication(config, ip, port, config->simMaxSpeed)
+{}
 
 SimCommunication::SimCommunication(Config * config, std::string ip, int port, double maxSpeed){
     this->socketFd = socket(AF_INET, SOCK_DGRAM, 0);
@@ -9,6 +13,12 @@ SimCommunication::SimCommunication(Config * config, std::string ip, int port, do
 
     this->config = config;
     this->_maxSpeed = maxSpeed;
+    this->_smoothing = config->simSmoothing;
+    this->_deadband = config->simDeadband;
+    for(int i = 0; i < 6; i++){
+        this->velocities[i] = 0;
+        this->targetVelocities[i] = 0;
+    }
 }
 
 SimCommunication::~SimCommunication(){
@@ -19,19 +29,23 @@ void SimCommunication::writeMessage(const int index, const unsigned char pwmLeft
     double leftVelocity  = toSimSpeed(pwmLeft);
     double rightVelocity = toSimSpeed(pwmRight);
 
-    this->velocities[2*index]     = reverseLeft  ? -leftVelocity  : leftVelocity;
-    this->velocities[2*index + 1] = reverseRight ? -rightVelocity : rightVelocity;
+    this->targetVelocities[2*index]     = reverseLeft  ? -leftVelocity  : leftVelocity;
+    this->targetVelocities[2*index + 1] = reverseRight ? -rightVelocity : rightVelocity;
 }
 
 void SimCommunication::sendMessage(){
     bool isYellowTeam = this->config->teamColor == "yellow";
+    for(int i = 0; i < 6; i++)
+        this->velocities[i] = smoothVelocity(this->velocities[i], this->targetVelocities[i]);
     for(int i = 0; i < 3; i++)
         this->sendCommandToRobot(this->velocities[2*i], this->velocities[2 * i + 1], isYellowTeam, i);
 }
 
 void SimCommunication::stopAll(){
-    for(int i = 0; i < 6; i++)
+    for(int i = 0; i < 6; i++){
         this->velocities[i] = 0;
+        this->targetVelocities[i] = 0;
+    }
 }
 
 void SimCommunication::configureRobots(Config config){
@@ -51,4 +65,11 @@ void SimCommunication::sendCommandToRobot(double leftWheel, double rightWheel, b
 
 int SimCommunication::toSimSpeed(int pwm){
     return _maxSpeed / 255. * pwm;
+}
+
+double SimCommunication::smoothVelocity(double current, double target){
+    double next = current + (target - current) * _smoothing;
+    if(std::abs(next) < _deadband)
+        return 0;
+    return next;
 }

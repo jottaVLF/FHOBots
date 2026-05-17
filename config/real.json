@@ -1,0 +1,116 @@
+{
+    "camera" : 2,
+    "communication" : "/dev/ttyUSB0",
+    "team-color": "yellow",
+    "r0" : {
+        "role" : "goalkeeper",
+        "color": "purple",
+        "active": "true",
+        "pwm": {
+            "max": 255,
+            "min": 0,
+            "base": 100
+        },
+        "hardware": {
+            "id": 0,
+            "xbee": "4149E249",
+            "chassis": "R3",
+            "pinMotorEsqA": 9,
+            "pinMotorEsqB": 10,
+            "pinMotorDirA": 5,
+            "pinMotorDirB": 6 
+        },
+        "control": {
+            "front-left": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "front-right": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "back-left": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "back-right": {
+                "kp" : 1,
+                "kd" : 0.5
+            }
+        }
+    },
+    "r1" : {
+        "role" : "deffender",
+        "color": "green",
+        "active": "true",
+        "pwm": {
+            "max": 255,
+            "min": 0,
+            "base": 100
+        },
+        "hardware": {
+            "id": 1,
+            "xbee": "4149E250",
+            "chassis": "R2",
+            "pinMotorEsqA": 9,
+            "pinMotorEsqB": 10,
+            "pinMotorDirA": 5,
+            "pinMotorDirB": 6 
+        },
+        "control": {
+            "front-left": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "front-right": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "back-left": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "back-right": {
+                "kp" : 1,
+                "kd" : 0.5
+            }
+        }
+    },
+    "r2" : {
+        "role" : "attacker",
+        "color": "red",
+        "active": "true",
+        "pwm": {
+            "max": 255,
+            "min": 0,
+            "base": 100
+        },
+        "hardware": {
+            "id": 2,
+            "xbee": "4149E251",
+            "chassis": "R5",
+            "pinMotorEsqA": 9,
+            "pinMotorEsqB": 10,
+            "pinMotorDirA": 5,
+            "pinMotorDirB": 6 
+        },
+        "control": { 
+            "front-left": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "front-right": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "back-left": {
+                "kp" : 1,
+                "kd" : 0.5
+            },
+            "back-right": {
+                "kp" : 1, 
+                "kd" : 0.5
+            }
+        }
+    }
+}

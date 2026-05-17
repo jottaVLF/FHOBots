@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
     std::cout << "Configuration file successfully read: " << configPath << std::endl;
     
     IVision * vision = isSimulation ? (IVision *) new SimVision(&configuration, "224.0.0.1", 10002) : (IVision *) new Vision(configuration.camera, &configuration);
-    Global::communication = isSimulation ? (ICommunication *) new SimCommunication(&configuration, "127.0.0.1", 20011, 60) : (ICommunication *) new Communication(configuration.communication);
+    Global::communication = isSimulation ? (ICommunication *) new SimCommunication(&configuration, "127.0.0.1", 20011) : (ICommunication *) new Communication(configuration.communication);
      
     std::cout << "Vision initialized " <<std::endl;
     initializeModelAndStates(configuration);
@@ -69,16 +69,21 @@ int main(int argc, char* argv[])
     int i = 0;
     do
     {
-        vision->detectionColors();
+        {
+            std::lock_guard<std::recursive_mutex> lock(Global::worldMutex);
+            vision->detectionColors();
+        }
         
         Global::countFrameAttacker++;
         Global::countFrameDefender++;
         if(isSimulation){
             if(debug == nullptr)
                 debug = new Debug(configuration.teamColor == "yellow");
+            std::lock_guard<std::recursive_mutex> lock(Global::worldMutex);
             debug->show();
         }else{
             Vision * realVision = dynamic_cast<Vision * >(vision);
+            std::lock_guard<std::recursive_mutex> lock(Global::worldMutex);
             realVision->show();
         }
         Global::bufferKeyboard = cv::waitKey(1);

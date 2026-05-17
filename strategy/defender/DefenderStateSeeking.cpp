@@ -1,6 +1,7 @@
 #include "DefenderStateSeeking.hpp"
 #include "../../Global.hpp"
 #include <iostream>
+#include <algorithm>
 
 DefenderStateSeeking::DefenderStateSeeking(Robot* robot) : State("seeking"), _robot(robot)
 {}
@@ -12,12 +13,14 @@ void DefenderStateSeeking::doActions()
 {
     Vector2D destination = WorldModel::getDeffenderDeffencePosition();
     if(WorldModel::isOnDeffenseField(Global::ball) && WorldModel::nearstRobotTo(Global::ball) == _robot){
-        _robot->calculatePwm(Global::ball);
+        _robot->calculatePwmUnivector(Global::ball);
     }
     else{
-        _robot->calculatePwm(destination);
+        _robot->calculatePwmUnivector(destination);
     }
-    Global::communication->writeMessage(_robot->getPosMessage(), _robot->getPwmLeft()*5, _robot->getPwmRight()*5);
+    int left = std::min(255, _robot->getPwmLeft() * 2);
+    int right = std::min(255, _robot->getPwmRight() * 2);
+    Global::communication->writeMessage(_robot->getPosMessage(), left, right);
 
 }
 

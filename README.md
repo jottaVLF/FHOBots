@@ -1,5 +1,6 @@
 # vss
-Repositório para versionamento do código da categoria VSS
+
+Codigo da categoria VSS da FHOBOts.
 
 ## Build
 
@@ -8,29 +9,62 @@ make bin_dir
 make
 ```
 
-## Execução
+## Configs
+
+- `config/real.json`: execucao com camera e comunicacao serial.
+- `config/sim-yellow.json`: time amarelo no simulador.
+- `config/sim-blue.json`: time azul no simulador.
+
+No simulador, a numeracao esperada e:
+
+- robo `0`: goleiro
+- robo `1`: defensor
+- robo `2`: atacante
+
+Os parametros de simulacao ficam em `simulation`:
+
+- `max-speed`: velocidade maxima enviada ao simulador.
+- `smoothing`: suavizacao aplicada entre o comando anterior e o novo comando.
+- `deadband`: valores muito pequenos sao zerados.
+
+## Execucao Real
 
 ```bash
-make run
+make run config/real.json
 ```
 
-O executável atual usa apenas o fluxo real: câmera configurada em `config/appConfig.json`,
-calibração por OpenCV e comunicação serial com os robôs.
+## Execucao No Simulador
 
-Para rodar com o simulador:
+Um time:
 
 ```bash
-make run sim
+make run sim config/sim-yellow.json
 ```
 
-Para rodar dois times no simulador, use dois terminais:
+Dois times, em dois terminais:
 
 ```bash
-make run sim config/appConfig.json
-make run sim config/appConfig.blue.json
+make run sim config/sim-yellow.json
+make run sim config/sim-blue.json
 ```
+
+Depois clique em cada janela `Debug` e pressione `espaco` para sair do estado `idle`.
+
+## Teclas
+
+- `espaco`: inicia as maquinas de estado.
+- `p`: volta para `idle`.
+- `Esc`: encerra.
+
+## Portas Do Simulador
+
+- Entrada de visao: multicast `224.0.0.1:10002`.
+- Saida de comandos: `127.0.0.1:20011`.
+
+## Estrategia
+
+Os robos usam `UnivectorField` nos deslocamentos principais. O campo combina atracao pelo alvo
+com repulsao de robos e paredes para suavizar trajetorias e reduzir colisoes. Giros, re e manobras
+especiais continuam controlados pelos estados especificos de cada papel.
 
 O controle por joystick foi removido.
-
-Durante a execução, pressione espaço para iniciar as máquinas de estado, `p` para voltar ao estado
-idle e `Esc` para encerrar.

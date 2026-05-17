@@ -15,7 +15,7 @@ StateExitArea::~StateExitArea() {
 
 void StateExitArea::doActions() {
 
-    _robot->calculatePwm(destination);
+    _robot->calculatePwmUnivector(destination);
 
     if(_robot->getPosMessage() == 1)
         Global::posPointAttack = destination;

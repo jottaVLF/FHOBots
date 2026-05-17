@@ -10,7 +10,7 @@ DefenderStateKicking::~DefenderStateKicking()
 void DefenderStateKicking::doActions()
 {
     Vector2D destination = Global::areaGoalAttack.getCenter();
-    _robot->calculatePwm(destination);
+    _robot->calculatePwmUnivector(destination);
     Global::communication->writeMessage(_robot->getPosMessage(), _robot->getPwmLeft(), _robot->getPwmRight());
 }
 

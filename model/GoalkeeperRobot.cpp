@@ -15,7 +15,7 @@
 
 GoalkeeperRobot::GoalkeeperRobot(const double kp, const double kd, const double basePwmValue) : Robot(kp, kd, basePwmValue)
 {
-    _posMessage = 2;
+    _posMessage = 0;
 }
 
 void GoalkeeperRobot::createMachineStates(){

@@ -19,7 +19,7 @@ GoalkeeperMoveForward::~GoalkeeperMoveForward() {
 void GoalkeeperMoveForward::doActions() {
     Vector2D destination = WorldModel::getGoalKeeperDeffencePosition();
     _robot->moveForward(0);
-    _robot->calculatePwm(destination);
+    _robot->calculatePwmUnivector(destination);
     Global::communication->writeMessage(_robot->getPosMessage(),  _robot->getPwmLeft(), _robot->getPwmRight());
 }
 
@@ -50,5 +50,4 @@ void GoalkeeperMoveForward::entryActions() {
 void GoalkeeperMoveForward::exitActions() {
     _robot->moveForward(0);
 }
-
 

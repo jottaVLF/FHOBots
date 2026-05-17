@@ -1,239 +1,103 @@
 #include "ConfigParser.hpp"
+#include <boost/property_tree/json_parser.hpp>
 #include <cstdlib>
 
 ConfigParser::ConfigParser() : ConfigParser("config/appConfig.json")
 {}
 
-ConfigParser::ConfigParser(const std::string pathConfig){
-    this->inputConfig.open(pathConfig);
-    if(!this->inputConfig.is_open())
-    {
-        std::cout << "Error on opening config file: " << pathConfig << std::endl;
-        exit(1);
-    }
-
-    this->lookAhead = this->getToken();
-}
+ConfigParser::ConfigParser(const std::string pathConfig) : pathConfig(pathConfig), lookAhead(nullptr)
+{}
 
 ConfigParser::~ConfigParser(){
-    this->inputConfig.close();
+    if(this->inputConfig.is_open())
+        this->inputConfig.close();
+    delete this->lookAhead;
 }
 
 Config ConfigParser::createConfiguration(){
-    std::string field;
-    Config config;
-    match(BEGIN);
-    while(this->lookAhead->type != END){
-        if(this->lookAhead->type == PROPERTY){
-            field = this->lookAhead->lexeme;
-            match(PROPERTY);
-            match(SEPARATOR);
-            if(field == "camera"){      
-                config.camera = stoi(this->lookAhead->lexeme);
-                match(VALUE);            
-            }else if(field == "communication"){
-                config.communication = this->lookAhead->lexeme;
-                match(PROPERTY);
-            }else if(field == "team-color"){
-                config.teamColor = this->lookAhead->lexeme;
-                match(PROPERTY);
-            }else if(field == "r0"){
-                match(BEGIN);
-                config.r0 = getRobotConfig();
-            }else if(field == "r1"){
-                match(BEGIN);
-                config.r1 = getRobotConfig();
-            }else if(field == "r2"){
-                match(BEGIN);
-                config.r2 = getRobotConfig();
-            }
-        }
-        if(this->lookAhead->type == PROPERTY_SEPARATOR)
-            match(PROPERTY_SEPARATOR);
+    boost::property_tree::ptree tree;
+    try{
+        boost::property_tree::read_json(this->pathConfig, tree);
+    }catch(const boost::property_tree::json_parser_error& error){
+        std::cerr << "Error on reading config file '" << this->pathConfig << "': " << error.message() << std::endl;
+        exit(1);
     }
-    match(END);
 
+    Config config;
+    config.camera = tree.get<int>("camera", 0);
+    config.communication = tree.get<std::string>("communication", "");
+    config.teamColor = tree.get<std::string>("team-color", "yellow");
+    config.simMaxSpeed = tree.get<double>("simulation.max-speed", config.simMaxSpeed);
+    config.simSmoothing = tree.get<double>("simulation.smoothing", config.simSmoothing);
+    config.simDeadband = tree.get<double>("simulation.deadband", config.simDeadband);
+    config.r0 = getRobotConfig(tree.get_child("r0"));
+    config.r1 = getRobotConfig(tree.get_child("r1"));
+    config.r2 = getRobotConfig(tree.get_child("r2"));
+    return config;
+}
 
+RobotConfig ConfigParser::getRobotConfig(const boost::property_tree::ptree& tree){
+    RobotConfig config;
+    config.role = tree.get<std::string>("role", "");
+    config.active = tree.get<std::string>("active", "false") == "true";
+    config.color = tree.get<std::string>("color", "");
+    config.pwm = getPwmConfig(tree.get_child("pwm"));
+    config.control.frontLeft = getControlConstants(tree.get_child("control.front-left"));
+    config.control.frontRight = getControlConstants(tree.get_child("control.front-right"));
+    config.control.backLeft = getControlConstants(tree.get_child("control.back-left"));
+    config.control.backRight = getControlConstants(tree.get_child("control.back-right"));
+    config.hardware = getHardwareConfig(tree.get_child("hardware"));
+    return config;
+}
+
+PwmConfig ConfigParser::getPwmConfig(const boost::property_tree::ptree& tree){
+    PwmConfig config;
+    config.max = tree.get<int>("max", 255);
+    config.min = tree.get<int>("min", 0);
+    config.base = tree.get<int>("base", 0);
+    return config;
+}
+
+ControlConstants ConfigParser::getControlConstants(const boost::property_tree::ptree& tree){
+    ControlConstants constants;
+    constants.kp = tree.get<double>("kp", 0);
+    constants.kd = tree.get<double>("kd", 0);
+    return constants;
+}
+
+HardwareConfig ConfigParser::getHardwareConfig(const boost::property_tree::ptree& tree){
+    HardwareConfig config;
+    config.id = tree.get<int>("id", 0);
+    config.xbee = tree.get<std::string>("xbee", "");
+    config.chassis = tree.get<std::string>("chassis", "");
+    config.pinMotorEsqA = tree.get<int>("pinMotorEsqA", 0);
+    config.pinMotorEsqB = tree.get<int>("pinMotorEsqB", 0);
+    config.pinMotorDirA = tree.get<int>("pinMotorDirA", 0);
+    config.pinMotorDirB = tree.get<int>("pinMotorDirB", 0);
     return config;
 }
 
 RobotConfig ConfigParser::getRobotConfig(){
-    RobotConfig config;
-    std::string field;
-    while(this->lookAhead->type != END){
-        if(this->lookAhead->type == PROPERTY){
-            field = this->lookAhead->lexeme;
-            match(PROPERTY);
-            match(SEPARATOR);    
-            if(field == "role"){
-                config.role = this->lookAhead->lexeme;
-                match(PROPERTY);
-            }else if(field == "active"){
-                config.active = this->lookAhead->lexeme == "true";
-                match(PROPERTY);
-            }else if(field == "color"){
-                config.color = this->lookAhead->lexeme;
-                match(PROPERTY);
-            }else if(field == "pwm"){
-                match(BEGIN);
-                config.pwm = getPwmConfig();
-            }else if(field == "control"){
-                match(BEGIN);
-                while(this->lookAhead->type !=END){
-                    if(this->lookAhead->type == PROPERTY){
-                        if(this->lookAhead->lexeme == "front-left"){
-                            match(PROPERTY);
-                            match(SEPARATOR);
-                            config.control.frontLeft = getControlConstants();
-                        }
-                        if(this->lookAhead->lexeme == "front-right"){
-                            match(PROPERTY);
-                            match(SEPARATOR);
-                            config.control.frontRight = getControlConstants();
-                        }if(this->lookAhead->lexeme == "back-left"){
-                            match(PROPERTY);
-                            match(SEPARATOR);
-                            config.control.backLeft = getControlConstants();
-                        }
-                        if(this->lookAhead->lexeme == "back-right"){
-                            match(PROPERTY);
-                            match(SEPARATOR);
-                            config.control.backRight = getControlConstants();
-                        }
-                    }else if(this->lookAhead->type == PROPERTY_SEPARATOR)
-                        match(PROPERTY_SEPARATOR);
-                }
-                match(END);
-            }else if(field == "hardware"){
-                match(BEGIN);
-                while(this->lookAhead->type !=END){
-                    if(this->lookAhead->lexeme == "id"){
-                            match(PROPERTY);
-                            match(SEPARATOR);
-                            config.hardware.id = stoi(this->lookAhead->lexeme);
-                            match(VALUE);
-                    }else if(this->lookAhead->lexeme == "xbee"){
-                            match(PROPERTY);
-                            match(SEPARATOR);
-                            config.hardware.xbee = this->lookAhead->lexeme;
-                            match(PROPERTY);
-                    }else if(this->lookAhead->lexeme == "chassis"){
-                            match(PROPERTY);
-                            match(SEPARATOR);
-                            config.hardware.chassis = this->lookAhead->lexeme;
-                            match(PROPERTY);
-                    }else if(this->lookAhead->lexeme == "pinMotorEsqA"){
-                            match(PROPERTY);
-                            match(SEPARATOR);
-                            config.hardware.pinMotorEsqA = stoi(this->lookAhead->lexeme);
-                            match(VALUE);
-                    }else if(this->lookAhead->lexeme == "pinMotorEsqB"){
-                            match(PROPERTY);
-                            match(SEPARATOR);
-                            config.hardware.pinMotorEsqB = stoi(this->lookAhead->lexeme);
-                            match(VALUE);
-                    }else if(this->lookAhead->lexeme == "pinMotorDirA"){
-                            match(PROPERTY);
-                            match(SEPARATOR);
-                            config.hardware.pinMotorDirA = stoi(this->lookAhead->lexeme);
-                            match(VALUE);
-                    }else if(this->lookAhead->lexeme == "pinMotorDirB"){
-                            match(PROPERTY);
-                            match(SEPARATOR);
-                            config.hardware.pinMotorDirB = stoi(this->lookAhead->lexeme);
-                            match(VALUE);
-                    }else if(this->lookAhead->type == PROPERTY_SEPARATOR)
-                        match(PROPERTY_SEPARATOR);
-                }
-                match(END);
-            }
-        }else if(this->lookAhead->type == PROPERTY_SEPARATOR)
-            match(PROPERTY_SEPARATOR);
-    }
-    match(END);
-    return config;
-}
-
-ControlConstants ConfigParser::getControlConstants(){
-    ControlConstants cte;
-    std::string field;
-    match(BEGIN);
-    while(this->lookAhead->type != END){
-        if(this->lookAhead->type == PROPERTY){
-            field = this->lookAhead->lexeme;
-            match(PROPERTY);
-            match(SEPARATOR);
-            if(field == "kp")
-                cte.kp = stof(this->lookAhead->lexeme);
-            else if(field == "kd")
-                cte.kd = stof(this->lookAhead->lexeme);
-            match(VALUE);
-        }else if(this->lookAhead->type == PROPERTY_SEPARATOR)
-            match(PROPERTY_SEPARATOR);
-    }
-    match(END);
-    return cte;
+    return RobotConfig();
 }
 
 PwmConfig ConfigParser::getPwmConfig(){
-    PwmConfig config;
-    std::string field;
-    while(this->lookAhead->type != END){
-        if(this->lookAhead->type == PROPERTY){
-            field = this->lookAhead->lexeme;
-            match(PROPERTY);
-            match(SEPARATOR);
-            if(field == "max")
-                config.max = stoi(this->lookAhead->lexeme);
-            else if(field == "min")
-                config.min = stoi(this->lookAhead->lexeme);
-            else if(field == "base")
-                config.base = stoi(this->lookAhead->lexeme);
-            match(VALUE);
-        }else if(this->lookAhead->type == PROPERTY_SEPARATOR)
-            match(PROPERTY_SEPARATOR);
-    }
-    match(END);
-    return config;
+    return PwmConfig();
+}
+
+ControlConstants ConfigParser::getControlConstants(){
+    return ControlConstants();
 }
 
 void ConfigParser::match(TOKEN_TYPE expected){
-
-     if(this->lookAhead->type == expected){
+    if(this->lookAhead != nullptr && this->lookAhead->type == expected){
         this->lookAhead = this->getToken();
         return;
     }
-    std::cout << this->lookAhead->type << "\t" << expected << std::endl;
-    std::cout << "Error on reading config file!" <<std::endl;
-    exit(0);
+    std::cout << "Legacy parser is disabled. Use JSON configs compatible with boost::property_tree." << std::endl;
+    exit(1);
 }
 
 Token * ConfigParser::getToken(){
-    std::string buffer = "";
-
-    this->inputConfig >> buffer;
-
-    TOKEN_TYPE type;
-
-    if(buffer.length() > 1 && (buffer[buffer.length()-1] == ',' || buffer[buffer.length()-1] == ':')){
-        buffer = buffer.substr(0, buffer.length()-1);
-        this->inputConfig.seekg(-1, std::ios_base::cur);
-    }
-    
-    if(buffer == "{")
-        type = BEGIN;
-    else if(buffer == "}")
-        type = END;
-    else if(buffer == ":")
-        type = SEPARATOR;
-    else if(buffer == ",")
-        type = PROPERTY_SEPARATOR;
-    else if(buffer[0] == '\"'){
-        buffer = buffer.substr(1, buffer.length()-2);
-        type = PROPERTY;
-    }
-    else
-        type = VALUE;
-
-    return new Token(buffer, type);
+    return new Token("", END);
 }

@@ -1,5 +1,6 @@
 #include "Robot.hpp"
 #include "../Global.hpp"
+#include "UnivectorField.hpp"
 #include <mutex>
 #include <chrono>
 #include <thread>
@@ -21,6 +22,14 @@ void Robot::calculatePwm(Vector2D &destination)
 {
     setObjective(destination);
     Vector2D v = destination - _position;
+    _control.calculatePwm(v, _Orientation * 50);
+}
+
+void Robot::calculatePwmUnivector(Vector2D &destination)
+{
+    setObjective(destination);
+    Vector2D guide = UnivectorField::guidePoint(this, destination);
+    Vector2D v = guide - _position;
     _control.calculatePwm(v, _Orientation * 50);
 }
 
@@ -115,7 +124,10 @@ void Robot::updateRobot()
 {
     do
     {
-        _machineState.think();
+        {
+            std::lock_guard<std::recursive_mutex> lock(Global::worldMutex);
+            _machineState.think();
+        }
         std::this_thread::sleep_for(std::chrono::microseconds(1000));
 
     } while(Global::bufferKeyboard != 27);

@@ -143,3 +143,4 @@ Vector2D Global::centerAreaToAttack;
 Vector2D Global::centerAreaToDeffend;
 
 bool Global::isSim = false;
+std::recursive_mutex Global::worldMutex;

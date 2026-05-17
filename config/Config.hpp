@@ -50,6 +50,9 @@ public:
     int camera;
     std::string communication;
     std::string teamColor;
+    double simMaxSpeed = 60;
+    double simSmoothing = 0.35;
+    double simDeadband = 0.01;
     RobotConfig r0; 
     RobotConfig r1;
     RobotConfig r2;

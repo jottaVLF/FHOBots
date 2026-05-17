@@ -16,6 +16,7 @@ class Robot {
         virtual ~Robot();
 
         void calculatePwm(Vector2D& destination);
+        void calculatePwmUnivector(Vector2D& destination);
         void calculatePwmR(Vector2D &destination);
 
         void setOrientationRobot(const double x, const double y);

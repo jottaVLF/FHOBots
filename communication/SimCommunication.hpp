@@ -21,9 +21,14 @@ private:
     Config * config;
     void sendCommandToRobot(double leftWheel, double rightWheel, bool isYellowTeam, int id);
     double velocities[6];
+    double targetVelocities[6];
     int toSimSpeed(int pwm);
+    double smoothVelocity(double current, double target);
     double _maxSpeed;
+    double _smoothing;
+    double _deadband;
 public:
+    SimCommunication(Config * config, std::string ip, int port);
     SimCommunication(Config * config, std::string ip, int port, double maxSpeed);
     ~SimCommunication();
 

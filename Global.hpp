@@ -13,6 +13,7 @@
 #include "control/Control.hpp"
 #include <vector>
 #include <cstdlib>
+#include <mutex>
 
 enum PositionArea
 {
@@ -84,6 +85,7 @@ class Global {
         static Vector2D centerAreaToAttack;
         static Vector2D centerAreaToDeffend;
         static bool isSim;
+        static std::recursive_mutex worldMutex;
 };
 
 
